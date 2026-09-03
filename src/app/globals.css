@@ -1,26 +1,959 @@
 @import "tailwindcss";
 
-:root {
-  --background: #ffffff;
-  --foreground: #171717;
+/* ==========================================================================
+   TONNY & LINH — DESIGN SYSTEM
+   Timeless & Elegant. Key element: the red silk ribbon.
+   Mobile-first: every token is tuned for a 375–430px viewport, then scales up.
+   Build sections by APPLYING the classes below — avoid one-off utilities.
+   ========================================================================== */
+
+@theme {
+  /* --- Palette ------------------------------------------------------- */
+  --color-wine: #600f20;          /* Main   */
+  --color-wine-deep: #400a15;     /* Shadow / gradient anchor */
+  --color-wine-soft: #7d2436;     /* Hover / lifted state */
+  --color-ivory: #f9f3e8;         /* Second */
+  --color-ivory-warm: #f2e8d7;    /* Ivory pressed into a surface */
+  --color-gold: #a48210;          /* Support */
+  --color-gold-light: #d3b25c;    /* Highlight on dark grounds */
+  --color-gold-deep: #7d6208;     /* Gold on light grounds */
+
+  /* Semantic aliases — prefer these in components. */
+  --color-ink: #40121e;           /* Body copy on light grounds */
+  --color-ink-muted: #6d4450;
+  --color-paper: #f9f3e8;
+  --color-on-dark: #f6ecdd;
+  --color-on-dark-muted: #d9c4b4;
+
+  /* --- Type families -------------------------------------------------- */
+  --font-body: var(--ff-body), "Cormorant Garamond", Georgia, serif;
+  --font-heading: var(--ff-heading), "Alex Brush", cursive;
+  --font-initial: var(--ff-initial), "Edwardian Script ITC", cursive;
+  --font-name: var(--ff-name), "Mencken Std", Didot, serif;
+  --font-display: var(--ff-display), "TAN Aegean", serif;
+  --font-pearl: var(--ff-pearl), "TAN Pearl", serif;
+
+  /* --- Type scale (fluid, mobile-first) -------------------------------- */
+  --text-couple: clamp(3.25rem, 15vw, 5.5rem);   /* Hero / Thank-you names */
+  --text-display: clamp(2.5rem, 11vw, 4rem);     /* Alex Brush hero heading */
+  --text-h1: clamp(2.125rem, 9.5vw, 3.25rem);    /* Section heading */
+  --text-h2: clamp(1.75rem, 7.5vw, 2.5rem);      /* Sub heading */
+  --text-stat: clamp(1.5rem, 6.5vw, 2rem);       /* Dates, times, venue name */
+  --text-lead: clamp(1.125rem, 4.6vw, 1.375rem); /* Intro paragraph */
+  --text-body: clamp(1.0625rem, 4.2vw, 1.1875rem);
+  --text-small: clamp(0.9375rem, 3.6vw, 1rem);
+  --text-eyebrow: clamp(0.6875rem, 2.9vw, 0.8125rem);
+
+  --leading-tight: 1.05;
+  --leading-heading: 1.15;
+  --leading-body: 1.7;
+
+  --tracking-eyebrow: 0.32em;
+  --tracking-name: 0.16em;
+  --tracking-wide: 0.08em;
+
+  /* --- Layout rules ---------------------------------------------------- */
+  --page-gutter: 1.5rem;          /* Horizontal breathing room, all sections */
+  --content-max: 32rem;           /* Reading measure; the site stays a phone   */
+  --section-y: clamp(4.5rem, 16vw, 7rem);   /* Section top/bottom padding */
+  --section-y-tight: clamp(3rem, 11vw, 4.5rem);
+  --divider-y: clamp(1.5rem, 6vw, 2.5rem);
+
+  /* Vertical rhythm — the only vertical gaps a section should need. */
+  --space-3xs: 0.25rem;
+  --space-2xs: 0.5rem;
+  --space-xs: 0.75rem;
+  --space-sm: 1rem;
+  --space-md: 1.5rem;
+  --space-lg: 2rem;
+  --space-xl: 3rem;
+  --space-2xl: 4rem;
+
+  /* --- Surfaces & motion ------------------------------------------------ */
+  --radius-card: 2px;
+  --radius-pill: 999px;
+  --hairline: 1px solid color-mix(in srgb, var(--color-gold) 55%, transparent);
+  --hairline-dark: 1px solid color-mix(in srgb, var(--color-gold) 40%, transparent);
+  --shadow-lift: 0 18px 40px -22px rgba(64, 10, 21, 0.55);
+  --shadow-letter: 0 30px 60px -20px rgba(30, 4, 10, 0.65);
+
+  --ease-silk: cubic-bezier(0.22, 1, 0.36, 1);
+  --dur-fast: 220ms;
+  --dur-base: 480ms;
+  --dur-slow: 900ms;
 }
 
-@theme inline {
-  --color-background: var(--background);
-  --color-foreground: var(--foreground);
-  --font-sans: var(--font-geist-sans);
-  --font-mono: var(--font-geist-mono);
-}
+/* ==========================================================================
+   BASE
+   ========================================================================== */
 
-@media (prefers-color-scheme: dark) {
-  :root {
-    --background: #0a0a0a;
-    --foreground: #ededed;
-  }
+html {
+  scroll-behavior: smooth;
+  -webkit-text-size-adjust: 100%;
 }
 
 body {
-  background: var(--background);
-  color: var(--foreground);
-  font-family: Arial, Helvetica, sans-serif;
+  background-color: var(--color-wine-deep);
+  color: var(--color-ink);
+  font-family: var(--font-body);
+  font-size: var(--text-body);
+  font-weight: 400;
+  line-height: var(--leading-body);
+  -webkit-font-smoothing: antialiased;
+  text-rendering: optimizeLegibility;
+  overflow-x: hidden;
+}
+
+/* Locks scrolling while the intro envelope is on screen. */
+body[data-locked="true"] {
+  overflow: hidden;
+}
+
+::selection {
+  background: var(--color-gold);
+  color: var(--color-ivory);
+}
+
+@media (prefers-reduced-motion: reduce) {
+  html { scroll-behavior: auto; }
+  *, *::before, *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+  }
+}
+
+/* ==========================================================================
+   LAYOUT
+   ========================================================================== */
+
+@layer components {
+
+  /* The page shell — the site is a phone-width column, centred on desktop. */
+  .site {
+    position: relative;
+    width: 100%;
+    max-width: 30rem;
+    margin-inline: auto;
+    background-color: var(--color-ivory);
+    box-shadow: 0 0 80px -20px rgba(0, 0, 0, 0.6);
+    overflow: hidden;
+  }
+
+  /* Every section: full-bleed ground + consistent vertical padding. */
+  .section {
+    position: relative;
+    isolation: isolate;
+    padding-block: var(--section-y);
+    padding-inline: var(--page-gutter);
+    overflow: hidden;
+  }
+
+  .section--tight { padding-block: var(--section-y-tight); }
+
+  /* Full viewport-height section (intro, hero, thank you). */
+  .section--full {
+    min-height: 100svh;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+  }
+
+  /* --- Grounds. Pair each with the matching text colour. --------------- */
+  .ground--red,
+  .ground--cream {
+    background-position: center;
+    background-repeat: no-repeat;
+    background-size: cover;
+  }
+
+  /* red background.png — the one red ground: intro, hero, and every dark
+     section through to the thank you. */
+  .ground--red {
+    background-color: var(--color-wine-deep);
+    background-image: url("/img/red.webp");
+    color: var(--color-on-dark);
+  }
+
+  /* 2.png — cream damask. */
+  .ground--cream {
+    background-image: url("/img/cream.webp");
+    color: var(--color-ink);
+  }
+
+  /* The reading column inside a section. */
+  .container {
+    position: relative;
+    width: 100%;
+    max-width: var(--content-max);
+    margin-inline: auto;
+  }
+
+  .container--narrow { max-width: 24rem; }
+
+  /* Vertical rhythm helpers — a section stacks its blocks with one of these. */
+  .stack > * + * { margin-block-start: var(--space-md); }
+  .stack-sm > * + * { margin-block-start: var(--space-sm); }
+  .stack-lg > * + * { margin-block-start: var(--space-lg); }
+  .stack-xl > * + * { margin-block-start: var(--space-xl); }
+
+  .center { text-align: center; }
+
+  /* ========================================================================
+     TYPOGRAPHY
+     ======================================================================== */
+
+  /* Small caps label above a heading. Mencken — same rank as dates. */
+  .eyebrow {
+    font-family: var(--font-name);
+    font-size: var(--text-eyebrow);
+    letter-spacing: var(--tracking-eyebrow);
+    text-transform: uppercase;
+    line-height: 1.4;
+    text-indent: var(--tracking-eyebrow); /* optical centring for tracked caps */
+    color: var(--color-gold-light);
+  }
+
+  .ground--cream .eyebrow { color: var(--color-gold-deep); }
+
+  /* Section heading — Alex Brush. */
+  .heading {
+    font-family: var(--font-heading);
+    font-size: var(--text-h1);
+    font-weight: 400;
+    line-height: var(--leading-heading);
+    letter-spacing: 0.01em;
+    color: var(--color-gold-light);
+  }
+
+  .ground--cream .heading { color: var(--color-wine); }
+
+  .heading--lg { font-size: var(--text-display); }
+  .heading--sm { font-size: var(--text-h2); }
+
+  /* Couple name — Edwardian initial + Mencken body. See <CoupleName />. */
+  .couple-name {
+    font-family: var(--font-name);
+    font-size: var(--text-couple);
+    line-height: var(--leading-tight);
+    letter-spacing: var(--tracking-name);
+    text-transform: uppercase;
+    font-weight: 400;
+    color: var(--color-ivory);
+    display: block;
+  }
+
+  /* The Edwardian Script capital. Optically enlarged and pulled tight. */
+  /* The Edwardian capital takes the same colour as the rest of the name. */
+  .couple-name__initial {
+    font-family: var(--font-initial);
+    font-size: 1.65em;
+    line-height: 0;
+    letter-spacing: 0;
+    text-transform: none;
+    vertical-align: -0.14em;
+    margin-inline-end: -0.06em;
+    color: inherit;
+  }
+
+  /* "and" — Cormorant italic lowercase, the quiet joint between two names. */
+  .couple-name__conj {
+    display: block;
+    font-family: var(--font-body);
+    font-size: calc(var(--text-couple) * 0.30);
+    font-style: italic;
+    font-weight: 400;
+    line-height: 1;
+    letter-spacing: 0.06em;
+    text-transform: lowercase;
+    color: var(--color-gold-light);
+    margin-block: 0.12em;
+  }
+
+  /* Dates, times, venue names — Mencken, the "information" rank. */
+  .stat {
+    font-family: var(--font-name);
+    font-size: var(--text-stat);
+    letter-spacing: var(--tracking-name);
+    text-transform: uppercase;
+    line-height: 1.3;
+    font-weight: 400;
+  }
+
+  .stat--sm {
+    font-size: var(--text-small);
+    letter-spacing: var(--tracking-wide);
+  }
+
+  .lead {
+    font-size: var(--text-lead);
+    line-height: var(--leading-body);
+    font-style: italic;
+  }
+
+  .body-text {
+    font-size: var(--text-body);
+    line-height: var(--leading-body);
+  }
+
+  .body-text--muted { color: var(--color-ink-muted); }
+  .ground--red .body-text--muted { color: var(--color-on-dark-muted); }
+
+  .note {
+    font-size: var(--text-small);
+    font-style: italic;
+  }
+
+  /* ========================================================================
+     ORNAMENT & DIVIDERS
+     ======================================================================== */
+
+  /* A seam takes no vertical space of its own: the two sections butt straight
+     together and the ornament is centred exactly on the line between them. */
+  .seam {
+    position: relative;
+    z-index: 5;
+    height: 0;
+    line-height: 0;
+  }
+
+  .seam__art {
+    position: absolute;
+    left: 50%;
+    top: 0;
+    translate: -50% -50%;   /* centre of the art === the section boundary */
+    pointer-events: none;
+  }
+
+  /* Lace — section divider.png, recoloured to gold through a mask so it reads
+     on the red half and the cream half of the seam alike. */
+  .seam--lace .seam__art {
+    width: 92%;
+    aspect-ratio: 1200 / 156;
+    background-color: var(--color-gold);
+    -webkit-mask: url("/img/lace.webp") center / 100% 100% no-repeat;
+    mask: url("/img/lace.webp") center / 100% 100% no-repeat;
+  }
+
+  /* Ribbon — 10.png. The key element: the silk lies across the seam and hides
+     the join between the two grounds. */
+  .seam--ribbon .seam__art {
+    width: 118%;            /* overhangs both edges so no cut end shows */
+    aspect-ratio: 1200 / 393;
+  }
+
+  .seam--ribbon .seam__art img {
+    display: block;
+    width: 100%;
+    height: 100%;
+    object-fit: fill;
+  }
+
+  .seam--ribbon-flip .seam__art { scale: -1 1; }
+
+  /* A thin gold rule with a diamond at its centre. */
+  .rule {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: var(--space-xs);
+    color: var(--color-gold);
+  }
+
+  .rule::before,
+  .rule::after {
+    content: "";
+    height: 1px;
+    flex: 1 1 auto;
+    max-width: 5rem;
+    background: linear-gradient(
+      to right,
+      transparent,
+      color-mix(in srgb, var(--color-gold) 80%, transparent),
+      transparent
+    );
+  }
+
+  .rule__mark {
+    width: 5px;
+    height: 5px;
+    rotate: 45deg;
+    background: var(--color-gold);
+  }
+
+  /* Corner gold ornaments (flower, butterfly, crest). Always full opacity —
+     a dimmed ornament reads as a mistake, not as restraint. */
+  .ornament {
+    position: absolute;
+    z-index: -1;
+    pointer-events: none;
+    user-select: none;
+  }
+
+  /* ========================================================================
+     SURFACES
+     ======================================================================== */
+
+  /* Gold hairline frame — the default container for a block of information. */
+  .card {
+    position: relative;
+    padding: var(--space-lg) var(--space-md);
+    border: var(--hairline);
+    border-radius: var(--radius-card);
+    background: color-mix(in srgb, var(--color-ivory) 8%, transparent);
+    backdrop-filter: blur(2px);
+  }
+
+  .ground--cream .card {
+    background: color-mix(in srgb, #ffffff 42%, transparent);
+  }
+
+  /* Solid ivory panel for dense content on a dark ground. */
+  .panel {
+    padding: var(--space-lg) var(--space-md);
+    background: var(--color-ivory);
+    color: var(--color-ink);
+    border-radius: var(--radius-card);
+    box-shadow: var(--shadow-lift);
+  }
+
+  /* ========================================================================
+     BUTTON SYSTEM
+     Base .btn + one modifier. Never style a button ad hoc.
+     ======================================================================== */
+
+  .btn {
+    --btn-bg: transparent;
+    --btn-fg: var(--color-ivory);
+    --btn-border: var(--color-gold);
+
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: var(--space-2xs);
+
+    min-height: 3rem;                 /* touch target */
+    padding-inline: var(--space-lg);
+    padding-block: 0.75rem;
+
+    font-family: var(--font-name);
+    font-size: var(--text-eyebrow);
+    letter-spacing: var(--tracking-eyebrow);
+    text-indent: var(--tracking-eyebrow);
+    text-transform: uppercase;
+    line-height: 1;
+    text-align: center;
+    white-space: nowrap;
+
+    color: var(--btn-fg);
+    background: var(--btn-bg);
+    border: 1px solid var(--btn-border);
+    border-radius: var(--radius-pill);
+
+    cursor: pointer;
+    appearance: none;
+    transition:
+      background-color var(--dur-fast) var(--ease-silk),
+      color var(--dur-fast) var(--ease-silk),
+      border-color var(--dur-fast) var(--ease-silk),
+      transform var(--dur-fast) var(--ease-silk);
+  }
+
+  .btn:active { transform: translateY(1px) scale(0.99); }
+
+  .btn:focus-visible {
+    outline: 2px solid var(--color-gold-light);
+    outline-offset: 3px;
+  }
+
+  .btn:disabled,
+  .btn[aria-disabled="true"] {
+    opacity: 0.5;
+    cursor: not-allowed;
+  }
+
+  /* Primary — solid gold. One per section, maximum. */
+  .btn--gold {
+    --btn-bg: var(--color-gold);
+    --btn-fg: var(--color-ivory);
+    --btn-border: var(--color-gold);
+  }
+
+  @media (hover: hover) {
+    .btn--gold:hover {
+      --btn-bg: var(--color-gold-deep);
+      --btn-border: var(--color-gold-deep);
+    }
+  }
+
+  /* Secondary — gold outline on a dark ground. */
+  .btn--outline {
+    --btn-bg: transparent;
+    --btn-fg: var(--color-gold-light);
+    --btn-border: color-mix(in srgb, var(--color-gold) 70%, transparent);
+  }
+
+  @media (hover: hover) {
+    .btn--outline:hover {
+      --btn-bg: color-mix(in srgb, var(--color-gold) 18%, transparent);
+      --btn-fg: var(--color-ivory);
+    }
+  }
+
+  /* Tertiary — wine on a cream ground. */
+  .btn--wine {
+    --btn-bg: var(--color-wine);
+    --btn-fg: var(--color-ivory);
+    --btn-border: var(--color-wine);
+  }
+
+  @media (hover: hover) {
+    .btn--wine:hover {
+      --btn-bg: var(--color-wine-soft);
+      --btn-border: var(--color-wine-soft);
+    }
+  }
+
+  .btn--block { width: 100%; }
+
+  /* ========================================================================
+     FORM SYSTEM (RSVP)
+     ======================================================================== */
+
+  .field { display: block; }
+
+  .label {
+    display: block;
+    margin-block-end: var(--space-2xs);
+    font-family: var(--font-name);
+    font-size: var(--text-eyebrow);
+    letter-spacing: var(--tracking-wide);
+    text-transform: uppercase;
+    color: var(--color-gold-deep);
+  }
+
+  .ground--red .label { color: var(--color-gold-light); }
+
+  .input,
+  .select,
+  .textarea {
+    display: block;
+    width: 100%;
+    min-height: 3rem;
+    padding: 0.75rem 1rem;
+
+    font-family: var(--font-body);
+    font-size: var(--text-body);
+    color: var(--color-ink);
+
+    background: color-mix(in srgb, #ffffff 62%, transparent);
+    border: var(--hairline);
+    border-radius: var(--radius-card);
+
+    appearance: none;
+    transition: border-color var(--dur-fast) var(--ease-silk),
+                background-color var(--dur-fast) var(--ease-silk);
+  }
+
+  /* `appearance: none` strips the native arrow; draw a gold chevron instead. */
+  .select {
+    padding-inline-end: 2.5rem;
+    background-image: url("data:image/svg+xml;charset=utf-8,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 12 8'%3E%3Cpath d='M1 1.5 6 6.5 11 1.5' fill='none' stroke='%23a48210' stroke-width='1.4' stroke-linecap='round'/%3E%3C/svg%3E");
+    background-repeat: no-repeat;
+    background-position: right 1rem center;
+    background-size: 0.75rem;
+  }
+
+  .textarea {
+    min-height: 6rem;
+    resize: vertical;
+    line-height: 1.5;
+  }
+
+  .input::placeholder,
+  .textarea::placeholder {
+    color: color-mix(in srgb, var(--color-ink) 45%, transparent);
+    font-style: italic;
+  }
+
+  .input:focus,
+  .select:focus,
+  .textarea:focus {
+    outline: none;
+    border-color: var(--color-gold);
+    background: color-mix(in srgb, #ffffff 88%, transparent);
+  }
+
+  /* Radio group rendered as a pair of pills. */
+  .choice-group {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: var(--space-2xs);
+  }
+
+  .choice {
+    position: relative;
+    display: flex;
+  }
+
+  .choice input {
+    position: absolute;
+    opacity: 0;
+    width: 100%;
+    height: 100%;
+    margin: 0;
+    cursor: pointer;
+  }
+
+  .choice__label {
+    flex: 1;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    min-height: 3rem;
+    padding-inline: var(--space-sm);
+
+    font-family: var(--font-name);
+    font-size: var(--text-eyebrow);
+    letter-spacing: var(--tracking-wide);
+    text-transform: uppercase;
+    text-align: center;
+
+    color: var(--color-ink-muted);
+    border: var(--hairline);
+    border-radius: var(--radius-pill);
+    background: color-mix(in srgb, #ffffff 45%, transparent);
+    transition: all var(--dur-fast) var(--ease-silk);
+  }
+
+  .choice input:checked + .choice__label {
+    background: var(--color-wine);
+    border-color: var(--color-wine);
+    color: var(--color-ivory);
+  }
+
+  .choice input:focus-visible + .choice__label {
+    outline: 2px solid var(--color-gold);
+    outline-offset: 2px;
+  }
+
+  /* ========================================================================
+     AGENDA
+     ======================================================================== */
+
+  .agenda { display: block; }
+
+  .agenda__item {
+    display: grid;
+    grid-template-columns: 5.25rem 1fr;
+    align-items: baseline;
+    gap: var(--space-sm);
+    padding-block: var(--space-sm);
+    border-block-end: var(--hairline-dark);
+  }
+
+  .agenda__item:last-child { border-block-end: 0; }
+
+  .agenda__time {
+    font-family: var(--font-name);
+    font-size: var(--text-small);
+    letter-spacing: var(--tracking-wide);
+    text-transform: uppercase;
+    color: var(--color-gold-light);
+    text-align: end;
+  }
+
+  .ground--cream .agenda__time { color: var(--color-gold-deep); }
+
+  .agenda__title {
+    font-size: var(--text-body);
+    line-height: 1.35;
+  }
+
+  /* ========================================================================
+     GALLERY
+     ======================================================================== */
+
+  .gallery {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: var(--space-2xs);
+  }
+
+  .gallery__item {
+    position: relative;
+    overflow: hidden;
+    border: var(--hairline);
+    background: color-mix(in srgb, var(--color-wine) 6%, transparent);
+    aspect-ratio: 3 / 4;
+  }
+
+  .gallery__item--wide {
+    grid-column: span 2;
+    aspect-ratio: 4 / 3;
+  }
+
+  .gallery__item img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+  }
+
+  /* Placeholder shown until the couple's photos are dropped in. */
+  .gallery__placeholder {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    height: 100%;
+    font-family: var(--font-name);
+    font-size: 0.6875rem;
+    letter-spacing: var(--tracking-eyebrow);
+    text-transform: uppercase;
+    color: color-mix(in srgb, var(--color-gold) 75%, transparent);
+  }
+
+  /* ========================================================================
+     INTRO — envelope, wax seal, letter
+
+     The flap and the front pocket are the SAME photograph, clipped along the
+     flap's silhouette (traced from the artwork's own shadow line). The flap
+     hinges on its top edge; the letter rides up out of a well that is clipped
+     at the envelope's bottom, so it reads as coming from inside.
+     ======================================================================== */
+
+  /* The flap's silhouette, traced from the shadow line in the artwork. */
+  .envelope {
+    --flap-edge: 0% 11%, 10% 26%, 20% 39.5%, 25% 47%, 30% 53.5%, 35% 57%,
+      40% 61.5%, 45% 68%, 50% 73.5%, 55% 68%, 60% 61.5%, 65% 57%, 70% 53.5%,
+      75% 47%, 80% 39.5%, 90% 26%, 100% 11%;
+  }
+
+  .intro {
+    position: fixed;
+    inset: 0;
+    z-index: 60;
+    display: grid;
+    place-items: center;
+    padding: var(--page-gutter);
+    transition: opacity var(--dur-slow) var(--ease-silk),
+                visibility var(--dur-slow) var(--ease-silk);
+  }
+
+  .intro[data-state="dismissed"] {
+    opacity: 0;
+    visibility: hidden;
+    pointer-events: none;
+  }
+
+  /* The envelope is the composition — centred in the viewport and generous. */
+  .intro__stage {
+    position: relative;
+    width: min(86vw, 25rem);
+    display: grid;
+    place-items: center;
+  }
+
+  .envelope {
+    position: relative;
+    width: 100%;
+    aspect-ratio: 2974 / 2221;
+    perspective: 1400px;
+    filter: drop-shadow(0 26px 40px rgba(20, 3, 8, 0.6));
+    transition: translate var(--dur-slow) var(--ease-silk);
+  }
+
+  /* Envelope interior, revealed once the flap lifts. */
+  .envelope__back {
+    position: absolute;
+    inset: 0;
+    z-index: 0;
+    background: linear-gradient(180deg, #d8ccb4, #ece2cf 38%);
+  }
+
+  .envelope__layer {
+    position: absolute;
+    inset: 0;
+    display: block;
+    width: 100%;
+    height: 100%;
+    object-fit: fill;
+  }
+
+  /* Front pocket — everything below the flap's silhouette. */
+  .envelope__pocket {
+    z-index: 3;
+    clip-path: polygon(
+      0% 10.4%, 10% 25.4%, 20% 38.9%, 25% 46.4%, 30% 52.9%, 35% 56.4%,
+      40% 60.9%, 45% 67.4%, 50% 72.9%, 55% 67.4%, 60% 60.9%, 65% 56.4%,
+      70% 52.9%, 75% 46.4%, 80% 38.9%, 90% 25.4%, 100% 10.4%,
+      100% 100%, 0% 100%
+    );
+  }
+
+  /* The flap — hinged along the top edge. */
+  .envelope__flap {
+    position: absolute;
+    inset: 0;
+    z-index: 4;
+    transform-origin: top center;
+    transform: rotateX(0deg);
+    transform-style: preserve-3d;
+    backface-visibility: hidden;
+    clip-path: polygon(0% 0%, 100% 0%, var(--flap-edge));
+    transition: transform 900ms var(--ease-silk), z-index 0s linear 320ms;
+  }
+
+  .envelope[data-open="true"] .envelope__flap {
+    transform: rotateX(-172deg);
+    z-index: 1;                     /* drops behind the envelope mid-flip */
+  }
+
+  /* The wax seal closes the flap's point — and is the thing you press. */
+  .envelope__seal {
+    position: absolute;
+    left: 50%;
+    top: 72.5%;
+    z-index: 5;
+    width: 23%;
+    aspect-ratio: 760 / 776;
+    translate: -50% -50%;
+    padding: 0;
+    border: 0;
+    background: none;
+    cursor: pointer;
+    filter: drop-shadow(0 5px 9px rgba(20, 3, 8, 0.55));
+    transition: opacity 260ms var(--ease-silk),
+                scale 420ms var(--ease-silk),
+                rotate 420ms var(--ease-silk);
+    animation: seal-breathe 3.4s var(--ease-silk) infinite;
+  }
+
+  .envelope__seal img {
+    display: block;
+    width: 100%;
+    height: auto;
+  }
+
+  .envelope__seal:focus-visible {
+    outline: 2px solid var(--color-gold-light);
+    outline-offset: 6px;
+    border-radius: var(--radius-pill);
+  }
+
+  .envelope[data-open="true"] .envelope__seal {
+    animation: none;
+    opacity: 0;
+    scale: 0.86;
+    rotate: -14deg;
+    pointer-events: none;
+  }
+
+  /* The well is clipped at the envelope's bottom, so the letter can only ever
+     appear to rise out of the mouth — never below it. */
+  .envelope__well {
+    position: absolute;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    height: 340%;
+    z-index: 2;
+    overflow: hidden;
+    pointer-events: none;
+  }
+
+  .letter {
+    position: absolute;
+    left: 50%;
+    bottom: 0;
+    width: 72%;
+    translate: -50% 30%;            /* tucked inside the envelope */
+    display: grid;
+    place-items: center;
+    transition: translate 1000ms var(--ease-silk);
+  }
+
+  .envelope[data-open="true"] .letter {
+    translate: -50% -55%;
+  }
+
+  .envelope[data-open="true"] {
+    translate: 0 30%;               /* re-centres letter + envelope together */
+  }
+
+  .letter__paper {
+    grid-area: 1 / 1;
+    width: 100%;
+    height: auto;
+  }
+
+  /* Text laid over the arched card. The paper carries a drop-shadow filter,
+     which makes it a stacking context — the content must be lifted above it. */
+  .letter__content {
+    grid-area: 1 / 1;
+    position: relative;
+    z-index: 1;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    gap: var(--space-2xs);
+    width: 76%;
+    text-align: center;
+    color: var(--color-ink);
+    opacity: 0;
+    transition: opacity 500ms var(--ease-silk) 520ms;
+  }
+
+  .envelope[data-open="true"] .letter__content { opacity: 1; }
+
+  .intro__hint {
+    position: absolute;
+    inset-inline: 0;
+    bottom: -3rem;
+    text-align: center;
+    font-family: var(--font-name);
+    font-size: var(--text-eyebrow);
+    letter-spacing: var(--tracking-eyebrow);
+    text-indent: var(--tracking-eyebrow);
+    text-transform: uppercase;
+    color: var(--color-gold-light);
+    transition: opacity var(--dur-fast) var(--ease-silk);
+    animation: hint-pulse 2.8s ease-in-out infinite;
+  }
+
+  .intro[data-state="opening"] .intro__hint,
+  .intro[data-state="open"] .intro__hint {
+    animation: none;
+    opacity: 0;
+  }
+
+  /* ========================================================================
+     REVEAL-ON-SCROLL
+     ======================================================================== */
+
+  .reveal {
+    opacity: 0;
+    translate: 0 1.25rem;
+    transition: opacity var(--dur-slow) var(--ease-silk),
+                translate var(--dur-slow) var(--ease-silk);
+  }
+
+  .reveal[data-visible="true"] {
+    opacity: 1;
+    translate: 0 0;
+  }
+}
+
+/* ==========================================================================
+   KEYFRAMES
+   ========================================================================== */
+
+@keyframes seal-breathe {
+  0%, 100% { scale: 1; }
+  50%      { scale: 1.045; }
+}
+
+@keyframes hint-pulse {
+  0%, 100% { opacity: 0.5; }
+  50%      { opacity: 1; }
 }
