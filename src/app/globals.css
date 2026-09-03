@@ -765,9 +765,9 @@ body[data-locked="true"] {
   /* Envelope interior, revealed once the flap lifts. */
   .envelope__back {
     position: absolute;
-    inset: 0;
+    inset: 1.5% 1%;
     z-index: 0;
-    background: linear-gradient(180deg, #d8ccb4, #ece2cf 38%);
+    background: linear-gradient(180deg, #cdbfa4, #e8dcc6 42%);
   }
 
   .envelope__layer {
@@ -790,7 +790,9 @@ body[data-locked="true"] {
     );
   }
 
-  /* The flap — hinged along the top edge. */
+  /* The flap — hinged along its top edge. Two faces: the printed front, and a
+     plain paper back that takes over once the flip passes ninety degrees.
+     `clip-path` flattens a 3-D element, so each face is clipped on its own. */
   .envelope__flap {
     position: absolute;
     inset: 0;
@@ -798,14 +800,34 @@ body[data-locked="true"] {
     transform-origin: top center;
     transform: rotateX(0deg);
     transform-style: preserve-3d;
-    backface-visibility: hidden;
-    clip-path: polygon(0% 0%, 100% 0%, var(--flap-edge));
-    transition: transform 900ms var(--ease-silk), z-index 0s linear 320ms;
+    transition: transform 900ms var(--ease-silk), z-index 0s linear 300ms;
   }
 
   .envelope[data-open="true"] .envelope__flap {
-    transform: rotateX(-172deg);
-    z-index: 1;                     /* drops behind the envelope mid-flip */
+    transform: rotateX(-168deg);
+    z-index: 1;                     /* drops behind the letter mid-flip */
+  }
+
+  .envelope__flap-front,
+  .envelope__flap-back {
+    position: absolute;
+    inset: 0;
+    backface-visibility: hidden;
+  }
+
+  .envelope__flap-front {
+    clip-path: polygon(0% 0%, 100% 0%, var(--flap-edge));
+  }
+
+  /* Mirrored vertically so that, once rotated, it lands on the same shape. */
+  .envelope__flap-back {
+    transform: rotateX(180deg);
+    background: linear-gradient(0deg, #ded2ba, #efe6d3 55%);
+    clip-path: polygon(
+      0% 100%, 100% 100%, 100% 89%, 90% 74%, 80% 60.5%, 75% 53%, 70% 46.5%,
+      65% 43%, 60% 38.5%, 55% 32%, 50% 26.5%, 45% 32%, 40% 38.5%, 35% 43%,
+      30% 46.5%, 25% 53%, 20% 60.5%, 10% 74%, 0% 89%
+    );
   }
 
   /* The wax seal closes the flap's point — and is the thing you press. */
@@ -869,7 +891,7 @@ body[data-locked="true"] {
     translate: -50% 30%;            /* tucked inside the envelope */
     display: grid;
     place-items: center;
-    transition: translate 1000ms var(--ease-silk);
+    transition: translate 1000ms var(--ease-silk) 300ms;
   }
 
   .envelope[data-open="true"] .letter {

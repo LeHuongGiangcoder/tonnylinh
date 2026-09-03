@@ -81,14 +81,17 @@ export function Intro() {
             className="envelope__layer envelope__pocket"
           />
           <div className="envelope__flap">
-            <Image
-              src="/img/envelope.webp"
-              alt=""
-              width={1000}
-              height={747}
-              priority
-              className="envelope__layer"
-            />
+            <div className="envelope__flap-front">
+              <Image
+                src="/img/envelope.webp"
+                alt=""
+                width={1000}
+                height={747}
+                priority
+                className="envelope__layer"
+              />
+            </div>
+            <div className="envelope__flap-back" />
           </div>
 
           <button
