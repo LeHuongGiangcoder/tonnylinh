@@ -719,7 +719,7 @@ body[data-locked="true"] {
     z-index: 1;
     /* The one place the padding contract bends: the silk has to meet what is
        standing above it, and the section's usual foot leaves a gap. */
-    padding-bottom: var(--space-lg);
+    padding-bottom: var(--space-2xs);
   }
 
   .section__drape {
@@ -732,13 +732,15 @@ body[data-locked="true"] {
        highest satin starts at y=333 and the lowest ends at y=296, so they never
        overlap. Across the middle 44% they do, between y=333 and y=399. The
        drape is therefore scaled until that middle fills the viewport, and sat
-       so its 70% line lands on the join. With the box's foot on the join, that
-       line sits 30% of the height above it, so the drape is pushed down by
-       exactly that. No gradient, no haze: the silk is the whole transition. */
-    width: 210vw;
+       so a line inside it lands on the join. 190vw is the smallest scale that
+       still leaves a window at all — its usable band is 64%..69% of the drape's
+       height, and 170vw narrows that to a single percent. The join sits at 66%,
+       the middle of that band — the top of it would leave barely two pixels of
+       margin. No gradient, no haze: the silk is the whole transition. */
+    width: 190vw;
     max-width: none;
     height: auto;
-    translate: -50% 30%;
+    translate: -50% 34%;
     pointer-events: none;
   }
 
@@ -783,13 +785,11 @@ body[data-locked="true"] {
      ======================================================================== */
 
   .held {
-    /* Wider than the reading column it sits in: the plate is the section's
-       subject, so it breaks the section's inline padding and centres on the
-       viewport instead. */
+    /* Inside the section's inline padding like everything else — the plate is
+       the subject, but it keeps the page's margins. */
     position: relative;
-    width: min(100vw, 34rem);
-    left: 50%;
-    translate: -50%;
+    width: min(100%, 30rem);
+    margin-inline: auto;
     filter: drop-shadow(0 26px 40px rgba(20, 3, 8, 0.55));
   }
 
@@ -859,7 +859,7 @@ body[data-locked="true"] {
   .swatch__name {
     font-family: var(--font-body);
     font-style: italic;
-    font-size: clamp(0.625rem, 2.8vw, 0.8125rem);
+    font-size: clamp(0.5625rem, 2.5vw, 0.75rem);
     line-height: 1.2;
     color: color-mix(in srgb, var(--color-ink) 80%, transparent);
   }
@@ -1031,9 +1031,9 @@ body[data-locked="true"] {
     left: 50%;
     top: 0;
     z-index: 2;
-    width: 58%;
+    width: 46%;
     height: auto;
-    translate: -50% -46%;
+    translate: -50% -44%;
     pointer-events: none;
   }
 
@@ -1052,17 +1052,19 @@ body[data-locked="true"] {
 
   .closing__signature {
     margin-block: var(--space-md);
-    font-family: var(--font-initial);
-    font-size: calc(var(--text-couple) * 1.15);
-    line-height: 0.9;
+    font-family: var(--font-name);
+    font-size: calc(var(--text-couple) * 0.82);
+    line-height: 1;
+    letter-spacing: var(--tracking-name);
+    text-indent: var(--tracking-name);
     color: var(--color-wine);
   }
 
   .closing__amp {
     font-family: var(--font-body);
     font-style: italic;
-    font-size: 0.34em;
-    vertical-align: 0.42em;
+    font-size: 0.44em;
+    letter-spacing: 0;
     color: var(--color-gold-deep);
   }
 
