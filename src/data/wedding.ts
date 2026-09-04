@@ -32,14 +32,24 @@ export const guest = {
   name: "Mr. & Mrs. Nguyen",
 } as const;
 
+/** `icon` names a file in /public/img/icon — the red line drawings that mark
+ *  each stop on the thread. */
 export const agenda = [
-  { time: "3:00 pm", title: "Welcome Guests" },
-  { time: "4:00 pm", title: "Wedding Ceremony" },
-  { time: "5:00 pm", title: "Cocktail Hour" },
-  { time: "6:00 pm", title: "Dinner" },
-  { time: "7:30 pm", title: "Mini Show" },
-  { time: "8:30 pm", title: "After Party" },
+  { time: "3:00 pm", title: "Welcome Guests", icon: "11" },
+  { time: "4:00 pm", title: "Wedding Ceremony", icon: "15" },
+  { time: "5:00 pm", title: "Cocktail Hour", icon: "29" },
+  { time: "6:00 pm", title: "Dinner", icon: "33" },
+  { time: "7:30 pm", title: "Mini Show", icon: "23" },
+  { time: "8:30 pm", title: "After Party", icon: "31" },
 ] as const;
+
+/** The week the wedding falls in, for the little calendar above the thread. */
+export const weddingWeek = {
+  month: "November 2026",
+  days: ["Mon", "Tue", "Wed", "Thu", "Fri", "Sat", "Sun"],
+  dates: [16, 17, 18, 19, 20, 21, 22],
+  theDay: 21,
+} as const;
 
 export const dresscode = {
   title: "Dress Code",

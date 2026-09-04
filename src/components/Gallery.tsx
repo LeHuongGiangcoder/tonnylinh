@@ -1,16 +1,16 @@
 import Image from "next/image";
 import { gallery } from "@/data/wedding";
 import { Rule } from "./Divider";
-import { Ornament } from "./Ornament";
+import { Emblem } from "./Ornament";
 import { Reveal } from "./Reveal";
 
 export function Gallery() {
   return (
     <section id="gallery" className="section ground--cream">
-      <Ornament name="flower" style={{ top: "3%", left: "5%", width: "3.5rem" }} />
 
       <div className="container center stack">
         <Reveal className="stack-sm">
+          <Emblem name="flower" />
           <p className="eyebrow">Our Moments</p>
           <h2 className="heading">Us, in pictures</h2>
           <Rule />

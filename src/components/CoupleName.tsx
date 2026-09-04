@@ -13,11 +13,7 @@ export function CoupleName({
 }) {
   return (
     <span className={`couple-name ${className}`.trim()}>
-      <span className="couple-name__initial" aria-hidden="true">
-        {initial}
-      </span>
-      <span className="sr-only">{initial}</span>
-      {rest}
+      {initial}{rest}
     </span>
   );
 }

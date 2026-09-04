@@ -36,13 +36,13 @@
   /* --- Type scale (fluid, mobile-first) -------------------------------- */
   --text-couple: clamp(3.25rem, 15vw, 5.5rem);   /* Hero / Thank-you names */
   --text-display: clamp(2.5rem, 11vw, 4rem);     /* Alex Brush hero heading */
-  --text-h1: clamp(2.125rem, 9.5vw, 3.25rem);    /* Section heading */
-  --text-h2: clamp(1.75rem, 7.5vw, 2.5rem);      /* Sub heading */
-  --text-stat: clamp(1.5rem, 6.5vw, 2rem);       /* Dates, times, venue name */
+  --text-h1: clamp(2.625rem, 11.5vw, 4rem);      /* Section heading */
+  --text-h2: clamp(2.125rem, 9vw, 3rem);         /* Sub heading */
+  --text-stat: clamp(1.6875rem, 7.2vw, 2.25rem); /* Dates, times, venue name */
   --text-lead: clamp(1.125rem, 4.6vw, 1.375rem); /* Intro paragraph */
   --text-body: clamp(1.0625rem, 4.2vw, 1.1875rem);
   --text-small: clamp(0.9375rem, 3.6vw, 1rem);
-  --text-eyebrow: clamp(0.6875rem, 2.9vw, 0.8125rem);
+  --text-eyebrow: clamp(0.75rem, 3.1vw, 0.875rem);
 
   --leading-tight: 1.05;
   --leading-heading: 1.15;
@@ -53,11 +53,19 @@
   --tracking-wide: 0.08em;
 
   /* --- Layout rules ---------------------------------------------------- */
-  --page-gutter: 1.5rem;          /* Horizontal breathing room, all sections */
   --content-max: 32rem;           /* Reading measure; the site stays a phone   */
-  --section-y: clamp(4.5rem, 16vw, 7rem);   /* Section top/bottom padding */
-  --section-y-tight: clamp(3rem, 11vw, 4.5rem);
-  --divider-y: clamp(1.5rem, 6vw, 2.5rem);
+
+  /* The section spacing contract. Every section is padded from these four
+     and nothing else, so the rhythm down the page is one decision. Section
+     height then follows from this padding plus whatever the section holds. */
+  --section-pad-top: clamp(5rem, 17vw, 7.5rem);
+  --section-pad-bottom: clamp(5rem, 17vw, 7.5rem);
+  --section-pad-left: clamp(1.5rem, 6vw, 2.5rem);
+  --section-pad-right: clamp(1.5rem, 6vw, 2.5rem);
+
+  /* Kept as an alias so anything still reaching for the old gutter lands on
+     the same value as the section's inline padding. */
+  --page-gutter: var(--section-pad-left);
 
   /* Vertical rhythm — the only vertical gaps a section should need. */
   --space-3xs: 0.25rem;
@@ -140,26 +148,27 @@ body[data-locked="true"] {
     overflow: hidden;
   }
 
-  /* Every section: full-bleed ground + consistent vertical padding. */
+  /* Every section: full-bleed ground, the shared padding, and content centred
+     in whatever height that padding and content add up to. */
   .section {
     position: relative;
     isolation: isolate;
-    padding-block: var(--section-y);
-    padding-inline: var(--page-gutter);
-    overflow: hidden;
-  }
-
-  .section--tight { padding-block: var(--section-y-tight); }
-
-  /* Full viewport-height section (intro, hero, thank you). */
-  .section--full {
-    min-height: 100svh;
     display: flex;
     flex-direction: column;
     justify-content: center;
+    padding-top: var(--section-pad-top);
+    padding-bottom: var(--section-pad-bottom);
+    padding-left: var(--section-pad-left);
+    padding-right: var(--section-pad-right);
+    overflow: hidden;
   }
 
+  /* The two cover screens — the opening and the closing — still fill the
+     viewport; every other section is sized by its own content. */
+  .section--full { min-height: 100svh; }
+
   /* --- Grounds. Pair each with the matching text colour. --------------- */
+  .ground--silk,
   .ground--red,
   .ground--cream {
     background-position: center;
@@ -167,12 +176,46 @@ body[data-locked="true"] {
     background-size: cover;
   }
 
-  /* red background.png — the one red ground: intro, hero, and every dark
-     section through to the thank you. */
+  /* 1.png — the red silk drape. Intro, hero and thank you. */
+  .ground--silk {
+    background-color: var(--color-wine-deep);
+    background-image: url("/img/silk.webp");
+    color: var(--color-on-dark);
+  }
+
+  /* Steadies the silk's highlights so type stays legible over them. */
+  .ground--silk::before {
+    content: "";
+    position: absolute;
+    inset: 0;
+    z-index: -1;
+    background: radial-gradient(
+      ellipse at 50% 42%,
+      rgba(48, 8, 16, 0.18),
+      rgba(30, 4, 10, 0.66) 100%
+    );
+  }
+
+  /* red background.png — the damask ground for the sections in between. */
   .ground--red {
     background-color: var(--color-wine-deep);
     background-image: url("/img/red.webp");
     color: var(--color-on-dark);
+  }
+
+  /* Lights the ground from the middle and sinks the corners, so each section
+     reads as a lit surface rather than a flat swatch. */
+  .ground--red::before {
+    content: "";
+    position: absolute;
+    inset: 0;
+    z-index: -1;
+    background: radial-gradient(
+      ellipse at 50% 45%,
+      rgba(124, 28, 48, 0.20),
+      rgba(30, 5, 12, 0) 58%,
+      rgba(16, 3, 8, 0.45) 100%
+    );
   }
 
   /* 2.png — cream damask. */
@@ -231,43 +274,31 @@ body[data-locked="true"] {
   .heading--lg { font-size: var(--text-display); }
   .heading--sm { font-size: var(--text-h2); }
 
-  /* Couple name — Edwardian initial + Mencken body. See <CoupleName />. */
+  /* Couple name — All Edwardian Script. See <CoupleName />. */
   .couple-name {
-    font-family: var(--font-name);
-    font-size: var(--text-couple);
+    font-family: var(--font-initial);
+    font-size: calc(var(--text-couple) * 1.5);
     line-height: var(--leading-tight);
-    letter-spacing: var(--tracking-name);
-    text-transform: uppercase;
+    letter-spacing: 0;
+    text-transform: none;
     font-weight: 400;
     color: var(--color-ivory);
     display: block;
-  }
-
-  /* The Edwardian Script capital. Optically enlarged and pulled tight. */
-  /* The Edwardian capital takes the same colour as the rest of the name. */
-  .couple-name__initial {
-    font-family: var(--font-initial);
-    font-size: 1.65em;
-    line-height: 0;
-    letter-spacing: 0;
-    text-transform: none;
-    vertical-align: -0.14em;
-    margin-inline-end: -0.06em;
-    color: inherit;
   }
 
   /* "and" — Cormorant italic lowercase, the quiet joint between two names. */
   .couple-name__conj {
     display: block;
     font-family: var(--font-body);
-    font-size: calc(var(--text-couple) * 0.30);
+    font-size: calc(var(--text-couple) * 0.42);
     font-style: italic;
     font-weight: 400;
     line-height: 1;
-    letter-spacing: 0.06em;
+    letter-spacing: 0.1em;
+    text-indent: 0.1em;           /* balances the tracking on the last letter */
     text-transform: lowercase;
     color: var(--color-gold-light);
-    margin-block: 0.12em;
+    margin-block: 0.16em;
   }
 
   /* Dates, times, venue names — Mencken, the "information" rank. */
@@ -285,6 +316,9 @@ body[data-locked="true"] {
     letter-spacing: var(--tracking-wide);
   }
 
+  .stat--gold { color: var(--color-gold-light); }
+  .ground--cream .stat--gold { color: var(--color-gold); }
+
   .lead {
     font-size: var(--text-lead);
     line-height: var(--leading-body);
@@ -297,7 +331,7 @@ body[data-locked="true"] {
   }
 
   .body-text--muted { color: var(--color-ink-muted); }
-  .ground--red .body-text--muted { color: var(--color-on-dark-muted); }
+  :is(.ground--red, .ground--silk) .body-text--muted { color: var(--color-on-dark-muted); }
 
   .note {
     font-size: var(--text-small);
@@ -307,49 +341,6 @@ body[data-locked="true"] {
   /* ========================================================================
      ORNAMENT & DIVIDERS
      ======================================================================== */
-
-  /* A seam takes no vertical space of its own: the two sections butt straight
-     together and the ornament is centred exactly on the line between them. */
-  .seam {
-    position: relative;
-    z-index: 5;
-    height: 0;
-    line-height: 0;
-  }
-
-  .seam__art {
-    position: absolute;
-    left: 50%;
-    top: 0;
-    translate: -50% -50%;   /* centre of the art === the section boundary */
-    pointer-events: none;
-  }
-
-  /* Lace — section divider.png, recoloured to gold through a mask so it reads
-     on the red half and the cream half of the seam alike. */
-  .seam--lace .seam__art {
-    width: 92%;
-    aspect-ratio: 1200 / 156;
-    background-color: var(--color-gold);
-    -webkit-mask: url("/img/lace.webp") center / 100% 100% no-repeat;
-    mask: url("/img/lace.webp") center / 100% 100% no-repeat;
-  }
-
-  /* Ribbon — 10.png. The key element: the silk lies across the seam and hides
-     the join between the two grounds. */
-  .seam--ribbon .seam__art {
-    width: 118%;            /* overhangs both edges so no cut end shows */
-    aspect-ratio: 1200 / 393;
-  }
-
-  .seam--ribbon .seam__art img {
-    display: block;
-    width: 100%;
-    height: 100%;
-    object-fit: fill;
-  }
-
-  .seam--ribbon-flip .seam__art { scale: -1 1; }
 
   /* A thin gold rule with a diamond at its centre. */
   .rule {
@@ -381,12 +372,15 @@ body[data-locked="true"] {
     background: var(--color-gold);
   }
 
-  /* Corner gold ornaments (flower, butterfly, crest). Always full opacity —
-     a dimmed ornament reads as a mistake, not as restraint. */
-  .ornament {
-    position: absolute;
-    z-index: -1;
-    pointer-events: none;
+  /* A gold emblem centred above a section's label. Always full opacity — a
+     dimmed ornament reads as a mistake, not as restraint — so it is placed
+     deliberately, on the centre line, rather than floated in a corner. */
+  .emblem {
+    display: block;
+    width: 2.75rem;
+    height: auto;
+    margin-inline: auto;
+    margin-block-end: var(--space-2xs);
     user-select: none;
   }
 
@@ -532,7 +526,7 @@ body[data-locked="true"] {
     color: var(--color-gold-deep);
   }
 
-  .ground--red .label { color: var(--color-gold-light); }
+  :is(.ground--red, .ground--silk) .label { color: var(--color-gold-light); }
 
   .input,
   .select,
@@ -713,20 +707,449 @@ body[data-locked="true"] {
   }
 
   /* ========================================================================
-     INTRO — envelope, wax seal, letter
-
-     The flap and the front pocket are the SAME photograph, clipped along the
-     flap's silhouette (traced from the artwork's own shadow line). The flap
-     hinges on its top edge; the letter rides up out of a well that is clipped
-     at the envelope's bottom, so it reads as coming from inside.
+     SECTION FURNITURE — the drape that hides a seam
      ======================================================================== */
 
-  /* The flap's silhouette, traced from the shadow line in the artwork. */
-  .envelope {
-    --flap-edge: 0% 11%, 10% 26%, 20% 39.5%, 25% 47%, 30% 53.5%, 35% 57%,
-      40% 61.5%, 45% 68%, 50% 73.5%, 55% 68%, 60% 61.5%, 65% 57%, 70% 53.5%,
-      75% 47%, 80% 39.5%, 90% 26%, 100% 11%;
+  /* A section that lets one element fall past its own foot. It also has to
+     out-stack the section below it: every section isolates, so without a
+     z-index the next one simply paints over whatever spilled. Nothing else in
+     it may exceed the width, or the page picks up a horizontal scrollbar. */
+  .section--spill {
+    overflow: visible;
+    z-index: 1;
+    /* The one place the padding contract bends: the silk has to meet what is
+       standing above it, and the section's usual foot leaves a gap. */
+    padding-bottom: var(--space-lg);
   }
+
+  .section__drape {
+    position: absolute;
+    left: 50%;
+    bottom: 0;
+    z-index: 2;
+    /* Blown up so only the middle of the swag is in frame. Across the full
+       image there is no horizontal line the satin covers at every column — the
+       highest satin starts at y=333 and the lowest ends at y=296, so they never
+       overlap. Across the middle 44% they do, between y=333 and y=399. The
+       drape is therefore scaled until that middle fills the viewport, and sat
+       so its 70% line lands on the join. With the box's foot on the join, that
+       line sits 30% of the height above it, so the drape is pushed down by
+       exactly that. No gradient, no haze: the silk is the whole transition. */
+    width: 210vw;
+    max-width: none;
+    height: auto;
+    translate: -50% 30%;
+    pointer-events: none;
+  }
+
+  /* ========================================================================
+     TIME & VENUE — the drawing, then the two facts under it
+     ======================================================================== */
+
+  .venue__sketch {
+    width: 100%;
+    height: auto;
+    /* The sketch is drawn in wine on white; on the damask it wants to read as
+       an engraving rather than a pasted photograph. */
+    mix-blend-mode: multiply;
+    filter: sepia(0.2) saturate(1.15) brightness(1.04);
+  }
+
+  .panels {
+    display: grid;
+    gap: var(--space-md);
+  }
+
+  @media (min-width: 40rem) {
+    .panels { grid-template-columns: 1fr 1fr; align-items: start; }
+  }
+
+  .panel {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: var(--space-2xs);
+    padding: var(--space-lg) var(--space-md);
+    text-align: center;
+    background: color-mix(in srgb, var(--color-wine-deep) 62%, transparent);
+    border: var(--hairline);
+    backdrop-filter: blur(2px);
+  }
+
+  .panel .btn { margin-block-start: var(--space-sm); }
+
+  /* ========================================================================
+     DRESS CODE — the palette, held up
+     ======================================================================== */
+
+  .held {
+    /* Wider than the reading column it sits in: the plate is the section's
+       subject, so it breaks the section's inline padding and centres on the
+       viewport instead. */
+    position: relative;
+    width: min(100vw, 34rem);
+    left: 50%;
+    translate: -50%;
+    filter: drop-shadow(0 26px 40px rgba(20, 3, 8, 0.55));
+  }
+
+  .held__hand {
+    display: block;
+    width: 100%;
+    height: auto;
+  }
+
+  /* The card is the top 39% of the plate; the copy is printed on that. */
+  .held__card {
+    position: absolute;
+    top: 2.5%;
+    left: 3%;
+    right: 3%;
+    height: 37%;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    gap: var(--space-sm);
+    padding-inline: 6%;
+    text-align: center;
+    color: var(--color-ink);
+  }
+
+  .held__title {
+    font-family: var(--font-heading);
+    font-size: clamp(2.25rem, 10vw, 3.25rem);
+    line-height: 1;
+    color: var(--color-wine);
+  }
+
+  /* The chips overlap, the way a fan of paper samples does. */
+  .swatches {
+    display: flex;
+    justify-content: center;
+    align-items: flex-start;
+    /* The row is laid out with a lapped first chip, so its optical centre sits
+       half an overlap to the right of its box centre. */
+    margin-inline-start: -5%;
+    list-style: none;
+    margin: 0;
+    padding: 0;
+  }
+
+  .swatch {
+    display: grid;
+    justify-items: center;
+    gap: var(--space-3xs);
+    /* Each chip laps the one before it, but only far enough that the longest
+       label — Champagne — still has room to sit under its own chip. */
+    margin-inline-start: -5%;
+    flex: 0 0 23%;
+  }
+
+  .swatch:first-child { margin-inline-start: 0; }
+
+  .swatch__chip {
+    display: block;
+    width: 100%;
+    aspect-ratio: 1;
+    border-radius: 50%;
+    border: 2px solid var(--color-gold);
+    box-shadow: 0 3px 8px rgba(40, 20, 8, 0.35);
+  }
+
+  .swatch__name {
+    font-family: var(--font-body);
+    font-style: italic;
+    font-size: clamp(0.625rem, 2.8vw, 0.8125rem);
+    line-height: 1.2;
+    color: color-mix(in srgb, var(--color-ink) 80%, transparent);
+  }
+
+  /* ========================================================================
+     AGENDA — a red thread stitched from the calendar down through the day
+     ======================================================================== */
+
+  .weekstrip { width: 100%; }
+
+  .weekstrip__month {
+    font-family: var(--font-name);
+    font-size: var(--text-eyebrow);
+    letter-spacing: var(--tracking-eyebrow);
+    text-indent: var(--tracking-eyebrow);
+    text-transform: uppercase;
+    color: var(--color-gold-deep);
+    margin-block-end: var(--space-sm);
+  }
+
+  .weekstrip__days {
+    display: grid;
+    grid-template-columns: repeat(7, 1fr);
+    list-style: none;
+    margin: 0;
+    padding: 0;
+  }
+
+  .weekstrip__day {
+    display: grid;
+    justify-items: center;
+    gap: var(--space-3xs);
+  }
+
+  .weekstrip__name {
+    font-family: var(--font-name);
+    font-size: clamp(0.5rem, 2.2vw, 0.625rem);
+    letter-spacing: 0.14em;
+    text-transform: uppercase;
+    color: color-mix(in srgb, var(--color-ink) 55%, transparent);
+  }
+
+  .weekstrip__date {
+    display: grid;
+    place-items: center;
+    width: 2em;
+    height: 2em;
+    font-family: var(--font-name);
+    font-size: var(--text-small);
+    color: var(--color-ink);
+  }
+
+  /* The day itself: the knot the thread is tied to. */
+  .weekstrip__day[data-today="true"] .weekstrip__date {
+    border-radius: 50%;
+    background: var(--color-wine);
+    color: var(--color-ivory);
+  }
+
+  .thread {
+    position: relative;
+    width: 100%;
+    margin-block-start: var(--space-md);
+  }
+
+  /* Stretched to the list, so the stitch always meets the stops wherever they
+     land; the stroke is exempted from that stretch. */
+  .thread__line {
+    position: absolute;
+    inset: 0;
+    width: 100%;
+    height: 100%;
+    pointer-events: none;
+  }
+
+  .thread__line path {
+    fill: none;
+    stroke: var(--color-wine);
+    stroke-width: 1.6;
+    stroke-linecap: round;
+    vector-effect: non-scaling-stroke;
+    opacity: 0.85;
+  }
+
+  .thread__stops {
+    position: relative;
+    list-style: none;
+    margin: 0;
+    padding: 0;
+  }
+
+  /* Every stop is the same height, which is what lets the SVG above be laid
+     out in flat units of 100 and still line up. The drawing and its time sit
+     together on one side; the thread swings out to the other. */
+  .thread__stop {
+    position: relative;
+    display: grid;
+    justify-items: center;
+    align-content: center;
+    gap: var(--space-3xs);
+    height: 9rem;
+    width: 52%;
+  }
+
+  .thread__stop[data-side="left"] { margin-inline-end: auto; }
+  .thread__stop[data-side="right"] { margin-inline-start: auto; }
+
+  .thread__label {
+    display: grid;
+    justify-items: center;
+    gap: var(--space-3xs);
+  }
+
+  .thread__icon {
+    width: clamp(3.25rem, 15vw, 4.5rem);
+    aspect-ratio: 1;
+    background: var(--color-wine);
+    mask-size: contain;
+    mask-position: center;
+    mask-repeat: no-repeat;
+    -webkit-mask-size: contain;
+    -webkit-mask-position: center;
+    -webkit-mask-repeat: no-repeat;
+  }
+
+  .thread__time {
+    font-family: var(--font-body);
+    font-style: italic;
+    font-size: var(--text-lead);
+    line-height: 1;
+    color: var(--color-wine);
+  }
+
+  .thread__title {
+    font-family: var(--font-name);
+    font-size: var(--text-small);
+    letter-spacing: var(--tracking-wide);
+    text-transform: uppercase;
+    line-height: 1.2;
+    text-align: center;
+    color: color-mix(in srgb, var(--color-ink) 82%, transparent);
+  }
+
+  /* ========================================================================
+     THANK YOU — the closing note under a rose
+     ======================================================================== */
+
+  .closing {
+    position: relative;
+    width: min(86vw, 26rem);
+    margin-inline: auto;
+    color: var(--color-ink);
+    filter: drop-shadow(0 26px 44px rgba(20, 3, 8, 0.55));
+  }
+
+  .closing__paper {
+    position: absolute;
+    inset: 0;
+    z-index: 0;
+    width: 100%;
+    height: 100%;
+    object-fit: fill;
+  }
+
+  /* Laid over the card's head and breaking its edge, so the two read as one
+     arrangement rather than a picture pasted on a panel. */
+  .closing__rose {
+    position: absolute;
+    left: 50%;
+    top: 0;
+    z-index: 2;
+    width: 58%;
+    height: auto;
+    translate: -50% -46%;
+    pointer-events: none;
+  }
+
+  .closing__content {
+    position: relative;
+    z-index: 1;
+    padding: 26% 12% 14%;
+  }
+
+  .closing__content .heading { color: var(--color-wine); }
+  .closing__content .eyebrow { color: var(--color-gold-deep); }
+
+  .closing__content .body-text--muted {
+    color: color-mix(in srgb, var(--color-ink) 76%, transparent);
+  }
+
+  .closing__signature {
+    margin-block: var(--space-md);
+    font-family: var(--font-initial);
+    font-size: calc(var(--text-couple) * 1.15);
+    line-height: 0.9;
+    color: var(--color-wine);
+  }
+
+  .closing__amp {
+    font-family: var(--font-body);
+    font-style: italic;
+    font-size: 0.34em;
+    vertical-align: 0.42em;
+    color: var(--color-gold-deep);
+  }
+
+  /* ========================================================================
+     HERO — the invitation printed on a die-cut card
+
+     The card is a real layer: the paper stretches to whatever the copy needs,
+     the copy sits on top of it, and the satin bow is tied across its foot.
+     ======================================================================== */
+
+  .hero__card {
+    position: relative;
+    width: min(90vw, 28rem);
+    margin-inline: auto;
+    /* The card is cream, so the type on it takes the light-ground palette
+       even though the section around it is dark. */
+    color: var(--color-ink);
+    filter: drop-shadow(0 28px 46px rgba(20, 3, 8, 0.55));
+  }
+
+  .hero__paper {
+    position: absolute;
+    inset: 0;
+    z-index: 0;
+    width: 100%;
+    height: 100%;
+    object-fit: fill;
+  }
+
+  .hero__content {
+    position: relative;
+    z-index: 1;
+    /* The card's gold rule arches: at the sides it is much lower than at the
+       crest, so the salutation needs the inset of the SIDES, not the crest. */
+    padding: 17% 13% 25%;
+  }
+
+  /* One notch tighter than the page's default rhythm: the card is a small
+     surface and the default gaps left it looking loosely set. */
+  .hero__content.stack > * + * { margin-block-start: var(--space-sm); }
+
+  /* Tonny / and / Linh read as one block, so the three lines sit close. */
+  .hero__names > * + * { margin-block-start: 0; }
+  .hero__names .couple-name { line-height: 0.94; }
+
+  .hero__names .couple-name__conj {
+    margin-block: 0.06em;
+    font-size: calc(var(--text-couple) * 0.36);
+  }
+
+  .hero__card .eyebrow,
+  .hero__card .couple-name__conj { color: var(--color-gold-deep); }
+  .hero__card .rule { color: var(--color-gold); }
+  .hero__card .stat,
+  .hero__card .couple-name { color: var(--color-wine); }
+  .hero__card .stat--gold { color: var(--color-gold); }
+
+  .hero__card .body-text--muted {
+    color: color-mix(in srgb, var(--color-ink) 76%, transparent);
+  }
+
+  /* Tied across the foot of the card, overhanging the edge. */
+  .hero__ribbon {
+    position: absolute;
+    left: 50%;
+    bottom: 0;
+    z-index: 2;
+    width: 36%;
+    height: auto;
+    translate: -50% 54%;
+    pointer-events: none;
+  }
+
+  /* ========================================================================
+     INTRO — envelope, wax seal, letter
+
+     Three cut plates carry the paper: the pocket, the flap's embossed face and
+     its plain underside. The flap is one hinged plane holding both faces back
+     to back, rotating POSITIVE so it lifts toward the viewer before folding
+     back, and riding a small translateZ so it depth-sorts itself.
+
+     The one rule that governs this whole block: nothing that flattens an
+     element — no filter, no mask, no clip-path — may sit on a face, the
+     pocket, or any other direct child of .envelope. A flattened element drops
+     out of the scene's depth sorting AND stops being culled by
+     backface-visibility. Put those on a plate or a child instead.
+     ======================================================================== */
 
   .intro {
     position: fixed;
@@ -734,7 +1157,7 @@ body[data-locked="true"] {
     z-index: 60;
     display: grid;
     place-items: center;
-    padding: var(--page-gutter);
+    padding: var(--section-pad-left);
     transition: opacity var(--dur-slow) var(--ease-silk),
                 visibility var(--dur-slow) var(--ease-silk);
   }
@@ -745,116 +1168,175 @@ body[data-locked="true"] {
     pointer-events: none;
   }
 
-  /* The envelope is the composition — centred in the viewport and generous. */
   .intro__stage {
     position: relative;
     width: min(86vw, 25rem);
     display: grid;
     place-items: center;
+    perspective: 1400px;
+    perspective-origin: 50% 34%;
   }
 
   .envelope {
     position: relative;
     width: 100%;
-    aspect-ratio: 2974 / 2221;
-    perspective: 1400px;
-    filter: drop-shadow(0 26px 40px rgba(20, 3, 8, 0.6));
-    transition: translate var(--dur-slow) var(--ease-silk);
+    aspect-ratio: 1500 / 1066;
+    transform-style: preserve-3d;
+    /* Tilted away at rest, settling flat as it opens — the beat that sells the
+       paper as an object on a table rather than a picture. */
+    transform: translate3d(0, 0, 0) rotateX(11deg);
+    transition: transform 1700ms var(--ease-silk);
   }
 
-  /* Envelope interior, revealed once the flap lifts. */
-  .envelope__back {
-    position: absolute;
-    inset: 1.5% 1%;
-    z-index: 0;
-    background: linear-gradient(180deg, #cdbfa4, #e8dcc6 42%);
+  .envelope[data-open="true"] {
+    transform: translate3d(0, 32%, 0) rotateX(0deg);
   }
 
-  .envelope__layer {
-    position: absolute;
-    inset: 0;
+  .envelope__plate {
     display: block;
     width: 100%;
     height: 100%;
     object-fit: fill;
   }
 
-  /* Front pocket — everything below the flap's silhouette. */
-  .envelope__pocket {
-    z-index: 3;
-    clip-path: polygon(
-      0% 10.4%, 10% 25.4%, 20% 38.9%, 25% 46.4%, 30% 52.9%, 35% 56.4%,
-      40% 60.9%, 45% 67.4%, 50% 72.9%, 55% 67.4%, 60% 60.9%, 65% 56.4%,
-      70% 52.9%, 75% 46.4%, 80% 38.9%, 90% 25.4%, 100% 10.4%,
-      100% 100%, 0% 100%
-    );
-  }
+  /* --- the pocket ------------------------------------------------------- */
 
-  /* The flap — hinged along its top edge. Two faces: the printed front, and a
-     plain paper back that takes over once the flip passes ninety degrees.
-     `clip-path` flattens a 3-D element, so each face is clipped on its own. */
-  .envelope__flap {
+  .envelope__body {
     position: absolute;
     inset: 0;
-    z-index: 4;
-    transform-origin: top center;
-    transform: rotateX(0deg);
+    box-shadow:
+      0 26px 42px rgba(20, 3, 8, 0.6),
+      0 6px 14px rgba(20, 3, 8, 0.4);
+  }
+
+  /* The flap's shadow on the pocket: the flap plate used as a mask, so the
+     shape is exact. Nudged down and out so a soft rim of it traces the die-cut
+     while the flap is still lying flat. */
+  .envelope__shade {
+    position: absolute;
+    inset: 0 0 auto 0;
+    height: 74.2%;              /* flap-front's height at this width */
+    background: linear-gradient(
+      180deg,
+      rgba(58, 30, 12, 0.34),
+      rgba(58, 30, 12, 0.16) 62%,
+      rgba(58, 30, 12, 0.05)
+    );
+    mask-image: url("/img/flap-front.webp");
+    mask-size: 105% 105%;
+    mask-position: center top;
+    mask-repeat: no-repeat;
+    -webkit-mask-image: url("/img/flap-front.webp");
+    -webkit-mask-size: 105% 105%;
+    -webkit-mask-position: center top;
+    -webkit-mask-repeat: no-repeat;
+    translate: 0 1.6%;
+    opacity: 1;
+    transition: opacity 900ms var(--ease-silk),
+                translate 1400ms var(--ease-silk);
+    pointer-events: none;
+  }
+
+  .envelope[data-open="true"] .envelope__shade {
+    opacity: 0;
+    translate: 0 5%;
+  }
+
+  /* --- the flap --------------------------------------------------------- */
+
+  /* A zero-height rule sitting exactly on the pocket's top edge: the hinge. */
+  .envelope__flap {
+    position: absolute;
+    top: 0.4%;
+    left: 0;
+    width: 100%;
+    height: 0;
     transform-style: preserve-3d;
-    transition: transform 900ms var(--ease-silk), z-index 0s linear 300ms;
+    transform-origin: top center;
+    /* POSITIVE rotation: the flap lifts toward the viewer and only then folds
+       over backwards, the way a hand opens one. Rotating the other way tips it
+       straight into the screen — by 58° the whole flap is already behind the
+       pocket, which is why the open read as the card sliding out from under a
+       flap that never moved. translateZ comes AFTER the rotation, so the plane
+       swings from just in front of the pocket to just behind it and the browser
+       sorts the depth itself. The offset grows as it opens: 4px clears the
+       pocket when closed, and the open value has to be a compromise — too
+       little and the flap sorts in front of the card, too much and perspective
+       visibly shrinks the flap so its fold no longer meets the mouth. */
+    transform: rotateX(0deg) translateZ(4px);
+    transition: transform 1750ms cubic-bezier(0.62, 0.02, 0.2, 1);
   }
 
   .envelope[data-open="true"] .envelope__flap {
-    transform: rotateX(-168deg);
-    z-index: 1;                     /* drops behind the letter mid-flip */
+    transform: rotateX(177deg) translateZ(9px);
   }
 
-  .envelope__flap-front,
-  .envelope__flap-back {
+  /* Bare elements in the 3D context: no filter, no mask, no clip-path. */
+  .envelope__flap-face {
     position: absolute;
-    inset: 0;
+    top: 0;
+    left: 0;
+    width: 100%;
     backface-visibility: hidden;
   }
 
-  .envelope__flap-front {
-    clip-path: polygon(0% 0%, 100% 0%, var(--flap-edge));
+  /* Turned about the VERTICAL axis, not the horizontal one. Flipping it top to
+     bottom would put the flap's point at the hinge and its fold at the far
+     edge — upside down once the flap is laid back. The silhouette is symmetric
+     left to right, so this mirror is invisible. */
+  .envelope__flap-face--back {
+    transform-origin: center;
+    transform: rotateY(180deg);
   }
 
-  /* Mirrored vertically so that, once rotated, it lands on the same shape. */
-  .envelope__flap-back {
-    transform: rotateX(180deg);
-    background: linear-gradient(0deg, #ded2ba, #efe6d3 55%);
-    clip-path: polygon(
-      0% 100%, 100% 100%, 100% 89%, 90% 74%, 80% 60.5%, 75% 53%, 70% 46.5%,
-      65% 43%, 60% 38.5%, 55% 32%, 50% 26.5%, 45% 32%, 40% 38.5%, 35% 43%,
-      30% 46.5%, 25% 53%, 20% 60.5%, 10% 74%, 0% 89%
-    );
+  /* Paper catches less light as it turns edge-on and more once it is laid back.
+     The brightness goes on the PLATE — on the face it would flatten it. */
+  .envelope__flap-face > .envelope__plate {
+    height: auto;
+    transition: filter 1750ms cubic-bezier(0.62, 0.02, 0.2, 1);
   }
 
-  /* The wax seal closes the flap's point — and is the thing you press. */
+  .envelope__flap-face--back > .envelope__plate { filter: brightness(0.9); }
+
+  .envelope[data-open="true"] .envelope__flap-face--front > .envelope__plate {
+    filter: brightness(0.88);
+  }
+
+  .envelope[data-open="true"] .envelope__flap-face--back > .envelope__plate {
+    filter: brightness(1);
+  }
+
+  /* --- the seal --------------------------------------------------------- */
+
+  /* Sits on the flap's point, one notch in front of the flap in the scene's
+     depth. It has to be depth, not z-index: inside a preserve-3d context
+     z-index is ignored for hit-testing, and a z-index'd seal paints on top but
+     hands its clicks to whatever is genuinely nearest the viewer. */
   .envelope__seal {
     position: absolute;
     left: 50%;
-    top: 72.5%;
-    z-index: 5;
-    width: 23%;
+    top: 68%;
+    width: 17%;
     aspect-ratio: 760 / 776;
-    translate: -50% -50%;
+    /* Centred with negative margins, not `translate`: the CSS minifier drops an
+       individual `translate` when the same rule also carries a `transform`, and
+       the depth nudge below has to be a `transform`. Percentage margins resolve
+       against the containing block's width, which is what the seal's own size
+       is derived from, so both axes land right. */
+    margin-left: -8.5%;
+    margin-top: -8.68%;
+    transform: translateZ(6px);
     padding: 0;
     border: 0;
     background: none;
     cursor: pointer;
-    filter: drop-shadow(0 5px 9px rgba(20, 3, 8, 0.55));
-    transition: opacity 260ms var(--ease-silk),
-                scale 420ms var(--ease-silk),
-                rotate 420ms var(--ease-silk);
+    transition: opacity 420ms var(--ease-silk),
+                scale 620ms var(--ease-silk),
+                rotate 620ms var(--ease-silk);
     animation: seal-breathe 3.4s var(--ease-silk) infinite;
   }
 
-  .envelope__seal img {
-    display: block;
-    width: 100%;
-    height: auto;
-  }
+  .envelope__seal img { display: block; width: 100%; height: auto; }
 
   .envelope__seal:focus-visible {
     outline: 2px solid var(--color-gold-light);
@@ -865,41 +1347,50 @@ body[data-locked="true"] {
   .envelope[data-open="true"] .envelope__seal {
     animation: none;
     opacity: 0;
-    scale: 0.86;
-    rotate: -14deg;
+    scale: 0.8;
+    rotate: -16deg;
     pointer-events: none;
   }
 
-  /* The well is clipped at the envelope's bottom, so the letter can only ever
-     appear to rise out of the mouth — never below it. */
+  /* --- the card --------------------------------------------------------- */
+
+  /* Clipped at the pocket's mouth, so the card can only ever appear above the
+     top edge — never out of the sides or the bottom. */
   .envelope__well {
     position: absolute;
     left: 0;
     right: 0;
     bottom: 0;
-    height: 340%;
-    z-index: 2;
+    height: 360%;
     overflow: hidden;
+    /* Behind the pocket at rest. Once the card is out it moves a shade
+       forward — still behind the pocket, but far enough in front of the laid
+       back flap that the two never fight over the sort. */
+    transform: translateZ(-2px);
+    transition: transform 1750ms cubic-bezier(0.62, 0.02, 0.2, 1);
     pointer-events: none;
   }
+
+  .envelope[data-open="true"] .envelope__well { transform: translateZ(-0.6px); }
 
   .letter {
     position: absolute;
     left: 50%;
     bottom: 0;
-    width: 72%;
-    translate: -50% 30%;            /* tucked inside the envelope */
+    width: 84%;
+    translate: -50% 44%;
+    rotate: 0.9deg;
     display: grid;
     place-items: center;
-    transition: translate 1000ms var(--ease-silk) 300ms;
+    filter: drop-shadow(0 12px 20px rgba(20, 3, 8, 0.32));
+    transition: translate 1900ms var(--ease-silk) 620ms,
+                rotate 1900ms var(--ease-silk) 620ms;
   }
 
+  /* Up far enough to read, but not past the raised flap standing behind it. */
   .envelope[data-open="true"] .letter {
-    translate: -50% -55%;
-  }
-
-  .envelope[data-open="true"] {
-    translate: 0 30%;               /* re-centres letter + envelope together */
+    translate: -50% -14%;
+    rotate: 0deg;
   }
 
   .letter__paper {
@@ -908,25 +1399,39 @@ body[data-locked="true"] {
     height: auto;
   }
 
-  /* Text laid over the arched card. The paper carries a drop-shadow filter,
-     which makes it a stacking context — the content must be lifted above it. */
   .letter__content {
     grid-area: 1 / 1;
     position: relative;
     z-index: 1;
+    align-self: start;
     display: flex;
     flex-direction: column;
     align-items: center;
-    justify-content: center;
     gap: var(--space-2xs);
-    width: 76%;
+    width: 88%;
+    /* Centred in the strip of card that clears the mouth, and clear of the gold
+       rule's arch, whose crest sits at about 5% of the card's height. */
+    padding-block-start: 16%;
     text-align: center;
-    color: var(--color-ink);
+    color: var(--color-wine);
     opacity: 0;
-    transition: opacity 500ms var(--ease-silk) 520ms;
+    translate: 0 0.6rem;
+    transition: opacity 800ms var(--ease-silk) 1500ms,
+                translate 800ms var(--ease-silk) 1500ms;
   }
 
-  .envelope[data-open="true"] .letter__content { opacity: 1; }
+  .envelope[data-open="true"] .letter__content {
+    opacity: 1;
+    translate: 0 0;
+  }
+
+  /* Sized to the card, not the page: it has to clear the envelope's mouth on
+     one line, and the card is only ever between 271px and 336px wide. */
+  .letter__content .heading {
+    font-size: min(2.3rem, 8.6vw);
+    white-space: nowrap;
+    color: var(--color-wine);
+  }
 
   .intro__hint {
     position: absolute;
@@ -940,13 +1445,25 @@ body[data-locked="true"] {
     text-transform: uppercase;
     color: var(--color-gold-light);
     transition: opacity var(--dur-fast) var(--ease-silk);
-    animation: hint-pulse 2.8s ease-in-out infinite;
   }
 
   .intro[data-state="opening"] .intro__hint,
   .intro[data-state="open"] .intro__hint {
-    animation: none;
     opacity: 0;
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    .envelope,
+    .envelope__flap,
+    .envelope__shade,
+    .envelope__flap-face,
+    .letter,
+    .letter__content {
+      transition-duration: 1ms;
+      transition-delay: 0ms;
+    }
+
+    .envelope__seal { animation: none; }
   }
 
   /* ========================================================================
@@ -975,7 +1492,3 @@ body[data-locked="true"] {
   50%      { scale: 1.045; }
 }
 
-@keyframes hint-pulse {
-  0%, 100% { opacity: 0.5; }
-  50%      { opacity: 1; }
-}

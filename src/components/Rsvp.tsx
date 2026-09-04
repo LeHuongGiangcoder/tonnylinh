@@ -3,6 +3,7 @@
 import { useState, type FormEvent } from "react";
 import { rsvp, wedding } from "@/data/wedding";
 import { Rule } from "./Divider";
+import { Emblem } from "./Ornament";
 import { Reveal } from "./Reveal";
 
 export function Rsvp() {
@@ -18,6 +19,7 @@ export function Rsvp() {
     <section id="rsvp" className="section ground--cream">
       <div className="container container--narrow center stack">
         <Reveal className="stack-sm">
+          <Emblem name="crest" />
           <p className="eyebrow">Will you join us?</p>
           <h2 className="heading">R.S.V.P.</h2>
           <Rule />
