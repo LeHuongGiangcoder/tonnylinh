@@ -12,12 +12,12 @@ const FRAMES = 3;
 
 /**
  * The opening screen, arranged as a flat-lay in three layers: a strip of
- * polaroids leaning in from the left, an OPEN envelope lying across the foot,
- * and the letter itself drawn out of it and resting on top — which is where
- * the invitation is actually printed.
+ * photographs leaning in from the left, an OPEN envelope lying across the
+ * foot, and the letter itself drawn out of it and resting on top — which is
+ * where the invitation is actually printed.
  *
- * The salutation sits above the flat-lay and only the button below it, so the
- * page opens on a picture rather than on a header and a wall of type.
+ * The salutation sits above the flat-lay, so the page opens on a picture
+ * rather than on a header and a wall of type.
  */
 export function Hero() {
   const t = useCopy();
@@ -35,7 +35,9 @@ export function Hero() {
 
         <Reveal delay={120}>
           <div className="hero__scene">
-            {/* --- the polaroids, leaning in from the left ---------------- */}
+            {/* --- the photo strip, leaning in from the left -------------- */}
+            {/* ONE card with three windows cut in it, not three cards: a
+                strip of prints is a single piece of paper. */}
             <div className="polaroid">
               <Image
                 src="/img/ribbon.webp"
@@ -47,19 +49,17 @@ export function Hero() {
                 className="polaroid__bow"
               />
               {frames.map((photo, i) => (
-                <figure key={i} className="polaroid__frame">
-                  <span className="polaroid__well">
-                    {photo.src ? (
-                      <Image
-                        src={photo.src}
-                        alt=""
-                        width={600}
-                        height={600}
-                        sizes="(max-width: 34rem) 32vw, 10rem"
-                        priority={i === 0}
-                      />
-                    ) : null}
-                  </span>
+                <figure key={i} className="polaroid__well">
+                  {photo.src ? (
+                    <Image
+                      src={photo.src}
+                      alt=""
+                      width={600}
+                      height={600}
+                      sizes="(max-width: 34rem) 32vw, 10rem"
+                      priority={i === 0}
+                    />
+                  ) : null}
                 </figure>
               ))}
             </div>
@@ -68,6 +68,7 @@ export function Hero() {
             <div className="hero__envelope">
               <span className="hero__envelope-flap" aria-hidden="true" />
               <span className="hero__envelope-pocket" aria-hidden="true" />
+              <span className="hero__envelope-fold" aria-hidden="true" />
             </div>
 
             {/* --- the letter, drawn out and resting on top --------------- */}
@@ -85,6 +86,18 @@ export function Hero() {
                 <p className="eyebrow">{wedding.venue.name}</p>
                 <p className="eyebrow">{wedding.venue.hall}</p>
               </div>
+
+              {/* Laid on the letter's foot corner, breaking its edge. */}
+              <Image
+                src="/img/bloom.webp"
+                alt=""
+                width={520}
+                height={471}
+                sizes="(max-width: 34rem) 26vw, 8rem"
+                priority
+                aria-hidden="true"
+                className="hero__bloom"
+              />
             </div>
 
             {/* Laid over the join of letter and envelope, so the two read as
@@ -100,12 +113,6 @@ export function Hero() {
               className="hero__seal"
             />
           </div>
-        </Reveal>
-
-        <Reveal delay={280}>
-          <a className="btn btn--gold" href="#gallery">
-            {t.hero.cta}
-          </a>
         </Reveal>
       </div>
     </section>

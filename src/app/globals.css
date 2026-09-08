@@ -741,10 +741,12 @@ body[data-locked="true"] {
   /* And the section it hangs into leaves room, or the swag lands on its head. */
   .section--under-spill { padding-top: calc(var(--section-pad-top) + 4.5rem); }
 
-  /* Sat so the BOUNDARY falls inside the swag's opaque head — only the top
-     fifth of the asset covers edge to edge, and the wavy hem below it cannot
-     be trusted to hide a join. The eighth of the swag left standing above the
-     foot is what covers the cut edge of the hand resting on it. */
+  /* Sat so the BOUNDARY falls on a row of the swag that covers edge to edge.
+     The sweep is diagonal, so only the band at 64–71% of the asset does; above
+     and below it the cloth keeps its own natural edges, which is the whole
+     point of not cropping it. Two thirds of the swag therefore stands above
+     the section's foot — and that is what covers the cut edge of the hand
+     resting on it. */
   .drape {
     position: absolute;
     /* Zero, not minus the section's padding: for an absolutely positioned box
@@ -754,7 +756,7 @@ body[data-locked="true"] {
     inset-inline: 0;
     bottom: 0;
     z-index: 2;
-    translate: 0 87%;
+    translate: 0 33%;
     pointer-events: none;
   }
 
@@ -1232,15 +1234,16 @@ body[data-locked="true"] {
   /* ========================================================================
      HERO — a flat-lay in three layers
 
-     Polaroids leaning in from the left, an OPEN envelope lying across the
-     foot, and the letter drawn out of it resting on top. The letter is where
-     the invitation is actually printed, so it is the biggest thing in the
-     frame and everything else is arranged around it.
+     A strip of photographs leaning in from the left, an OPEN envelope lying
+     across the foot, and the letter drawn out of it resting on top. The letter
+     is where the invitation is actually printed, so it is the biggest thing in
+     the frame and everything else is arranged around it.
 
      All three are positioned in percentages of one box, `.hero__scene`, so the
      whole composition scales with the column and nothing in it is in `rem`.
-     Note that percentage padding resolves against the CONTAINING BLOCK's
-     width, not the element's own.
+     Note that percentage padding and margin resolve against the CONTAINING
+     BLOCK's width — here the scene's, not the element's own — so the strip's
+     own paddings look small for what they buy.
      ======================================================================== */
 
   .hero__top { display: grid; justify-items: center; gap: var(--space-sm); }
@@ -1252,45 +1255,47 @@ body[data-locked="true"] {
     margin-inline: auto;
   }
 
-  /* --- the polaroids ---------------------------------------------------- */
+  /* --- the photo strip -------------------------------------------------- */
 
-  /* Leaning the opposite way to everything else in the frame, so the strip
-     crosses the envelope rather than lying parallel to it. */
+  /* ONE card with three windows cut in it: a strip of prints is a single piece
+     of paper, not three cards that happen to be stacked. Leaning the opposite
+     way to everything else in the frame, so it crosses the envelope rather
+     than lying parallel to it. */
   .polaroid {
     position: absolute;
-    left: 2%;
-    top: 5%;
+    left: 5%;
+    top: 4%;
     z-index: 1;
     width: 31%;
     display: grid;
-    gap: 6%;
-    rotate: 8deg;
-    transform-origin: 50% 0;
-  }
-
-  /* A polaroid, not a plain frame: a white card with a wide margin all round
-     and a much deeper one at the foot, which is the whole look of the thing. */
-  .polaroid__frame {
-    position: relative;
-    margin: 0;
-    padding: 7% 7% 21%;
+    padding: 2.2% 2.2% 5.4%;
+    rotate: 7deg;
+    /* Pivot on the middle, not the head: about the head the whole length of
+       the strip swings one way and its foot walks off the side of the page. */
+    transform-origin: 50% 50%;
     background-color: #fdfaf3;
     background-image: url("/img/paper.webp");
     background-size: 120%;
     background-blend-mode: multiply;
     border-radius: 1px;
     box-shadow:
-      0 8px 18px -6px rgba(20, 3, 8, 0.55),
+      0 10px 20px -6px rgba(20, 3, 8, 0.6),
       inset 0 0 0 1px rgba(120, 82, 40, 0.10);
   }
 
   .polaroid__well {
     display: block;
+    margin: 0;
     aspect-ratio: 1;
     overflow: hidden;
     background: linear-gradient(148deg, #ded3c1, #c9bda8);
     box-shadow: inset 0 1px 4px rgba(20, 3, 8, 0.4);
   }
+
+  /* A grid's percentage row-gap resolves against a block size that is `auto`
+     here, which computes to zero and closes the windows up. A top margin
+     resolves against the WIDTH, which is defined. */
+  .polaroid__well + .polaroid__well { margin-block-start: 6%; }
 
   .polaroid__well img {
     width: 100%;
@@ -1313,11 +1318,13 @@ body[data-locked="true"] {
 
   /* --- the open envelope ------------------------------------------------ */
 
+  /* Built from the same three surfaces as the intro's, and lit the same way:
+     the flap folded back above it, the front with its V mouth, and the bottom
+     flap folded up over that. Turned further off square than the letter and
+     sat a little low, so it reads as the thing UNDERNEATH rather than as a
+     second panel parallel to it. */
   .hero__envelope {
     position: absolute;
-    /* Turned further off square than the letter and sat a little low, so the
-       envelope reads as the thing UNDERNEATH rather than as a second panel
-       parallel to it — and so its blank front does not fill the frame. */
     left: 5%;
     bottom: -3%;
     z-index: 2;
@@ -1325,43 +1332,60 @@ body[data-locked="true"] {
     aspect-ratio: 1.42;
     rotate: -4.5deg;
     /* Read through the mouth: the shadowed inside of the envelope. */
-    background: linear-gradient(180deg, #cbb99c, #e2d5bd 60%);
-    box-shadow: 0 20px 36px -16px rgba(20, 3, 8, 0.8);
-  }
-
-  /* The flap, folded back: it stands ABOVE the envelope with its point at the
-     top, which is what an opened envelope reads as head-on. Same die-cut as
-     the intro's, turned over. */
-  .hero__envelope-flap {
-    position: absolute;
-    left: 0;
-    bottom: 100%;
-    width: 100%;
-    aspect-ratio: 1.42 / 0.6;
-    clip-path: url(#env-flap);
-    transform: scaleY(-1);
-    background-color: #f0e4ce;
+    background-color: #e3d4ba;
     background-image:
-      linear-gradient(0deg, rgba(120, 82, 40, 0.18), rgba(255, 255, 255, 0.34)),
+      radial-gradient(120% 96% at 50% 4%, rgba(74, 44, 16, 0.30), rgba(74, 44, 16, 0) 66%),
       url("/img/paper.webp");
     background-size: cover, 46%;
     background-blend-mode: normal, multiply;
-    filter: drop-shadow(0 -3px 6px rgba(20, 3, 8, 0.45));
+    filter: drop-shadow(0 16px 26px rgba(20, 3, 8, 0.7));
   }
 
-  /* The front, with the V mouth the letter is drawn out of. */
-  .hero__envelope-pocket {
+  .hero__envelope-flap,
+  .hero__envelope-pocket,
+  .hero__envelope-fold {
     position: absolute;
     inset: 0;
-    clip-path: url(#env-mouth);
-    background-color: #f2e7d3;
+  }
+
+  /* The flap, folded back: it stands ABOVE the envelope with its point at the
+     top, which is what an opened envelope reads as head-on. */
+  .hero__envelope-flap {
+    inset: auto 0 100% 0;
+    aspect-ratio: 1.42 / 0.72;
+    clip-path: url(#env-flap);
+    transform: scaleY(-1);
+    background-color: #ece0c8;
     background-image:
-      linear-gradient(172deg, rgba(255, 255, 255, 0.42), rgba(255, 255, 255, 0) 30%),
-      radial-gradient(140% 84% at 50% 100%, rgba(112, 74, 34, 0.26), rgba(112, 74, 34, 0) 72%),
+      linear-gradient(0deg, rgba(112, 74, 34, 0.22), rgba(255, 255, 255, 0.3)),
       url("/img/paper.webp");
-    background-size: cover, cover, 44%;
-    background-blend-mode: normal, normal, multiply;
-    filter: drop-shadow(0 -2px 5px rgba(58, 28, 10, 0.42));
+    background-size: cover, 46%;
+    background-blend-mode: normal, multiply;
+    filter: drop-shadow(0 -4px 8px rgba(20, 3, 8, 0.45));
+  }
+
+  .hero__envelope-pocket {
+    clip-path: url(#env-mouth);
+    background-color: #f2e8d4;
+    background-image:
+      linear-gradient(148deg, rgba(255, 255, 255, 0.72), rgba(255, 255, 255, 0) 40%),
+      radial-gradient(130% 92% at 22% 8%, rgba(255, 255, 255, 0.5), rgba(255, 255, 255, 0) 58%),
+      linear-gradient(196deg, rgba(112, 74, 34, 0) 46%, rgba(112, 74, 34, 0.16)),
+      url("/img/paper.webp");
+    background-size: cover, cover, cover, 44%;
+    background-blend-mode: normal, normal, normal, multiply;
+    filter: drop-shadow(0 -2px 6px rgba(58, 28, 10, 0.5));
+  }
+
+  .hero__envelope-fold {
+    clip-path: url(#env-fold);
+    background-color: #f8efdd;
+    background-image:
+      linear-gradient(2deg, rgba(112, 74, 34, 0.14), rgba(255, 255, 255, 0.4) 60%),
+      url("/img/paper.webp");
+    background-size: cover, 44%;
+    background-blend-mode: normal, multiply;
+    filter: drop-shadow(0 -2px 4px rgba(58, 28, 10, 0.30));
   }
 
   /* --- the letter ------------------------------------------------------- */
@@ -1383,8 +1407,8 @@ body[data-locked="true"] {
     border-radius: 1px;
     background-color: #fffdf8;
     background-image:
-      linear-gradient(166deg, rgba(255, 255, 255, 0.7), rgba(255, 255, 255, 0) 40%,
-        rgba(120, 82, 40, 0.08)),
+      linear-gradient(160deg, rgba(255, 255, 255, 0.8), rgba(255, 255, 255, 0) 38%,
+        rgba(112, 74, 34, 0.09)),
       url("/img/paper.webp");
     background-size: cover, 38%;
     background-blend-mode: normal, multiply;
@@ -1412,6 +1436,7 @@ body[data-locked="true"] {
 
   .hero__letter-content .rule { color: var(--color-gold); }
   .hero__letter-content .stat { color: var(--color-wine); }
+
   .hero__letter-content .eyebrow {
     font-size: clamp(0.62rem, 2.6vw, 0.72rem);
     letter-spacing: 0.2em;
@@ -1432,6 +1457,21 @@ body[data-locked="true"] {
     font-size: min(1.05rem, 4.4vw);
     margin-block: 0.06em;
     color: var(--color-gold-deep);
+  }
+
+  /* Laid on the letter's foot corner and breaking its edge, so the flower
+     reads as resting ON the paper rather than as printed on it. */
+  .hero__bloom {
+    position: absolute;
+    right: 0;
+    bottom: 0;
+    z-index: 2;
+    width: 33%;
+    height: auto;
+    translate: 26% 26%;
+    rotate: -8deg;
+    pointer-events: none;
+    filter: drop-shadow(0 7px 12px rgba(20, 3, 8, 0.5));
   }
 
   /* Laid over the join of letter and envelope. */

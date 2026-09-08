@@ -247,6 +247,12 @@ keys are pulled off the data itself, so a new event or colour cannot ship
 without both translations. Everything language-NEUTRAL — dates, hex codes, file
 names — stays in [`src/data/wedding.ts`](src/data/wedding.ts).
 
+> **Re-cut means rename.** `next/image` sizes the box from the file's intrinsic
+> aspect when `height: auto` is set, and the optimizer caches its output by URL
+> — so re-cropping an asset in place silently keeps serving the old shape, and
+> the layout goes on being built around proportions the file no longer has.
+> `silk-swag.webp` is `drape.webp` re-cut; it had to be renamed to take.
+
 ## Assets
 
 Source art and licensed font files live in `design-source/` — **outside**
