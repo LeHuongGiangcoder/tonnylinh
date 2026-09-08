@@ -1448,21 +1448,29 @@ body[data-locked="true"] {
   /* ========================================================================
      INTRO — the drawn envelope, the wax seal, the invitation
 
-     Layered back to front in the SCENE'S OWN DEPTH, not in z-index: that is
-     what makes the card read as being inside the envelope rather than propped
-     in front of it.
+     Cotton-rag grain over a cream ground, clipped to the die-cuts in
+     <PaperDefs />, and stacked in PLAIN Z-INDEX:
 
-       -6px  .env__back    the back panel, and the envelope's shadow
-       -3px  .env__card    the invitation, in the pocket
-       +2px  .env__pocket  the front, with the V mouth
-       +5px  .env__flap    the flap; folds to -11px, behind the risen card
-       +9px  .env__seal    the wax
+       0  .env__back    the back panel, and the envelope's shadow
+       1  .env__card    the invitation, in a well that clips its foot
+       2  .env__pocket  the front, with the V mouth
+       3  .env__fold    the bottom flap, folded up over the pocket
+       5  .env__flap    the flap — drops to 0 halfway through the fold
+       6  .env__seal    the wax
 
-     The one rule that governs this block: nothing that flattens an element —
-     no filter, no mask, no clip-path — may sit on a direct child of `.env`. A
-     flattened element drops out of the scene's depth sorting AND stops being
-     culled by `backface-visibility`, which is what puts both faces of the flap
-     on screen at once. Every clip and filter lives on a pseudo-element.
+     An earlier version put the whole envelope in one preserve-3d scene and
+     let the browser sort the layers by their z offsets. It does not: with the
+     flap laid back at -11px and the card at -3px it still painted the flap
+     over the card. Only the FLAP needs three dimensions, so only the flap gets
+     them — .env carries the perspective, .env__tilt carries the whole
+     envelope's tilt (an element cannot both give its children perspective and
+     be rotated in its own parent's 3D space) — and the one moment the flap's
+     order changes is a z-index swap timed to the half-way point of the fold,
+     where it is edge-on and the swap cannot be seen.
+
+     Light comes from the upper left throughout. Every surface is shaded for it
+     and the flap casts onto the body; without that the whole thing reads as
+     flat shapes rather than as folded paper.
      ======================================================================== */
 
   .intro {
@@ -1491,19 +1499,26 @@ body[data-locked="true"] {
     perspective-origin: 50% 34%;
   }
 
-  .env {
-    position: relative;
+  /* Tilted away at rest, settling flat and dropping down the stage as it opens
+     — the beat that sells the paper as an object on a table. */
+  .env__tilt {
     width: 100%;
-    aspect-ratio: 1.42;
-    transform-style: preserve-3d;
-    /* Tilted away at rest, settling flat and dropping down the stage as it
-       opens — the beat that sells the paper as an object on a table. */
     transform: translate3d(0, 0, 0) rotateX(10deg);
     transition: transform 1600ms var(--ease-silk);
   }
 
-  .env[data-open="true"] {
+  .env__tilt[data-open="true"] {
     transform: translate3d(0, 20%, 0) rotateX(0deg);
+  }
+
+  .env {
+    position: relative;
+    width: 100%;
+    aspect-ratio: 1.42;
+    /* For the flap alone. Everything else here is stacked, not sorted. */
+    perspective: 1300px;
+    perspective-origin: 50% 0%;
+    filter: drop-shadow(0 26px 34px rgba(20, 3, 8, 0.55));
   }
 
   /* --- the back panel ---------------------------------------------------- */
@@ -1511,64 +1526,67 @@ body[data-locked="true"] {
   .env__back {
     position: absolute;
     inset: 0;
-    transform: translateZ(-6px);
-    border-radius: 2px;
-    box-shadow:
-      0 30px 50px rgba(20, 3, 8, 0.62),
-      0 7px 16px rgba(20, 3, 8, 0.42);
-  }
-
-  /* The paper itself, on a child: the panel carries the shadow, which a clip
-     or filter on the panel would cut away. */
-  .env__back::after {
-    content: "";
-    position: absolute;
-    inset: 0;
+    z-index: 0;
     border-radius: 2px;
     /* Darker than the front — it is a surface in shadow, seen through the
        mouth, and a flat cream there kills the sense of an inside. */
-    background-color: #e6d8c0;
+    background-color: #e3d4ba;
     background-image:
-      radial-gradient(120% 90% at 50% 8%, rgba(90, 58, 26, 0.22), rgba(90, 58, 26, 0) 62%),
+      radial-gradient(120% 96% at 50% 4%, rgba(74, 44, 16, 0.30), rgba(74, 44, 16, 0) 66%),
       url("/img/paper.webp");
     background-size: cover, 46%;
     background-blend-mode: normal, multiply;
+    box-shadow: inset 0 0 0 1px rgba(120, 82, 40, 0.16);
   }
 
   /* --- the pocket: the front, with the V mouth --------------------------- */
 
-  .env__pocket {
+  .env__pocket,
+  .env__fold {
     position: absolute;
     inset: 0;
-    transform: translateZ(2px);
+    pointer-events: none;
+  }
+
+  .env__pocket { z-index: 2; }
+  .env__fold { z-index: 3; }
+
+  .env__pocket::after,
+  .env__fold::after {
+    content: "";
+    position: absolute;
+    inset: 0;
   }
 
   .env__pocket::after {
-    content: "";
-    position: absolute;
-    inset: 0;
     clip-path: url(#env-mouth);
-    background-color: var(--color-ivory);
+    background-color: #f2e8d4;
     background-image:
-      linear-gradient(172deg, rgba(255, 255, 255, 0.5), rgba(255, 255, 255, 0) 34%),
-      radial-gradient(140% 80% at 50% 100%, rgba(120, 82, 40, 0.10), rgba(120, 82, 40, 0) 70%),
+      /* Light from the upper left, and the paper turning away at the foot. */
+      linear-gradient(148deg, rgba(255, 255, 255, 0.72), rgba(255, 255, 255, 0) 40%),
+      radial-gradient(130% 92% at 22% 8%, rgba(255, 255, 255, 0.5), rgba(255, 255, 255, 0) 58%),
+      linear-gradient(196deg, rgba(112, 74, 34, 0) 46%, rgba(112, 74, 34, 0.16)),
       url("/img/paper.webp");
-    background-size: cover, cover, 44%;
-    background-blend-mode: normal, normal, multiply;
-    /* The shadow the pocket's edge throws UP onto the card behind it. A
+    background-size: cover, cover, cover, 44%;
+    background-blend-mode: normal, normal, normal, multiply;
+    /* The shadow the mouth's cut edge throws UP onto the card behind it. A
        drop-shadow follows the clipped silhouette, so it traces the V exactly —
        a box-shadow would be cut away by the clip. */
-    filter: drop-shadow(0 -2px 5px rgba(58, 28, 10, 0.42));
+    filter: drop-shadow(0 -2px 6px rgba(58, 28, 10, 0.5));
   }
 
-  /* The mouth's own cut edge, caught by the light: a second copy of the same
-     shape sat a hair lower, showing as a fine warm line along the fold. */
-  .env__pocket::before {
-    content: "";
-    position: absolute;
-    inset: 0.4% 0 0 0;
-    clip-path: url(#env-mouth);
-    background: color-mix(in srgb, var(--color-gold) 32%, transparent);
+  /* The bottom flap, folded up over the pocket. A hair lighter than the
+     pocket, with its own shadow above the fold — the seam that stops the front
+     reading as one blank sheet. */
+  .env__fold::after {
+    clip-path: url(#env-fold);
+    background-color: #f8efdd;
+    background-image:
+      linear-gradient(2deg, rgba(112, 74, 34, 0.14), rgba(255, 255, 255, 0.4) 60%),
+      url("/img/paper.webp");
+    background-size: cover, 44%;
+    background-blend-mode: normal, multiply;
+    filter: drop-shadow(0 -2px 4px rgba(58, 28, 10, 0.30));
   }
 
   /* --- the flap: the V that folds all the way back ----------------------- */
@@ -1578,34 +1596,42 @@ body[data-locked="true"] {
     position: absolute;
     top: 0;
     left: 0;
+    z-index: 5;
     width: 100%;
     height: 0;
     transform-style: preserve-3d;
     transform-origin: top center;
-    /* POSITIVE rotation: the flap lifts toward the viewer and only then folds
-       over backwards, the way a hand opens one. translateZ comes AFTER the
-       rotation, so the plane swings from just in front of the pocket to well
-       behind it and the browser sorts the depth itself. */
-    transform: rotateX(0deg) translateZ(5px);
-    transition: transform 1750ms cubic-bezier(0.62, 0.02, 0.2, 1);
+    transform: rotateX(0deg);
+    transition: transform 1750ms cubic-bezier(0.62, 0.02, 0.2, 1),
+                z-index 0s linear 0s;
+    pointer-events: none;
   }
 
+  /* Behind the card once it is over. The swap lands at 875ms — half the fold —
+     where the flap is edge-on to the viewer and nothing of it is visible. */
   .env[data-open="true"] .env__flap {
-    transform: rotateX(178deg) translateZ(11px);
+    transform: rotateX(179deg);
+    z-index: 0;
+    transition: transform 1750ms cubic-bezier(0.62, 0.02, 0.2, 1),
+                z-index 0s linear 875ms;
   }
 
-  /* Bare elements in the 3D context: the clips are on their pseudo-elements. */
   .env__flap-face {
     position: absolute;
     top: 0;
     left: 0;
     width: 100%;
-    /* The flap is 66% of the envelope's height, and the envelope is 1.42 : 1.
-       It has to out-reach the risen card at the hinge, where it is widest. */
-    aspect-ratio: 1.42 / 0.66;
+    /* 72% of the envelope's height, and the envelope is 1.42 : 1. That puts
+       the flap's point at 67% — a clear 12% BELOW the mouth's apex at 55%, so
+       the flap visibly overlaps the opening it closes. Cut it to meet the
+       mouth and its edge disappears into it and there is no flap to see. */
+    aspect-ratio: 1.42 / 0.72;
     backface-visibility: hidden;
   }
 
+  /* Nothing that flattens an element may sit on a FACE: a flattened face stops
+     being culled by backface-visibility and both sides show at once. Every
+     clip and filter therefore lives on the pseudo-element. */
   .env__flap-face::after {
     content: "";
     position: absolute;
@@ -1615,17 +1641,20 @@ body[data-locked="true"] {
   }
 
   /* Printed side: paper, the embossed damask held right down so it reads as
-     relief rather than as a pattern, and a light raking down the fold. */
+     relief rather than as a pattern, light raking from the upper left, and a
+     shadow cast down onto the body it is lying on. */
   .env__flap-face--front::after {
-    background-color: var(--color-ivory-warm);
+    background-color: #fffbf2;
     background-image:
-      linear-gradient(184deg, rgba(255, 255, 255, 0.6), rgba(255, 255, 255, 0) 46%),
-      radial-gradient(110% 74% at 50% 96%, rgba(120, 82, 40, 0.16), rgba(120, 82, 40, 0) 70%),
+      linear-gradient(150deg, rgba(255, 255, 255, 0.8), rgba(255, 255, 255, 0) 44%),
+      linear-gradient(184deg, rgba(255, 255, 255, 0) 52%, rgba(112, 74, 34, 0.20)),
       url("/img/cream.webp"),
       url("/img/paper.webp");
     background-size: cover, cover, 62%, 44%;
     background-blend-mode: normal, normal, soft-light, multiply;
-    filter: drop-shadow(0 4px 7px rgba(58, 28, 10, 0.30));
+    filter:
+      drop-shadow(0 2px 2px rgba(58, 28, 10, 0.4))
+      drop-shadow(0 9px 15px rgba(58, 28, 10, 0.42));
   }
 
   /* Turned about the VERTICAL axis. Flipping it top to bottom would put the
@@ -1633,16 +1662,16 @@ body[data-locked="true"] {
      die-cut is symmetric left to right, so this mirror is invisible. */
   .env__flap-face--back { transform: rotateY(180deg); }
 
-  /* The lining: a plain, slightly deeper paper, the way the inside of a lined
+  /* The lining: plain, slightly deeper paper, the way the inside of an
      envelope reads against its printed face. */
   .env__flap-face--back::after {
-    background-color: #f0e4ce;
+    background-color: #ece0c8;
     background-image:
-      linear-gradient(0deg, rgba(120, 82, 40, 0.16), rgba(255, 255, 255, 0.32)),
+      linear-gradient(0deg, rgba(112, 74, 34, 0.22), rgba(255, 255, 255, 0.3)),
       url("/img/paper.webp");
     background-size: cover, 44%;
     background-blend-mode: normal, multiply;
-    filter: brightness(0.94);
+    filter: brightness(0.95) drop-shadow(0 4px 8px rgba(58, 28, 10, 0.3));
   }
 
   .env[data-open="true"] .env__flap-face--front::after { filter: brightness(0.9); }
@@ -1650,24 +1679,19 @@ body[data-locked="true"] {
 
   /* --- the seal ---------------------------------------------------------- */
 
-  /* Sits on the flap's point, one notch in front of it in the scene's depth.
-     It has to be depth, not z-index: inside a preserve-3d context z-index is
-     ignored for hit-testing, and a z-index'd seal paints on top but hands its
-     clicks to whatever is genuinely nearest the viewer. */
   .env__seal {
     position: absolute;
     left: 50%;
-    top: 61%;
+    top: 66%;
+    z-index: 6;
     width: 15%;
     aspect-ratio: 760 / 776;
     /* Centred with negative margins, not `translate`: the minifier drops an
-       individual `translate` when the same rule also carries a `transform`,
-       and the depth nudge below has to be a `transform`. Percentage margins
-       resolve against the containing block's WIDTH, which is what the seal's
-       own size is derived from, so both axes land right. */
+       individual `translate` when the same rule also carries a `transform`.
+       Percentage margins resolve against the containing block's WIDTH, which
+       is what the seal's own size is derived from, so both axes land right. */
     margin-left: -7.5%;
     margin-top: -7.66%;
-    transform: translateZ(9px);
     padding: 0;
     border: 0;
     background: none;
@@ -1682,7 +1706,7 @@ body[data-locked="true"] {
     display: block;
     width: 100%;
     height: auto;
-    filter: drop-shadow(0 4px 7px rgba(20, 3, 8, 0.45));
+    filter: drop-shadow(0 4px 6px rgba(20, 3, 8, 0.5));
   }
 
   .env__seal:focus-visible {
@@ -1712,14 +1736,11 @@ body[data-locked="true"] {
     right: 0;
     bottom: 0;
     top: -70%;
+    z-index: 1;
     overflow: hidden;
-    transform: translateZ(-3px);
     pointer-events: none;
   }
 
-  /* Sits IN the pocket: behind the front, in front of the back panel. The
-     pocket paints over its foot, and the V mouth is what its lower edge is
-     read against. */
   .env__card {
     position: absolute;
     left: 50%;
@@ -1736,13 +1757,10 @@ body[data-locked="true"] {
                 rotate 1900ms var(--ease-silk) 700ms;
   }
 
-  /* Up until its head clears the envelope and its content sits in the opened
-     flap's frame. Its foot stays in the pocket — the whole point of the beat
-     is that it is being drawn out, not lifted off. */
+  /* Head 45% of the envelope's height clear of its top edge; foot at 85% of
+     it, still well below the mouth's point at 60%, so the card reads as being
+     drawn out rather than lifted off. */
   .env[data-open="true"] .env__card {
-    /* Head 45% of the envelope's height clear of its top edge; foot at 85% of
-       it, still well below the mouth's point at 63%, so the card reads as
-       being drawn out rather than lifted off. */
     translate: -50% -12%;
     rotate: 0deg;
   }
@@ -1752,8 +1770,8 @@ body[data-locked="true"] {
     border-radius: 1px;
     background-color: #fffdf8;
     background-image:
-      linear-gradient(166deg, rgba(255, 255, 255, 0.7), rgba(255, 255, 255, 0) 40%,
-        rgba(120, 82, 40, 0.07)),
+      linear-gradient(160deg, rgba(255, 255, 255, 0.8), rgba(255, 255, 255, 0) 38%,
+        rgba(112, 74, 34, 0.09)),
       url("/img/paper.webp");
     background-size: cover, 40%;
     background-blend-mode: normal, multiply;
@@ -1761,7 +1779,7 @@ body[data-locked="true"] {
       inset 0 0 0 1px color-mix(in srgb, var(--color-gold) 34%, transparent),
       inset 0 0 0 5px rgba(255, 255, 255, 0.5),
       inset 0 0 0 6px color-mix(in srgb, var(--color-gold) 18%, transparent),
-      0 10px 18px rgba(20, 3, 8, 0.26);
+      0 8px 16px rgba(20, 3, 8, 0.3);
   }
 
   /* Top-aligned: only the card's head ever clears the pocket's mouth. */
@@ -1830,7 +1848,7 @@ body[data-locked="true"] {
   }
 
   @media (prefers-reduced-motion: reduce) {
-    .env,
+    .env__tilt,
     .env__flap,
     .env__card,
     .env__card-content {

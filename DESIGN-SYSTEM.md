@@ -153,14 +153,20 @@ grain would halve the brightness and turn the paper to slate.
 `clipPath`s in `objectBoundingBox` units, so one definition fits the intro's
 envelope and the hero's at any size:
 
-- `#env-flap` — the flap: a V whose sides bow outward and whose point is
-  rounded off.
+- `#env-flap` — the flap. Its sides run straight DOWN from the top corners for
+  14% of its box before the diagonal starts, so the closed flap covers the
+  opening right into the corners.
 - `#env-mouth` — everything BELOW a V that dips to a soft point at the centre.
-  Its shoulders sit high, level with where the flap's edge meets the sides:
-  any lower and a wedge of bare back panel shows at each top corner.
+  Its shoulders sit at 10% of the envelope, exactly where the flap's own sides
+  stop running straight down.
+- `#env-fold` — the bottom flap, folded up over the pocket. Its apex sits below
+  the mouth's point, so it never pokes into the opening.
 
-They are SVG rather than `clip-path: polygon()` because a real envelope has no
-straight edges, and a polygon can only give a stiff ruled V.
+They are SVG rather than `clip-path: polygon()` because paper edges are not
+quite straight — but only just. The control points sit within a hundredth of the
+straight line between corner and point, so an edge reads as a crease with a
+little life in it. Bow them properly and the flap stops reading as folded paper
+and starts reading as a swag of cloth.
 
 ## The intro
 
@@ -168,32 +174,45 @@ straight edges, and a polygon can only give a stiff ruled V.
 back through 180°, and the invitation rides up out of the pocket. A tap
 anywhere skips ahead once the card is up.
 
-Layered back to front in the SCENE'S OWN DEPTH, not in z-index — that is what
-makes the card read as being *inside* the envelope rather than propped in front
-of it:
+It stacks in **plain z-index**, not in 3D depth:
 
 | z | Layer | |
 |---|---|---|
-| `+9px` | `.env__seal` | the wax; the button you press |
-| `+5px → -11px` | `.env__flap` | the flap; folds to behind the risen card |
-| `+2px` | `.env__pocket` | the front, clipped to `#env-mouth` |
-| `-3px` | `.env__card` | the invitation, in a well that clips its foot |
-| `-6px` | `.env__back` | the back panel, and the envelope's shadow |
+| 6 | `.env__seal` | the wax; the button you press |
+| 5 → 0 | `.env__flap` | the flap; drops to 0 half way through the fold |
+| 3 | `.env__fold` | the bottom flap, folded up over the pocket |
+| 2 | `.env__pocket` | the front, clipped to `#env-mouth` |
+| 1 | `.env__card` | the invitation, in a well that clips its foot |
+| 0 | `.env__back` | the back panel |
 
-Three rules govern this block:
+An earlier version put the whole envelope in one `preserve-3d` scene and let the
+browser sort the layers by their z offsets. **It does not**: with the flap laid
+back at `-11px` and the card at `-3px` it still painted the flap over the card.
+So only the FLAP gets three dimensions — `.env` carries the perspective it folds
+in, `.env__tilt` carries the whole envelope's tilt (an element cannot both give
+its children perspective and be rotated in its own parent's 3D space) — and the
+one moment the flap's order changes is a z-index swap timed to 875ms, half the
+fold, where it is edge-on and the swap cannot be seen.
 
-1. **Nothing that flattens an element may sit on a direct child of `.env`** —
-   no filter, no mask, no clip-path. A flattened element drops out of the
-   scene's depth sorting AND stops being culled by `backface-visibility`, which
-   is what puts both faces of the flap on screen at once. Every clip and filter
-   lives on a pseudo-element.
-2. **The card is taller than the envelope, on purpose.** Its foot has to stay
+Three things govern how it looks:
+
+1. **The flap must overlap the mouth it closes.** Its point sits at 67% of the
+   envelope's height and the mouth's apex at 55%. Cut to meet, the flap's edge
+   disappears into the mouth's and the front reads as one blank cream shape.
+2. **The flap's sides and the mouth's shoulders have to agree**, at 10% of the
+   envelope. Lower the shoulders and a wedge of bare back panel shows at each
+   top corner, where the flap's edge has already curved away inboard; raise them
+   and the card is read through a narrow triangle instead of the envelope's
+   width.
+3. **The card is taller than the envelope, on purpose.** Its foot has to stay
    below the mouth's point even with its head 45% clear of the top, which comes
-   to 1.295 × the envelope's height. So it needs `.env__well` — open at the
-   top, closed at the envelope's foot — or it spills out underneath.
-3. **The flap is 66% of the envelope's height.** Laid back it is a triangle
-   with its point at the TOP, so it is only wide down at the hinge — and that
-   is the one band where it has to out-reach the risen card.
+   to 1.295 × the envelope's height — so it needs `.env__well`, open at the top
+   and closed at the envelope's foot, or it spills out underneath.
+
+Light comes from the upper left throughout, and each surface is a distinct step:
+flap lightest, then the bottom flap, then the pocket, with the back panel darker
+still because it is a surface in shadow seen through the mouth. When they were
+all within a few units of each other the envelope read as flat shapes.
 
 ## The hero
 
