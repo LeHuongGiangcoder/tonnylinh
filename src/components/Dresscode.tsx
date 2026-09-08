@@ -3,6 +3,7 @@
 import Image from "next/image";
 import { palette } from "@/data/wedding";
 import { useCopy } from "@/lib/lang";
+import { Drape } from "./Drape";
 import { Reveal } from "./Reveal";
 
 /**
@@ -13,7 +14,7 @@ export function Dresscode() {
   const t = useCopy();
 
   return (
-    <section id="dresscode" className="section ground--red">
+    <section id="dresscode" className="section ground--red section--spill">
       <div className="container center stack">
         <Reveal className="stack-sm">
           <p className="eyebrow">{t.dresscode.eyebrow}</p>
@@ -50,6 +51,11 @@ export function Dresscode() {
           </div>
         </Reveal>
       </div>
+
+      {/* Falls past the section's own foot and over the head of the next one,
+          so the seam runs under cloth — and so does the edge where the hand
+          photograph is cut off, which sits right on it. */}
+      <Drape />
     </section>
   );
 }

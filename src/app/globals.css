@@ -712,40 +712,51 @@ body[data-locked="true"] {
      SECTION FURNITURE — the lace that hems a seam
 
      Where a red ground meets the cream one below it, the change of ground is
-     not left as a ruled line: a band of the red is carried down into the cream
-     section and hemmed with lace, whose scallop hangs into the cream. The
-     cream section pays for it out of its own top padding, so the lace sits
-     inside the section rather than spilling out of the one above — which keeps
-     both sections free to clip their own contents.
+     not left as a ruled line. There are two dressings:
+
+     LACE sits INSIDE the cream section, which pays for it out of its own top
+     padding — a band of the red carried down and hemmed with lace, whose
+     scallop hangs into the cream. Both sections stay free to clip their own
+     contents.
+
+     The SILK SWAG hangs off the FOOT of the section above and falls across the
+     boundary, so it can cover not just the seam but whatever that section cuts
+     off at its own edge — the hand photograph in the dress code stands right
+     on it. That costs the section above its clipping and its foot padding.
      ======================================================================== */
 
   .section--laced { padding-top: calc(var(--section-pad-top) + 5rem); }
 
-  /* The silk swag. Its asset is cut from the one row where the cloth covers the
-     frame edge to edge, so its top is straight and opaque: a short band of the
-     ground above butts into it with no gap, and its hem does the transition. */
-  .section--draped { padding-top: calc(var(--section-pad-top) + 4rem); }
+  /* The section the swag hangs off. It has to stop clipping AND out-stack the
+     one below it — every section isolates, so without the z-index the next
+     simply paints over whatever spilled. Its foot padding goes too: the silk
+     has to meet what is standing above it, and the usual foot would leave the
+     swag adrift of it. */
+  .section--spill {
+    overflow: visible;
+    z-index: 1;
+    padding-bottom: 0;
+  }
 
+  /* And the section it hangs into leaves room, or the swag lands on its head. */
+  .section--under-spill { padding-top: calc(var(--section-pad-top) + 4.5rem); }
+
+  /* Sat so the BOUNDARY falls inside the swag's opaque head — only the top
+     fifth of the asset covers edge to edge, and the wavy hem below it cannot
+     be trusted to hide a join. The eighth of the swag left standing above the
+     foot is what covers the cut edge of the hand resting on it. */
   .drape {
     position: absolute;
-    inset-inline: calc(var(--section-pad-left) * -1) calc(var(--section-pad-right) * -1);
-    top: 0;
-    z-index: 0;
+    /* Zero, not minus the section's padding: for an absolutely positioned box
+       the containing block is the section's PADDING box, which is already the
+       full bleed. Negative insets pushed it a padding's width past each edge,
+       where only .site's own clipping was hiding it. */
+    inset-inline: 0;
+    bottom: 0;
+    z-index: 2;
+    translate: 0 87%;
     pointer-events: none;
   }
-
-  /* Carries the ground of the section above a little way down, so the join
-     between that section and the silk is a change of cloth, not a ruled line. */
-  .drape__band {
-    display: block;
-    height: 1.25rem;
-    background-color: var(--color-wine-deep);
-    background-size: cover;
-    background-position: center bottom;
-  }
-
-  .drape--silk .drape__band { background-image: url("/img/silk.webp"); }
-  .drape--red .drape__band { background-image: url("/img/red.webp"); }
 
   .drape__swag {
     display: block;
@@ -757,7 +768,7 @@ body[data-locked="true"] {
 
   .lace {
     position: absolute;
-    inset-inline: calc(var(--section-pad-left) * -1) calc(var(--section-pad-right) * -1);
+    inset-inline: 0;
     top: 0;
     z-index: 0;
     pointer-events: none;

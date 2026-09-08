@@ -70,26 +70,37 @@ ground — no per-section overrides needed.
 break — except where a red ground meets the cream one below it. There the seam
 is dressed, and there are two dressings:
 
-| Seam | Dressing | |
+| Seam | Dressing | Classes |
 |---|---|---|
-| hero → gallery | `<Lace />` | `section--laced` |
-| time & venue → agenda | `<Lace />` | `section--laced` |
-| dress code → RSVP | `<Drape from="red" />` | `section--draped` |
+| hero → gallery | `<Lace />` | `section--laced` on the gallery |
+| time & venue → agenda | `<Lace />` | `section--laced` on the agenda |
+| dress code → RSVP | `<Drape />` | `section--spill` on the dress code, `section--under-spill` on the RSVP |
 
-Either goes in as the **first child** of the cream section, which buys the room
-out of its own top padding — so the seam lives inside the section below it and
-both sections stay free to clip their own contents.
+The two hang differently, and it matters:
 
-- **Lace** (`src/components/Lace.tsx`) — `.lace::before` carries a band of the
-  red damask down past the join; `lace.webp` is cropped to its own bounds so
-  its braided head butts into that band with no gap, and its scallop hangs into
-  the cream.
-- **The silk swag** (`src/components/Drape.tsx`) — `drape.webp` is cut from the
-  one row of the original photograph where the cloth covers the frame edge to
-  edge; everywhere else the sweep is diagonal and leaves a corner bare. That
-  gives it a straight, opaque top for the band above to butt into, and its
-  natural hem does the transition. Pass `from` to say which ground the band
-  should carry down: `"silk"` or `"red"`.
+- **Lace** (`src/components/Lace.tsx`) goes in as the **first child of the
+  cream section**, which buys the room out of its own top padding — so the seam
+  lives inside the section below it and both sections stay free to clip their
+  own contents. `.lace::before` carries a band of the red damask down past the
+  join; `lace.webp` is cropped to its own bounds so its braided head butts into
+  that band with no gap, and its scallop hangs into the cream.
+- **The silk swag** (`src/components/Drape.tsx`) goes in **last in the section
+  above** and falls across the boundary, so it can cover not just the seam but
+  whatever that section cuts off at its own edge — the hand photograph in the
+  dress code stands right on it. That costs the section above its clipping
+  (`overflow: visible`) and its foot padding, and it needs a `z-index` to
+  out-stack the section below, which isolates like every other.
+
+  `drape.webp` is cut from the one row of the original photograph where the
+  cloth covers the frame edge to edge; everywhere else the sweep is diagonal
+  and leaves a corner bare. Only that straight opaque head can be trusted to
+  hide a join — the wavy hem below it is for the transition — which is what
+  fixes the swag's `translate` at 87%: the boundary has to land inside the head.
+
+Note that `inset-inline: 0` is the full bleed for both. An absolutely
+positioned box resolves `left`/`right` against its containing block's PADDING
+box, which is already the whole section — subtracting the section's padding
+pushes it that far past each edge instead.
 
 ## Buttons
 

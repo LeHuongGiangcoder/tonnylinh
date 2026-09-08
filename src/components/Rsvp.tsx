@@ -4,7 +4,6 @@ import { useState, type FormEvent } from "react";
 import { wedding } from "@/data/wedding";
 import { useCopy } from "@/lib/lang";
 import { Rule } from "./Divider";
-import { Drape } from "./Drape";
 import { Emblem } from "./Ornament";
 import { Reveal } from "./Reveal";
 
@@ -19,9 +18,7 @@ export function Rsvp() {
   }
 
   return (
-    <section id="rsvp" className="section ground--cream section--draped">
-      <Drape from="red" />
-
+    <section id="rsvp" className="section ground--cream section--under-spill">
       <div className="container container--narrow center stack">
         <Reveal className="stack-sm">
           <Emblem name="crest" />
