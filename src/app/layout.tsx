@@ -5,7 +5,7 @@ import "./globals.css";
 export const metadata: Metadata = {
   title: "Tonny & Linh — Wedding Invitation",
   description:
-    "With hearts full of joy, Tonny and Linh invite you to celebrate their wedding day.",
+    "With hearts full of joy, Tonny and Linh invite you to celebrate their wedding day — 6 December 2026, An Lam Retreat, Saigon River House.",
 };
 
 export const viewport: Viewport = {

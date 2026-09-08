@@ -1,19 +1,24 @@
+"use client";
+
 import Image from "next/image";
-import { dresscode } from "@/data/wedding";
+import { palette } from "@/data/wedding";
+import { useCopy } from "@/lib/lang";
 import { Reveal } from "./Reveal";
 
 /**
  * The palette is held up on a card, printed on it rather than laid beside it,
- * and the swatches overlap the way a fan of paper chips does.
+ * and the four chips overlap the way a fan of paper samples does.
  */
 export function Dresscode() {
+  const t = useCopy();
+
   return (
-    <section id="dresscode" className="section section--spill ground--red">
+    <section id="dresscode" className="section ground--red">
       <div className="container center stack">
         <Reveal className="stack-sm">
-          <p className="eyebrow">What to Wear</p>
-          <h2 className="heading">{dresscode.title}</h2>
-          <p className="body-text body-text--muted">{dresscode.description}</p>
+          <p className="eyebrow">{t.dresscode.eyebrow}</p>
+          <h2 className="heading">{t.dresscode.heading}</h2>
+          <p className="body-text body-text--muted">{t.dresscode.description}</p>
         </Reveal>
 
         <Reveal delay={120}>
@@ -28,16 +33,16 @@ export function Dresscode() {
             />
 
             <div className="held__card">
-              <p className="held__title">{dresscode.note}</p>
+              <p className="held__title">{t.dresscode.note}</p>
               <ul className="swatches">
-                {dresscode.palette.map((swatch) => (
-                  <li key={swatch.name} className="swatch">
+                {palette.map((swatch) => (
+                  <li key={swatch.id} className="swatch">
                     <span
                       className="swatch__chip"
                       style={{ background: swatch.hex }}
                       aria-hidden="true"
                     />
-                    <span className="swatch__name">{swatch.name}</span>
+                    <span className="swatch__name">{t.dresscode.colours[swatch.id]}</span>
                   </li>
                 ))}
               </ul>
@@ -45,18 +50,6 @@ export function Dresscode() {
           </div>
         </Reveal>
       </div>
-
-      {/* Falls past the section's foot, so the seam with the next ground runs
-          under cloth rather than showing as a ruled line. */}
-      <Image
-        src="/img/drape.webp"
-        alt=""
-        width={1600}
-        height={523}
-        sizes="100vw"
-        aria-hidden="true"
-        className="section__drape"
-      />
     </section>
   );
 }

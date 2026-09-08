@@ -2,19 +2,30 @@
 
 import Image from "next/image";
 import { useCallback, useEffect, useState } from "react";
+import { couple, wedding } from "@/data/wedding";
+import { useCopy } from "@/lib/lang";
+import { Conjunction, CoupleName } from "./CoupleName";
+import { Rule } from "./Divider";
 
 type State = "sealed" | "opening" | "open" | "dismissed";
 
 /**
  * The opening beat. Pressing the wax seal breaks it, the flap hinges back
- * through 180° as a real plane in a perspective scene, and the card rides up
- * out of the pocket — then the overlay hands the page over to the hero.
+ * through 180°, and the invitation rides up out of the pocket.
  *
- * The envelope is drawn rather than photographed: one silhouette, used as a
- * clip path for both faces of the flap and again for the shadow it casts, so
- * every edge lines up by construction.
+ * The envelope is DRAWN, not photographed — cotton-rag grain over a cream
+ * ground, clipped to the die-cuts in <PaperDefs />. The layers are stacked
+ * back to front in the scene's own depth, which is what makes the card read as
+ * being INSIDE it:
+ *
+ *   -6px  .env__back    the back panel, and the envelope's shadow
+ *   -3px  .env__card    the invitation, in the pocket
+ *   +2px  .env__pocket  the front, with the V mouth the card is read through
+ *   +5px  .env__flap    the flap; folds to -11px, behind the risen card
+ *   +9px  .env__seal    the wax
  */
 export function Intro() {
+  const t = useCopy();
   const [state, setState] = useState<State>("sealed");
   // Stays true through "dismissed" as well, or the envelope would snap shut
   // behind the fade on its way out.
@@ -34,13 +45,13 @@ export function Intro() {
 
   useEffect(() => {
     if (state !== "opening") return;
-    const toOpen = setTimeout(() => setState("open"), 2900);
+    const toOpen = setTimeout(() => setState("open"), 2800);
     return () => clearTimeout(toOpen);
   }, [state]);
 
   useEffect(() => {
     if (state !== "open") return;
-    const toHero = setTimeout(() => setState("dismissed"), 2600);
+    const toHero = setTimeout(() => setState("dismissed"), 3400);
     return () => clearTimeout(toHero);
   }, [state]);
 
@@ -54,77 +65,44 @@ export function Intro() {
       onClick={state === "open" ? () => setState("dismissed") : undefined}
     >
       <div className="intro__stage">
-        <div className="envelope" data-open={opened}>
-          {/* The card, riding up behind the pocket. */}
-          <div className="envelope__well">
-            <div className="letter">
-              <Image
-                src="/img/letter-card.webp"
-                alt=""
-                width={1000}
-                height={1120}
-                sizes="(max-width: 30rem) 86vw, 25rem"
-                priority
-                className="letter__paper"
-              />
-              <div className="letter__content">
-                <p className="heading heading--lg">You are invited</p>
+        <div className="env" data-open={opened}>
+          {/* The back panel — and the shadow the whole envelope casts. */}
+          <div className="env__back" />
+
+          {/* The invitation, sitting in the pocket and riding up out of it.
+              The well clips its foot at the envelope's bottom edge. */}
+          <div className="env__well">
+            <div className="env__card">
+              <div className="env__card-face" />
+              <div className="env__card-content">
+                <p className="eyebrow">{t.intro.opened}</p>
+                <Rule />
+                <span className="env__names">
+                  <CoupleName initial={couple.groom.initial} rest={couple.groom.rest} />
+                  <Conjunction />
+                  <CoupleName initial={couple.bride.initial} rest={couple.bride.rest} />
+                </span>
+                <p className="stat stat--sm">{wedding.dateShort}</p>
               </div>
             </div>
           </div>
 
-          {/* The pocket, with the shadow the flap casts on it. The shadow
-              lives INSIDE the pocket so it paints on the pocket's own plane —
-              a mask flattens an element out of the scene's depth sorting, so
-              it cannot be a sibling here. */}
-          <div className="envelope__body">
-            <Image
-              src="/img/env-body.webp"
-              alt=""
-              width={1500}
-              height={900}
-              sizes="(max-width: 30rem) 86vw, 25rem"
-              priority
-              className="envelope__plate"
-            />
-            <div className="envelope__shade" />
-          </div>
+          {/* The front, clipped to the V mouth. */}
+          <div className="env__pocket" />
 
-          {/* One hinged plane carrying both faces of the flap. Each face is a
-              bare element in the 3D context: the plate inside it carries both
-              the die-cut (as alpha) and the brightness. A filter or a mask on
-              the face itself would flatten it, and a flattened face stops being
-              culled by backface-visibility — which is what left a flap lying on
-              the pocket and another one over the card. */}
-          <div className="envelope__flap">
-            <div className="envelope__flap-face envelope__flap-face--front">
-              <Image
-                src="/img/flap-front.webp"
-                alt=""
-                width={1500}
-                height={791}
-                sizes="(max-width: 30rem) 86vw, 25rem"
-                priority
-                className="envelope__plate"
-              />
-            </div>
-
-            <div className="envelope__flap-face envelope__flap-face--back">
-              <Image
-                src="/img/flap-inner.webp"
-                alt=""
-                width={1500}
-                height={678}
-                sizes="(max-width: 30rem) 86vw, 25rem"
-                priority
-                className="envelope__plate"
-              />
-            </div>
+          {/* One hinged plane carrying both faces of the flap. Nothing that
+              flattens an element — no filter, no clip-path — may sit on the
+              hinge or on a face: a flattened face stops being culled by
+              backface-visibility and both sides show at once. Every clip and
+              filter therefore lives on a pseudo-element. */}
+          <div className="env__flap">
+            <div className="env__flap-face env__flap-face--front" />
+            <div className="env__flap-face env__flap-face--back" />
           </div>
 
           <button
             type="button"
-            className="envelope__seal"
+            className="env__seal"
             onClick={open}
             aria-label="Break the seal and open the invitation"
             tabIndex={state === "sealed" ? 0 : -1}
@@ -133,7 +111,7 @@ export function Intro() {
           </button>
         </div>
 
-        <p className="intro__hint">Press the seal</p>
+        <p className="intro__hint">{t.intro.hint}</p>
       </div>
     </div>
   );

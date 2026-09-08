@@ -1,12 +1,18 @@
+"use client";
+
 import Image from "next/image";
 import { couple } from "@/data/wedding";
+import { useCopy } from "@/lib/lang";
 import { Reveal } from "./Reveal";
 
 /**
- * The closing note, printed on paper with a single rose laid over its head —
- * the flower breaks the card's edge so the two read as one arrangement.
+ * The closing note, printed on paper with a rose laid over its head and the
+ * silk tassel hanging from its foot — both break the card's edge, so the three
+ * read as one arrangement rather than as pictures pasted on a panel.
  */
 export function ThankYou() {
+  const t = useCopy();
+
   return (
     <section id="thank-you" className="section section--full ground--silk">
       <Reveal>
@@ -31,13 +37,9 @@ export function ThankYou() {
           />
 
           <div className="closing__content center stack-sm">
-            <p className="eyebrow">With all our love</p>
-            <h2 className="heading">Thank You</h2>
-            <p className="body-text body-text--muted">
-              Your presence is the greatest gift of all. Thank you for being
-              part of our story — and for standing with us as it turns a new
-              page.
-            </p>
+            <p className="eyebrow">{t.thanks.eyebrow}</p>
+            <h2 className="heading">{t.thanks.heading}</h2>
+            <p className="body-text body-text--muted">{t.thanks.body}</p>
 
             {/* Signed with initials, the way a note is. */}
             <p className="closing__signature">
@@ -48,6 +50,16 @@ export function ThankYou() {
 
             <p className="eyebrow">{couple.hashtag}</p>
           </div>
+
+          <Image
+            src="/img/tassel.webp"
+            alt=""
+            width={291}
+            height={900}
+            sizes="(max-width: 34rem) 22vw, 6rem"
+            aria-hidden="true"
+            className="closing__tassel"
+          />
         </div>
       </Reveal>
     </section>

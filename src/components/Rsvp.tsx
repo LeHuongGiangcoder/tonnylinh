@@ -1,12 +1,15 @@
 "use client";
 
 import { useState, type FormEvent } from "react";
-import { rsvp, wedding } from "@/data/wedding";
+import { wedding } from "@/data/wedding";
+import { useCopy } from "@/lib/lang";
 import { Rule } from "./Divider";
+import { Drape } from "./Drape";
 import { Emblem } from "./Ornament";
 import { Reveal } from "./Reveal";
 
 export function Rsvp() {
+  const t = useCopy();
   const [submitted, setSubmitted] = useState(false);
 
   // TODO(backend): POST to the RSVP endpoint. Held locally for now.
@@ -16,37 +19,38 @@ export function Rsvp() {
   }
 
   return (
-    <section id="rsvp" className="section ground--cream">
+    <section id="rsvp" className="section ground--cream section--draped">
+      <Drape from="red" />
+
       <div className="container container--narrow center stack">
         <Reveal className="stack-sm">
           <Emblem name="crest" />
-          <p className="eyebrow">Will you join us?</p>
-          <h2 className="heading">R.S.V.P.</h2>
+          <p className="eyebrow">{t.rsvp.eyebrow}</p>
+          <h2 className="heading">{t.rsvp.heading}</h2>
           <Rule />
-          <p className="body-text body-text--muted">{rsvp.deadline}</p>
+          <p className="body-text body-text--muted">{t.rsvp.deadline}</p>
         </Reveal>
 
         <Reveal delay={120}>
           {submitted ? (
             <div className="card stack-sm">
-              <p className="heading heading--sm">Thank you</p>
+              <p className="heading heading--sm">{t.rsvp.thanksTitle}</p>
               <p className="body-text body-text--muted">
-                Your reply is with us. We cannot wait to celebrate together on{" "}
-                {wedding.dateShort}.
+                {t.rsvp.thanksBody} {wedding.dateShort}.
               </p>
             </div>
           ) : (
             <form className="card stack" onSubmit={handleSubmit}>
               <div className="field">
                 <label className="label" htmlFor="rsvp-name">
-                  Your name
+                  {t.rsvp.name}
                 </label>
                 <input
                   id="rsvp-name"
                   name="name"
                   type="text"
                   className="input"
-                  placeholder="Full name"
+                  placeholder={t.rsvp.namePlaceholder}
                   autoComplete="name"
                   required
                 />
@@ -54,20 +58,20 @@ export function Rsvp() {
 
               <div className="field">
                 <label className="label" htmlFor="rsvp-contact">
-                  Phone or email
+                  {t.rsvp.contact}
                 </label>
                 <input
                   id="rsvp-contact"
                   name="contact"
                   type="text"
                   className="input"
-                  placeholder="So we can reach you"
+                  placeholder={t.rsvp.contactPlaceholder}
                   required
                 />
               </div>
 
-              <fieldset className="field" style={{ border: 0, padding: 0, margin: 0 }}>
-                <legend className="label">Will you attend?</legend>
+              <fieldset className="fieldset">
+                <legend className="label">{t.rsvp.attending}</legend>
                 <div className="choice-group">
                   <div className="choice">
                     <input
@@ -78,13 +82,13 @@ export function Rsvp() {
                       defaultChecked
                     />
                     <label className="choice__label" htmlFor="rsvp-yes">
-                      Joyfully accept
+                      {t.rsvp.yes}
                     </label>
                   </div>
                   <div className="choice">
                     <input id="rsvp-no" type="radio" name="attending" value="no" />
                     <label className="choice__label" htmlFor="rsvp-no">
-                      Regretfully decline
+                      {t.rsvp.no}
                     </label>
                   </div>
                 </div>
@@ -92,7 +96,7 @@ export function Rsvp() {
 
               <div className="field">
                 <label className="label" htmlFor="rsvp-guests">
-                  Number of guests
+                  {t.rsvp.guests}
                 </label>
                 <select id="rsvp-guests" name="guests" className="select" defaultValue="1">
                   {[1, 2, 3, 4, 5].map((n) => (
@@ -104,19 +108,56 @@ export function Rsvp() {
               </div>
 
               <div className="field">
+                <label className="label" htmlFor="rsvp-diet">
+                  {t.rsvp.diet}
+                </label>
+                <input
+                  id="rsvp-diet"
+                  name="diet"
+                  type="text"
+                  className="input"
+                  placeholder={t.rsvp.dietPlaceholder}
+                />
+              </div>
+
+              {/* Two independent asks, so checkboxes rather than a radio set:
+                  a guest can want the hotel list, the directions, or both. */}
+              <fieldset className="fieldset">
+                <legend className="label">{t.rsvp.help}</legend>
+                <div className="choice-group choice-group--stack">
+                  {[
+                    { id: "hotel", label: t.rsvp.helpHotel },
+                    { id: "transport", label: t.rsvp.helpTransport },
+                  ].map((option) => (
+                    <div className="choice" key={option.id}>
+                      <input
+                        id={`rsvp-help-${option.id}`}
+                        type="checkbox"
+                        name="help"
+                        value={option.id}
+                      />
+                      <label className="choice__label" htmlFor={`rsvp-help-${option.id}`}>
+                        {option.label}
+                      </label>
+                    </div>
+                  ))}
+                </div>
+              </fieldset>
+
+              <div className="field">
                 <label className="label" htmlFor="rsvp-message">
-                  A note for us
+                  {t.rsvp.message}
                 </label>
                 <textarea
                   id="rsvp-message"
                   name="message"
                   className="textarea"
-                  placeholder="Your wishes for the couple"
+                  placeholder={t.rsvp.messagePlaceholder}
                 />
               </div>
 
               <button type="submit" className="btn btn--wine btn--block">
-                Send my reply
+                {t.rsvp.submit}
               </button>
             </form>
           )}

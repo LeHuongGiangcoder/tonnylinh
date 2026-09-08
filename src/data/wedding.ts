@@ -1,8 +1,6 @@
 /**
- * Single source of truth for every piece of copy on the site.
- * Edit here — the sections read from this file and nowhere else.
- *
- * TODO(client): fields marked PLACEHOLDER still need the real details.
+ * The language-neutral facts: dates, places, hex codes, file names.
+ * Everything a guest READS lives in src/data/copy.ts, in both languages.
  */
 
 export const couple = {
@@ -12,18 +10,14 @@ export const couple = {
 } as const;
 
 export const wedding = {
-  /** PLACEHOLDER — swap for the real date. */
-  dateISO: "2026-11-21",
-  dateLong: "Saturday, 21 November 2026",
-  dateShort: "21 . 11 . 2026",
-  day: "Saturday",
+  dateISO: "2026-12-06",
+  dateShort: "06 . 12 . 2026",
 
-  /** PLACEHOLDER — swap for the real venue. */
   venue: {
-    name: "The Grand Pavilion",
-    hall: "Rose Ballroom, 2nd Floor",
-    address: "123 Nguyen Hue Boulevard, District 1, Ho Chi Minh City",
-    mapUrl: "https://maps.google.com/?q=The+Grand+Pavilion+Ho+Chi+Minh+City",
+    name: "An Lâm Retreat",
+    hall: "Saigon River House",
+    mapUrl:
+      "https://maps.google.com/?q=An+Lam+Retreat+Saigon+River,+Thuan+An,+Binh+Duong",
   },
 } as const;
 
@@ -33,47 +27,43 @@ export const guest = {
 } as const;
 
 /** `icon` names a file in /public/img/icon — the red line drawings that mark
- *  each stop on the thread. */
+ *  each stop on the ribbon. Titles are in copy.ts, keyed by `id`. */
 export const agenda = [
-  { time: "3:00 pm", title: "Welcome Guests", icon: "11" },
-  { time: "4:00 pm", title: "Wedding Ceremony", icon: "15" },
-  { time: "5:00 pm", title: "Cocktail Hour", icon: "29" },
-  { time: "6:00 pm", title: "Dinner", icon: "33" },
-  { time: "7:30 pm", title: "Mini Show", icon: "23" },
-  { time: "8:30 pm", title: "After Party", icon: "31" },
+  { id: "welcome", time: "3:00 pm", icon: "11" },
+  { id: "ceremony", time: "4:00 pm", icon: "15" },
+  { id: "cocktail", time: "5:00 pm", icon: "29" },
+  { id: "dinner", time: "6:00 pm", icon: "33" },
+  { id: "show", time: "7:30 pm", icon: "23" },
+  { id: "party", time: "8:30 pm", icon: "31" },
 ] as const;
 
-/** The week the wedding falls in, for the little calendar above the thread. */
+/** The week the wedding falls in, for the little calendar above the ribbon.
+ *  6 December 2026 is a Sunday, so the strip opens on Monday 30 November. */
 export const weddingWeek = {
-  month: "November 2026",
   days: ["Mon", "Tue", "Wed", "Thu", "Fri", "Sat", "Sun"],
-  dates: [16, 17, 18, 19, 20, 21, 22],
-  theDay: 21,
+  dates: [30, 1, 2, 3, 4, 5, 6],
+  theDay: 6,
 } as const;
 
-export const dresscode = {
-  title: "Dress Code",
-  note: "Formal & Elegant",
-  description:
-    "We would love to see you in shades that echo our day — deep wine, warm ivory and antique gold. Please avoid white and bright red so our couple portraits stay unmistakably ours.",
-  palette: [
-    { name: "Wine", hex: "#600f20" },
-    { name: "Ivory", hex: "#f9f3e8" },
-    { name: "Gold", hex: "#a48210" },
-    { name: "Rosewood", hex: "#7d2436" },
-    { name: "Champagne", hex: "#e2d3b8" },
-  ],
-} as const;
+/** The four colours of the day. Names are translated in copy.ts by `id`. */
+export const palette = [
+  { id: "black", hex: "#111111" },
+  { id: "chocolate", hex: "#3a2a22" },
+  { id: "burgundy", hex: "#600f20" },
+  { id: "olive", hex: "#6e7a33" },
+] as const;
 
-/** Gallery slots. Drop files into /public/gallery and fill in `src`. */
-export const gallery: { src: string | null; alt: string; wide?: boolean }[] = [
-  { src: null, alt: "Tonny and Linh, portrait", wide: true },
-  { src: null, alt: "Tonny and Linh, engagement" },
-  { src: null, alt: "Tonny and Linh, candid" },
-  { src: null, alt: "Tonny and Linh, together" },
-  { src: null, alt: "Tonny and Linh, detail" },
+/** Gallery slots. Dealt alternately into two offset lanes, so `ratio` is what
+ *  keeps the two from falling back into rows — no two consecutive entries
+ *  should share one. `tilt` is the degrees the picture hangs off square. Drop
+ *  files into /public/gallery and fill in `src`. */
+export const gallery: { src: string | null; ratio: string; tilt?: number }[] = [
+  { src: null, ratio: "3 / 4", tilt: -2.5 },
+  { src: null, ratio: "2 / 3", tilt: 1.8 },
+  { src: null, ratio: "1 / 1", tilt: -1.2 },
+  { src: null, ratio: "3 / 4", tilt: 2.2 },
+  { src: null, ratio: "2 / 3", tilt: -1.6 },
+  { src: null, ratio: "4 / 5", tilt: 1.4 },
+  { src: null, ratio: "3 / 4", tilt: -2 },
+  { src: null, ratio: "1 / 1", tilt: 2 },
 ];
-
-export const rsvp = {
-  deadline: "Please reply before 1 November 2026",
-} as const;
