@@ -253,7 +253,9 @@ page opens on a picture rather than on a header and a wall of type.
   `brightness(0.86) saturate(0.72)` and sits barely off square — at full
   strength and 7° its red script was the loudest thing in the frame, and the
   bottom layer cannot be the brightest one. It is shown as it is — no
-  knock-back and no shadow of its own — leaning with the photo strip.
+  knock-back and no shadow of its own — and it leans AGAINST the photo strip:
+  the strip tips +7° on the left and the scrap −7° on the right, so the pile
+  opens like a fan instead of listing to one side.
 - The bow sits OUTSIDE `.polaroid`. That is a stacking context of its own, so a
   bow inside it can never come forward of the letter however high its z-index.
 - The seal sits on the point of the envelope's mouth, which is the one place in

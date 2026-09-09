@@ -1266,15 +1266,17 @@ body[data-locked="true"] {
      shot stops reading as one. */
   .hero__note {
     position: absolute;
-    right: -11%;
-    top: 13%;
+    right: -12%;
+    top: 8%;
     z-index: 0;
-    width: 40%;
+    width: 50%;
     height: auto;
-    /* Leaning with the photo strip, not against it. Shown as it is — no
-       knock-back and no shadow of its own — so it reads as the couple's own
-       paper rather than as a treated layer. */
-    rotate: 7deg;
+    /* Leaning AGAINST the photo strip, not with it: the strip tips one way on
+       the left and the scrap the other on the right, so the pile opens like a
+       fan instead of listing to one side. Shown as it is — no knock-back and
+       no shadow of its own — so it reads as the couple's own paper rather
+       than as a treated layer. */
+    rotate: -7deg;
   }
 
   /* --- the photo strip -------------------------------------------------- */
