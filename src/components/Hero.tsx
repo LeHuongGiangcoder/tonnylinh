@@ -52,15 +52,6 @@ export function Hero() {
             {/* ONE card with three windows cut in it, not three cards: a
                 strip of prints is a single piece of paper. */}
             <div className="polaroid">
-              <Image
-                src="/img/ribbon.webp"
-                alt=""
-                width={1000}
-                height={921}
-                sizes="(max-width: 34rem) 22vw, 7rem"
-                aria-hidden="true"
-                className="polaroid__bow"
-              />
               {frames.map((photo, i) => (
                 <figure key={i} className="polaroid__well">
                   {photo.src ? (
@@ -76,6 +67,19 @@ export function Hero() {
                 </figure>
               ))}
             </div>
+
+            {/* Tied to the head of the strip. It sits OUTSIDE .polaroid: that
+                is a stacking context of its own, so a bow inside it could
+                never come forward of the letter however high its z-index. */}
+            <Image
+              src="/img/ribbon.webp"
+              alt=""
+              width={1000}
+              height={921}
+              sizes="(max-width: 34rem) 22vw, 7rem"
+              aria-hidden="true"
+              className="polaroid__bow"
+            />
 
             {/* --- the open envelope, lying across the foot --------------- */}
             <div className="hero__envelope">

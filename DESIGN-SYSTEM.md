@@ -85,9 +85,12 @@ The two hang differently, and it matters:
 - **Lace** (`src/components/Lace.tsx`) goes in as the **first child of the
   cream section**, which buys the room out of its own top padding — so the seam
   lives inside the section below it and both sections stay free to clip their
-  own contents. `.lace::before` carries a band of the red damask down past the
-  join; `lace.webp` is cropped to its own bounds so its braided head butts into
-  that band with no gap, and its scallop hangs into the cream.
+  own contents. It needs nothing behind it: `lace.webp` is cropped to its own
+  bounds and opaque edge to edge from its third row, so pulling it 2px above
+  the section's top edge puts solid braid on the join. An earlier version sat
+  it on a band of red damask to guarantee that, which showed as a rectangular
+  patch of the wrong red wherever the section above was the silk rather than
+  the damask.
 - **The silk swag** (`src/components/Drape.tsx`) goes in **last in the section
   above** and falls across the boundary, so it can cover not just the seam but
   whatever that section cuts off at its own edge — the hand photograph in the
@@ -223,7 +226,10 @@ lit with an 80%-white wash the flap went cold and grey — and since the flap IS
 the top of the envelope, that read as a different, whiter material pasted onto
 a warm body rather than as the same sheet folded over. Highlights here are
 `rgba(255, 250, 238, …)` and they stay under half strength; the fold is told by
-the shadow it casts, not by its colour.
+the shadow it casts, not by its colour. That shadow is the flap's OWN die-cut
+repeated on `.env__flap-face--front::before`, nudged down two pixels and
+blurred, painted under the paper — a `drop-shadow` spreads round the whole
+silhouette and gives a halo, and what a fold needs is a line.
 
 ## The hero
 
@@ -246,7 +252,12 @@ page opens on a picture rather than on a header and a wall of type.
   shot stops reading as a scrap. It is also knocked back with
   `brightness(0.86) saturate(0.72)` and sits barely off square — at full
   strength and 7° its red script was the loudest thing in the frame, and the
-  bottom layer cannot be the brightest one.
+  bottom layer cannot be the brightest one. It is shown as it is — no
+  knock-back and no shadow of its own — leaning with the photo strip.
+- The bow sits OUTSIDE `.polaroid`. That is a stacking context of its own, so a
+  bow inside it can never come forward of the letter however high its z-index.
+- The seal sits on the point of the envelope's mouth, which is the one place in
+  the frame that centres the whole arrangement.
 - The salutation spaces itself with margins rather than a `gap`, because DEAR
   belongs tight to the name under it and one row gap cannot say that.
 - All three are positioned in percentages of one box, `.hero__scene`, so the

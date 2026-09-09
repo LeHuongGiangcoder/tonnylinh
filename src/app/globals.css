@@ -768,33 +768,23 @@ body[data-locked="true"] {
     filter: drop-shadow(0 6px 10px rgba(30, 5, 12, 0.45));
   }
 
+  /* Pulled a couple of pixels above the section's top edge. The asset is
+     cropped to its own bounds and opaque edge to edge from its third row, so
+     that is enough to put solid braid on the join — and it needs no band of
+     ground behind it, which is what used to show as a patch of the wrong red
+     whenever the section above was the silk rather than the damask. The
+     section clips the overhang. */
   .lace {
     position: absolute;
     inset-inline: 0;
-    top: 0;
+    top: -2px;
     z-index: 0;
     pointer-events: none;
   }
-
-  /* The band of red the lace is sewn to. Anchored to its own bottom edge, so
-     the damask it shows is the strip that was running along the seam. */
-  .lace::before {
-    content: "";
-    display: block;
-    height: 2.25rem;
-    background-color: var(--color-wine-deep);
-    background-image: url("/img/red.webp");
-    background-size: cover;
-    background-position: center bottom;
-  }
-
-  /* Cropped to its own bounds, so its braided head butts straight into the
-     band with no transparent margin to leave a hairline gap. */
   .lace__band {
     display: block;
     width: 100%;
     height: auto;
-    margin-block-start: -1px;
     filter: drop-shadow(0 3px 5px rgba(40, 8, 16, 0.35));
   }
 
@@ -1281,15 +1271,10 @@ body[data-locked="true"] {
     z-index: 0;
     width: 40%;
     height: auto;
-    /* Barely off square. At 7° it read as a card thrown down rather than a
-       sheet lying under the pile. */
-    rotate: 4deg;
-    /* Knocked back so it stays UNDER the letter tonally as well as in the
-       stack: at full strength the red script was the loudest thing in the
-       frame, and the bottom layer cannot be the brightest one. */
-    filter:
-      brightness(0.86) saturate(0.72)
-      drop-shadow(0 8px 14px rgba(20, 3, 8, 0.5));
+    /* Leaning with the photo strip, not against it. Shown as it is — no
+       knock-back and no shadow of its own — so it reads as the couple's own
+       paper rather than as a treated layer. */
+    rotate: 7deg;
   }
 
   /* --- the photo strip -------------------------------------------------- */
@@ -1340,15 +1325,16 @@ body[data-locked="true"] {
     object-fit: cover;
   }
 
-  /* Tied to the head of the strip, the way a ribbon holds a bundle of prints. */
+  /* Tied to the head of the strip, the way a ribbon holds a bundle of prints —
+     and in front of the whole pile, since it is the thing holding it. */
   .polaroid__bow {
     position: absolute;
-    left: 52%;
-    top: 0;
-    z-index: 2;
-    width: 62%;
+    left: 17%;
+    top: 3%;
+    z-index: 5;
+    width: 20%;
     height: auto;
-    translate: -50% -46%;
+    translate: -50% -42%;
     pointer-events: none;
     filter: drop-shadow(0 6px 10px rgba(20, 3, 8, 0.5));
   }
@@ -1510,14 +1496,18 @@ body[data-locked="true"] {
     pointer-events: none;
   }
 
-  /* Laid over the join of letter and envelope. */
+  /* On the point of the envelope's mouth — where the wax on a real one sits,
+     and the one place in the frame that centres the whole arrangement. The
+     envelope spans 5%…85% of the scene, so its centre line is 45%; its mouth
+     dips to a point at 54.5% of its own height. */
   .hero__seal {
     position: absolute;
-    left: 19%;
-    top: 60%;
+    left: 45%;
+    top: 84%;
     z-index: 4;
     width: 16%;
     height: auto;
+    translate: -50% -50%;
     filter: drop-shadow(0 5px 9px rgba(20, 3, 8, 0.55));
   }
 
@@ -1705,6 +1695,21 @@ body[data-locked="true"] {
     backface-visibility: hidden;
   }
 
+  /* The shadow the flap's edge throws on the body it lies on: the SAME die-cut
+     nudged down a couple of pixels and blurred, painted under the paper. A
+     drop-shadow on the face spreads round the whole silhouette and gives a
+     soft halo; the fold needs a line, and the line is what says one sheet is
+     lying on another rather than being part of it. */
+  .env__flap-face--front::before {
+    content: "";
+    position: absolute;
+    inset: 0;
+    clip-path: url(#env-flap);
+    background: rgba(58, 28, 10, 0.32);
+    translate: 0 2px;
+    filter: blur(3.5px);
+  }
+
   /* Nothing that flattens an element may sit on a FACE: a flattened face stops
      being culled by backface-visibility and both sides show at once. Every
      clip and filter therefore lives on the pseudo-element. */
@@ -1731,9 +1736,7 @@ body[data-locked="true"] {
       url("/img/paper.webp");
     background-size: cover, cover, 44%;
     background-blend-mode: normal, normal, multiply;
-    filter:
-      drop-shadow(0 2px 2px rgba(58, 28, 10, 0.5))
-      drop-shadow(0 9px 16px rgba(58, 28, 10, 0.46));
+    filter: drop-shadow(0 12px 20px rgba(58, 28, 10, 0.42));
   }
 
   /* Turned about the VERTICAL axis. Flipping it top to bottom would put the
