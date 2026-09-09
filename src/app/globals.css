@@ -1307,13 +1307,15 @@ body[data-locked="true"] {
     object-fit: cover;
   }
 
-  /* Tied to the head of the strip, the way a ribbon holds a bundle of prints —
-     and in front of the whole pile, since it is the thing holding it. */
+  /* Tied to the head of the strip: over the prints it is holding, and under
+     the letter that is lying on top of them. It sits OUTSIDE .polaroid to get
+     there — that is a stacking context of its own, so a bow inside it can
+     never come forward of anything the strip itself is behind. */
   .polaroid__bow {
     position: absolute;
     left: 17%;
     top: 3%;
-    z-index: 5;
+    z-index: 2;
     width: 20%;
     height: auto;
     translate: -50% -42%;
@@ -1397,7 +1399,7 @@ body[data-locked="true"] {
 
   .hero__letter {
     position: absolute;
-    left: 22%;
+    left: 27%;
     top: 2%;
     z-index: 3;
     width: 63%;

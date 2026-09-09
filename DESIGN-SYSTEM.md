@@ -265,8 +265,10 @@ page opens on a picture rather than on a header and a wall of type.
   intrinsic size and ignores the opposing inset, so `inset: -5% -8% 0 0` left it
   narrower than the letter and hanging below it — the opposite of the margin it
   was meant to give.
-- The bow sits OUTSIDE `.polaroid`. That is a stacking context of its own, so a
-  bow inside it can never come forward of the letter however high its z-index.
+- The bow sits OUTSIDE `.polaroid`, at z-index 2 — over the prints it is
+  holding and under the letter lying on them. It has to be outside: `.polaroid`
+  is a stacking context of its own, so a bow inside it can never come forward
+  of anything the strip itself is behind.
 - The seal sits on the point of the envelope's mouth, which is the one place in
   the frame that centres the whole arrangement.
 - The salutation spaces itself with margins rather than a `gap`, because DEAR
