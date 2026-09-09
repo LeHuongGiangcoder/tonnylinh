@@ -253,16 +253,18 @@ page opens on a picture rather than on a header and a wall of type.
   wide margin all round and a much deeper one at the foot.
 - The letter is the brightest thing in the frame and the envelope sits a step
   below it. When both were near-white they merged into one pale mass.
-- `.hero__note` is a scrap of the couple's own paper at the bottom of the
-  stack, in the negative space to the right of the letter. It is the one thing
-  in the frame allowed to run off the edge: a scrap with all four corners in
-  shot stops reading as a scrap. It is also knocked back with
-  `brightness(0.86) saturate(0.72)` and sits barely off square — at full
-  strength and 7° its red script was the loudest thing in the frame, and the
-  bottom layer cannot be the brightest one. It is shown as it is — no
-  knock-back and no shadow of its own — and it leans AGAINST the photo strip:
-  the strip tips +7° on the left and the scrap −7° on the right, so the pile
-  opens like a fan instead of listing to one side.
+- `.hero__note` is a second sheet directly UNDER the letter, showing only as a
+  margin at its head and right edge and nowhere else — backing paper supporting
+  the letter, not another card in the pile. It is a child of `.hero__letter`, so
+  it takes the letter's angle and shadow and is measured against the letter's
+  own box, which is what keeps the margin even however tall the content makes
+  the letter.
+
+  It is SIZED (`108% x 105%` off the top-left corner), not stretched between
+  insets. An absolutely positioned REPLACED element with `width: auto` takes its
+  intrinsic size and ignores the opposing inset, so `inset: -5% -8% 0 0` left it
+  narrower than the letter and hanging below it — the opposite of the margin it
+  was meant to give.
 - The bow sits OUTSIDE `.polaroid`. That is a stacking context of its own, so a
   bow inside it can never come forward of the letter however high its z-index.
 - The seal sits on the point of the envelope's mouth, which is the one place in

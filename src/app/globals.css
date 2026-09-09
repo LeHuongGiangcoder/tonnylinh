@@ -1259,26 +1259,6 @@ body[data-locked="true"] {
     margin-inline: auto;
   }
 
-  /* --- the scrap of paper under the pile -------------------------------- */
-
-  /* Bottom of the stack, and the only thing in the frame that is allowed to
-     run off the edge: it is a scrap, and a scrap with all four corners in
-     shot stops reading as one. */
-  .hero__note {
-    position: absolute;
-    right: -12%;
-    top: 8%;
-    z-index: 0;
-    width: 50%;
-    height: auto;
-    /* Leaning AGAINST the photo strip, not with it: the strip tips one way on
-       the left and the scrap the other on the right, so the pile opens like a
-       fan instead of listing to one side. Shown as it is — no knock-back and
-       no shadow of its own — so it reads as the couple's own paper rather
-       than as a treated layer. */
-    rotate: -7deg;
-  }
-
   /* --- the photo strip -------------------------------------------------- */
 
   /* ONE card with three windows cut in it: a strip of prints is a single piece
@@ -1425,6 +1405,30 @@ body[data-locked="true"] {
     rotate: 1.5deg;
     display: grid;
     filter: drop-shadow(0 18px 30px rgba(20, 3, 8, 0.6));
+  }
+
+  /* A second sheet directly under the letter, offset just far enough to show
+     as a margin at the head and the right edge — and NOWHERE else, so it reads
+     as backing paper supporting the letter rather than as another card in the
+     pile. Being a child of the letter, it takes its angle and its shadow, and
+     its inset is measured against the letter's own box, so the margin holds
+     whatever the letter's content makes its height. */
+  .hero__note {
+    position: absolute;
+    left: 0;
+    top: -5%;
+    z-index: -1;
+    /* Sized, not stretched between insets. An absolutely positioned REPLACED
+       element with `width: auto` takes its intrinsic size and ignores the
+       opposing inset, so `inset: -5% -8% 0 0` left it narrower than the letter
+       and hanging below it — the opposite of the margin it was meant to give.
+       108% x 105% off the top-left corner puts the overhang at the head and
+       the right edge and nowhere else. */
+    width: 108%;
+    height: 105%;
+    max-width: none;
+    object-fit: cover;
+    object-position: 100% 0;
   }
 
   .hero__letter-face {

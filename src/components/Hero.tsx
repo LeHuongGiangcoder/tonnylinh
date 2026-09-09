@@ -35,19 +35,6 @@ export function Hero() {
 
         <Reveal delay={120}>
           <div className="hero__scene">
-            {/* Behind the whole pile, in the negative space to the right of
-                the letter: a scrap of the couple's own paper, so the flat-lay
-                has something under it rather than sitting on bare silk. */}
-            <Image
-              src="/img/love-note.webp"
-              alt=""
-              width={456}
-              height={810}
-              sizes="(max-width: 34rem) 34vw, 11rem"
-              aria-hidden="true"
-              className="hero__note"
-            />
-
             {/* --- the photo strip, leaning in from the left -------------- */}
             {/* ONE card with three windows cut in it, not three cards: a
                 strip of prints is a single piece of paper. */}
@@ -90,6 +77,20 @@ export function Hero() {
 
             {/* --- the letter, drawn out and resting on top --------------- */}
             <div className="hero__letter">
+              {/* A second sheet under the letter, showing only as a margin at
+                  its head and right edge. It lives INSIDE the letter so it
+                  takes the letter's own angle and shadow and is offset against
+                  the letter's box — which is what makes it read as backing
+                  paper rather than as another thing in the pile. */}
+              <Image
+                src="/img/love-note.webp"
+                alt=""
+                width={456}
+                height={810}
+                sizes="(max-width: 34rem) 60vw, 18rem"
+                aria-hidden="true"
+                className="hero__note"
+              />
               <span className="hero__letter-face" aria-hidden="true" />
               <div className="hero__letter-content">
                 <span className="hero__names">
