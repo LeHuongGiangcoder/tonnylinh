@@ -3,6 +3,7 @@
 import Image from "next/image";
 import { agenda, weddingWeek } from "@/data/wedding";
 import { useCopy } from "@/lib/lang";
+import { Rule } from "./Divider";
 import { Lace } from "./Lace";
 import { Reveal } from "./Reveal";
 
@@ -71,6 +72,7 @@ export function Agenda() {
         <Reveal className="stack-sm">
           <p className="eyebrow">{t.agenda.eyebrow}</p>
           <h2 className="heading">{t.agenda.heading}</h2>
+          <Rule />
         </Reveal>
 
         {/* The week the day falls in, with the day itself tied to the ribbon. */}

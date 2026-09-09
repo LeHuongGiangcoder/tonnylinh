@@ -1128,9 +1128,9 @@ body[data-locked="true"] {
     left: 50%;
     top: 0;
     z-index: 2;
-    width: 46%;
+    width: 38%;
     height: auto;
-    translate: -50% -44%;
+    translate: -50% -46%;
     pointer-events: none;
   }
 
@@ -1246,13 +1246,43 @@ body[data-locked="true"] {
      own paddings look small for what they buy.
      ======================================================================== */
 
-  .hero__top { display: grid; justify-items: center; gap: var(--space-sm); }
+  .hero__top {
+    display: grid;
+    justify-items: center;
+    /* Gaps by margin, not by `gap`: DEAR belongs tight to the name under it,
+       and a single row gap cannot say that. */
+    gap: 0;
+  }
+
+  .hero__top > .langswitch { margin-block-end: var(--space-lg); }
+  .hero__top > .eyebrow { margin-block-end: var(--space-3xs); }
+
+  .hero__top > .note {
+    max-width: 22rem;
+    margin-block-start: var(--space-sm);
+  }
 
   .hero__scene {
     position: relative;
     width: min(100%, 24rem);
     aspect-ratio: 1 / 1.34;
     margin-inline: auto;
+  }
+
+  /* --- the scrap of paper under the pile -------------------------------- */
+
+  /* Bottom of the stack, and the only thing in the frame that is allowed to
+     run off the edge: it is a scrap, and a scrap with all four corners in
+     shot stops reading as one. */
+  .hero__note {
+    position: absolute;
+    right: -6%;
+    top: 5%;
+    z-index: 0;
+    width: 34%;
+    height: auto;
+    rotate: 7deg;
+    filter: drop-shadow(0 10px 18px rgba(20, 3, 8, 0.55));
   }
 
   /* --- the photo strip -------------------------------------------------- */
@@ -1263,7 +1293,7 @@ body[data-locked="true"] {
      than lying parallel to it. */
   .polaroid {
     position: absolute;
-    left: 5%;
+    left: 0;
     top: 4%;
     z-index: 1;
     width: 31%;
@@ -1366,7 +1396,7 @@ body[data-locked="true"] {
 
   .hero__envelope-pocket {
     clip-path: url(#env-mouth);
-    background-color: #f2e8d4;
+    background-color: #f0e6d0;
     background-image:
       linear-gradient(148deg, rgba(255, 255, 255, 0.72), rgba(255, 255, 255, 0) 40%),
       radial-gradient(130% 92% at 22% 8%, rgba(255, 255, 255, 0.5), rgba(255, 255, 255, 0) 58%),
@@ -1379,7 +1409,7 @@ body[data-locked="true"] {
 
   .hero__envelope-fold {
     clip-path: url(#env-fold);
-    background-color: #f8efdd;
+    background-color: #f5ecd9;
     background-image:
       linear-gradient(2deg, rgba(112, 74, 34, 0.14), rgba(255, 255, 255, 0.4) 60%),
       url("/img/paper.webp");
@@ -1392,10 +1422,10 @@ body[data-locked="true"] {
 
   .hero__letter {
     position: absolute;
-    left: 26%;
+    left: 22%;
     top: 2%;
     z-index: 3;
-    width: 65%;
+    width: 63%;
     min-height: 66%;
     rotate: 1.5deg;
     display: grid;
@@ -1448,7 +1478,7 @@ body[data-locked="true"] {
   .hero__names { display: block; }
 
   .hero__names .couple-name {
-    font-size: min(2.6rem, 11vw);
+    font-size: min(2.9rem, 12vw);
     line-height: 0.94;
     color: var(--color-wine);
   }
@@ -1471,13 +1501,12 @@ body[data-locked="true"] {
     translate: 26% 26%;
     rotate: -8deg;
     pointer-events: none;
-    filter: drop-shadow(0 7px 12px rgba(20, 3, 8, 0.5));
   }
 
   /* Laid over the join of letter and envelope. */
   .hero__seal {
     position: absolute;
-    left: 22%;
+    left: 19%;
     top: 60%;
     z-index: 4;
     width: 16%;
@@ -1600,7 +1629,7 @@ body[data-locked="true"] {
 
   .env__pocket::after {
     clip-path: url(#env-mouth);
-    background-color: #f2e8d4;
+    background-color: #f0e6d0;
     background-image:
       /* Light from the upper left, and the paper turning away at the foot. */
       linear-gradient(148deg, rgba(255, 255, 255, 0.72), rgba(255, 255, 255, 0) 40%),
@@ -1620,7 +1649,7 @@ body[data-locked="true"] {
      reading as one blank sheet. */
   .env__fold::after {
     clip-path: url(#env-fold);
-    background-color: #f8efdd;
+    background-color: #f5ecd9;
     background-image:
       linear-gradient(2deg, rgba(112, 74, 34, 0.14), rgba(255, 255, 255, 0.4) 60%),
       url("/img/paper.webp");
@@ -1684,7 +1713,7 @@ body[data-locked="true"] {
      relief rather than as a pattern, light raking from the upper left, and a
      shadow cast down onto the body it is lying on. */
   .env__flap-face--front::after {
-    background-color: #fffbf2;
+    background-color: #faf2e2;
     background-image:
       linear-gradient(150deg, rgba(255, 255, 255, 0.8), rgba(255, 255, 255, 0) 44%),
       linear-gradient(184deg, rgba(255, 255, 255, 0) 52%, rgba(112, 74, 34, 0.20)),

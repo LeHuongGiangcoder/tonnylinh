@@ -4,7 +4,6 @@ import Image from "next/image";
 import { couple, gallery, guest, wedding } from "@/data/wedding";
 import { LanguageToggle, useCopy } from "@/lib/lang";
 import { Conjunction, CoupleName } from "./CoupleName";
-import { Rule } from "./Divider";
 import { Reveal } from "./Reveal";
 
 /** The strip carries three frames, taken off the top of the gallery. */
@@ -31,10 +30,24 @@ export function Hero() {
           <p className="eyebrow">{t.hero.dear}</p>
           {/* Personalised per invitation — hardcoded until the backend lands. */}
           <p className="stat">{guest.name}</p>
+          <p className="note body-text--muted">{t.hero.invitation}</p>
         </Reveal>
 
         <Reveal delay={120}>
           <div className="hero__scene">
+            {/* Behind the whole pile, in the negative space to the right of
+                the letter: a scrap of the couple's own paper, so the flat-lay
+                has something under it rather than sitting on bare silk. */}
+            <Image
+              src="/img/love-note.webp"
+              alt=""
+              width={456}
+              height={810}
+              sizes="(max-width: 34rem) 34vw, 11rem"
+              aria-hidden="true"
+              className="hero__note"
+            />
+
             {/* --- the photo strip, leaning in from the left -------------- */}
             {/* ONE card with three windows cut in it, not three cards: a
                 strip of prints is a single piece of paper. */}
@@ -75,13 +88,11 @@ export function Hero() {
             <div className="hero__letter">
               <span className="hero__letter-face" aria-hidden="true" />
               <div className="hero__letter-content">
-                <p className="lead">{t.hero.invitation}</p>
                 <span className="hero__names">
                   <CoupleName initial={couple.groom.initial} rest={couple.groom.rest} />
                   <Conjunction />
                   <CoupleName initial={couple.bride.initial} rest={couple.bride.rest} />
                 </span>
-                <Rule />
                 <p className="stat stat--sm">{wedding.dateShort}</p>
                 <p className="eyebrow">{wedding.venue.name}</p>
                 <p className="eyebrow">{wedding.venue.hall}</p>

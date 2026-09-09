@@ -38,6 +38,10 @@ Fluid sizes: `--text-couple`, `--text-display`, `--text-h1`, `--text-h2`,
 - `--section-y` / `--section-y-tight` — section vertical padding
 - `--space-3xs … --space-2xl` — the only vertical gaps to use
 
+**Every section carries the `.rule`** under its heading — the gold hairline with
+a diamond at its centre — except the hero and the thank you, which close the
+page at either end and are arrangements rather than headed sections.
+
 ```html
 <section class="section ground--cream">        <!-- or ground--red / ground--silk -->
   <div class="container center stack">          <!-- stack | stack-sm | stack-lg | stack-xl -->
@@ -229,6 +233,12 @@ page opens on a picture rather than on a header and a wall of type.
   wide margin all round and a much deeper one at the foot.
 - The letter is the brightest thing in the frame and the envelope sits a step
   below it. When both were near-white they merged into one pale mass.
+- `.hero__note` is a scrap of the couple's own paper at the bottom of the
+  stack, in the negative space to the right of the letter. It is the one thing
+  in the frame allowed to run off the edge: a scrap with all four corners in
+  shot stops reading as a scrap.
+- The salutation spaces itself with margins rather than a `gap`, because DEAR
+  belongs tight to the name under it and one row gap cannot say that.
 - All three are positioned in percentages of one box, `.hero__scene`, so the
   composition scales with the column and nothing in it is in `rem`. Percentage
   padding resolves against the CONTAINING BLOCK's width, not the element's own.

@@ -3,6 +3,7 @@
 import Image from "next/image";
 import { wedding } from "@/data/wedding";
 import { useCopy } from "@/lib/lang";
+import { Rule } from "./Divider";
 import { Reveal } from "./Reveal";
 
 /**
@@ -19,6 +20,7 @@ export function TimeVenue() {
         <Reveal className="stack-sm">
           <p className="eyebrow">{t.details.eyebrow}</p>
           <h2 className="heading">{t.details.heading}</h2>
+          <Rule />
         </Reveal>
 
         <Reveal delay={120}>

@@ -93,7 +93,7 @@ const en: Copy = {
 
   hero: {
     dear: "Dear",
-    invitation: "Together with our families, we joyfully invite you to share in our wedding day",
+    invitation: "Together with our families, we joyfully invite you to our wedding",
   },
 
   gallery: {
@@ -184,8 +184,7 @@ const vi: Copy = {
 
   hero: {
     dear: "Kính gửi",
-    invitation:
-      "Cùng với gia đình hai bên, chúng mình trân trọng kính mời bạn đến chung vui trong ngày cưới",
+    invitation: "Cùng gia đình hai bên, chúng mình kính mời bạn đến chung vui ngày cưới",
   },
 
   gallery: {

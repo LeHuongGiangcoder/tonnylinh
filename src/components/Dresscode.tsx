@@ -3,6 +3,7 @@
 import Image from "next/image";
 import { palette } from "@/data/wedding";
 import { useCopy } from "@/lib/lang";
+import { Rule } from "./Divider";
 import { Drape } from "./Drape";
 import { Reveal } from "./Reveal";
 
@@ -19,6 +20,7 @@ export function Dresscode() {
         <Reveal className="stack-sm">
           <p className="eyebrow">{t.dresscode.eyebrow}</p>
           <h2 className="heading">{t.dresscode.heading}</h2>
+          <Rule />
           <p className="body-text body-text--muted">{t.dresscode.description}</p>
         </Reveal>
 
