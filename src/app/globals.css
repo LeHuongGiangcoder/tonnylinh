@@ -1276,13 +1276,20 @@ body[data-locked="true"] {
      shot stops reading as one. */
   .hero__note {
     position: absolute;
-    right: -6%;
-    top: 5%;
+    right: -11%;
+    top: 13%;
     z-index: 0;
-    width: 34%;
+    width: 40%;
     height: auto;
-    rotate: 7deg;
-    filter: drop-shadow(0 10px 18px rgba(20, 3, 8, 0.55));
+    /* Barely off square. At 7° it read as a card thrown down rather than a
+       sheet lying under the pile. */
+    rotate: 4deg;
+    /* Knocked back so it stays UNDER the letter tonally as well as in the
+       stack: at full strength the red script was the loudest thing in the
+       frame, and the bottom layer cannot be the brightest one. */
+    filter:
+      brightness(0.86) saturate(0.72)
+      drop-shadow(0 8px 14px rgba(20, 3, 8, 0.5));
   }
 
   /* --- the photo strip -------------------------------------------------- */
@@ -1385,9 +1392,9 @@ body[data-locked="true"] {
     aspect-ratio: 1.42 / 0.72;
     clip-path: url(#env-flap);
     transform: scaleY(-1);
-    background-color: #ece0c8;
+    background-color: #e9ddc4;
     background-image:
-      linear-gradient(0deg, rgba(112, 74, 34, 0.22), rgba(255, 255, 255, 0.3)),
+      linear-gradient(0deg, rgba(120, 84, 42, 0.20), rgba(255, 250, 238, 0.16)),
       url("/img/paper.webp");
     background-size: cover, 46%;
     background-blend-mode: normal, multiply;
@@ -1713,17 +1720,20 @@ body[data-locked="true"] {
      relief rather than as a pattern, light raking from the upper left, and a
      shadow cast down onto the body it is lying on. */
   .env__flap-face--front::after {
-    background-color: #faf2e2;
+    background-color: #f6ecd8;
     background-image:
-      linear-gradient(150deg, rgba(255, 255, 255, 0.8), rgba(255, 255, 255, 0) 44%),
-      linear-gradient(184deg, rgba(255, 255, 255, 0) 52%, rgba(112, 74, 34, 0.20)),
-      url("/img/cream.webp"),
+      /* Warm highlight, not white. An 80%-white wash over the flap's top-left
+         took the whole face to near-white — and since the flap IS the top of
+         the envelope, that turned it cold and grey against a warm body, which
+         is what stopped it reading as the same sheet of paper. */
+      linear-gradient(152deg, rgba(255, 250, 238, 0.42), rgba(255, 250, 238, 0) 46%),
+      linear-gradient(184deg, rgba(255, 255, 255, 0) 48%, rgba(120, 84, 42, 0.17)),
       url("/img/paper.webp");
-    background-size: cover, cover, 62%, 44%;
-    background-blend-mode: normal, normal, soft-light, multiply;
+    background-size: cover, cover, 44%;
+    background-blend-mode: normal, normal, multiply;
     filter:
-      drop-shadow(0 2px 2px rgba(58, 28, 10, 0.4))
-      drop-shadow(0 9px 15px rgba(58, 28, 10, 0.42));
+      drop-shadow(0 2px 2px rgba(58, 28, 10, 0.5))
+      drop-shadow(0 9px 16px rgba(58, 28, 10, 0.46));
   }
 
   /* Turned about the VERTICAL axis. Flipping it top to bottom would put the
@@ -1734,17 +1744,20 @@ body[data-locked="true"] {
   /* The lining: plain, slightly deeper paper, the way the inside of an
      envelope reads against its printed face. */
   .env__flap-face--back::after {
-    background-color: #ece0c8;
+    background-color: #e9ddc4;
     background-image:
-      linear-gradient(0deg, rgba(112, 74, 34, 0.22), rgba(255, 255, 255, 0.3)),
+      linear-gradient(0deg, rgba(120, 84, 42, 0.20), rgba(255, 250, 238, 0.16)),
       url("/img/paper.webp");
     background-size: cover, 44%;
     background-blend-mode: normal, multiply;
-    filter: brightness(0.95) drop-shadow(0 4px 8px rgba(58, 28, 10, 0.3));
+    filter: brightness(0.96) drop-shadow(0 4px 8px rgba(58, 28, 10, 0.3));
   }
 
-  .env[data-open="true"] .env__flap-face--front::after { filter: brightness(0.9); }
-  .env[data-open="true"] .env__flap-face--back::after { filter: brightness(1); }
+  .env[data-open="true"] .env__flap-face--front::after { filter: brightness(0.92); }
+
+  .env[data-open="true"] .env__flap-face--back::after {
+    filter: brightness(1) drop-shadow(0 6px 12px rgba(58, 28, 10, 0.34));
+  }
 
   /* --- the seal ---------------------------------------------------------- */
 

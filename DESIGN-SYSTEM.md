@@ -218,6 +218,13 @@ flap lightest, then the bottom flap, then the pocket, with the back panel darker
 still because it is a surface in shadow seen through the mouth. When they were
 all within a few units of each other the envelope read as flat shapes.
 
+But the step is ONE step, and the highlight is warm. Pushed to four steps and
+lit with an 80%-white wash the flap went cold and grey — and since the flap IS
+the top of the envelope, that read as a different, whiter material pasted onto
+a warm body rather than as the same sheet folded over. Highlights here are
+`rgba(255, 250, 238, …)` and they stay under half strength; the fold is told by
+the shadow it casts, not by its colour.
+
 ## The hero
 
 `src/components/Hero.tsx`. A flat-lay in three layers: a strip of polaroids
@@ -236,7 +243,10 @@ page opens on a picture rather than on a header and a wall of type.
 - `.hero__note` is a scrap of the couple's own paper at the bottom of the
   stack, in the negative space to the right of the letter. It is the one thing
   in the frame allowed to run off the edge: a scrap with all four corners in
-  shot stops reading as a scrap.
+  shot stops reading as a scrap. It is also knocked back with
+  `brightness(0.86) saturate(0.72)` and sits barely off square — at full
+  strength and 7° its red script was the loudest thing in the frame, and the
+  bottom layer cannot be the brightest one.
 - The salutation spaces itself with margins rather than a `gap`, because DEAR
   belongs tight to the name under it and one row gap cannot say that.
 - All three are positioned in percentages of one box, `.hero__scene`, so the
