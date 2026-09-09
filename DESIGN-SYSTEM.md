@@ -198,8 +198,15 @@ back at `-11px` and the card at `-3px` it still painted the flap over the card.
 So only the FLAP gets three dimensions — `.env` carries the perspective it folds
 in, `.env__tilt` carries the whole envelope's tilt (an element cannot both give
 its children perspective and be rotated in its own parent's 3D space) — and the
-one moment the flap's order changes is a z-index swap timed to 875ms, half the
-fold, where it is edge-on and the swap cannot be seen.
+one moment the flap's order changes is a z-index swap timed to where the flap
+is EDGE-ON — zero width to the viewer, so the change of order cannot be seen.
+
+That moment is **not** half the duration. Under
+`cubic-bezier(0.62, 0.02, 0.2, 1)` the flap is already at 125° by 875ms, well
+past edge-on and plainly visible, and swapping there read as a pop. Solving the
+curve for 90° of 179° puts it at **754ms**, and the card is held until 900ms so
+it never rises into a flap that is still in front of it. Change the easing or
+the duration and both numbers have to be solved again.
 
 Three things govern how it looks:
 

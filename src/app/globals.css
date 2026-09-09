@@ -1675,13 +1675,16 @@ body[data-locked="true"] {
     pointer-events: none;
   }
 
-  /* Behind the card once it is over. The swap lands at 875ms — half the fold —
-     where the flap is edge-on to the viewer and nothing of it is visible. */
+  /* Behind the card once it is over. The swap has to land where the flap is
+     EDGE-ON — zero width to the viewer, so the change of order cannot be seen.
+     That is not half the duration: under this easing the flap is already at
+     125° by 875ms, well past edge-on and plainly visible, which read as a pop.
+     Solving the curve for 90° of 179° puts it at 754ms. */
   .env[data-open="true"] .env__flap {
     transform: rotateX(179deg);
     z-index: 0;
     transition: transform 1750ms cubic-bezier(0.62, 0.02, 0.2, 1),
-                z-index 0s linear 875ms;
+                z-index 0s linear 754ms;
   }
 
   .env__flap-face {
@@ -1840,8 +1843,10 @@ body[data-locked="true"] {
     translate: -50% 24%;
     rotate: 0.6deg;
     display: grid;
-    transition: translate 1900ms var(--ease-silk) 700ms,
-                rotate 1900ms var(--ease-silk) 700ms;
+    /* Held until the flap is past edge-on and behind it at 754ms, so the card
+       never rises into a flap that is still in front of it. */
+    transition: translate 1900ms var(--ease-silk) 900ms,
+                rotate 1900ms var(--ease-silk) 900ms;
   }
 
   /* Head 45% of the envelope's height clear of its top edge; foot at 85% of
