@@ -41,14 +41,12 @@ export function ThankYou() {
             <h2 className="heading">{t.thanks.heading}</h2>
             <p className="body-text body-text--muted">{t.thanks.body}</p>
 
-            {/* Signed with initials, the way a note is. */}
+            {/* Signed in script, the way a note is. */}
             <p className="closing__signature">
               {couple.groom.initial}
-              <span className="closing__amp"> &amp; </span>
-              {couple.bride.initial}
+              {couple.groom.rest} {t.thanks.and} {couple.bride.initial}
+              {couple.bride.rest}
             </p>
-
-            <p className="eyebrow">{couple.hashtag}</p>
           </div>
 
           <Image

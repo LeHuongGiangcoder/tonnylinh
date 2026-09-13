@@ -2,6 +2,7 @@ import { Agenda } from "@/components/Agenda";
 import { Dresscode } from "@/components/Dresscode";
 import { Gallery } from "@/components/Gallery";
 import { Hero } from "@/components/Hero";
+import { HoneymoonFund } from "@/components/HoneymoonFund";
 import { Intro } from "@/components/Intro";
 import { PaperDefs } from "@/components/PaperDefs";
 import { Rsvp } from "@/components/Rsvp";
@@ -28,6 +29,7 @@ export default function Page() {
         <Agenda />
         <Dresscode />
         <Rsvp />
+        <HoneymoonFund />
         <ThankYou />
       </main>
     </LanguageProvider>

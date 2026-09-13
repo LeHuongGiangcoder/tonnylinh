@@ -39,3 +39,8 @@ yarn-error.log*
 # typescript
 *.tsbuildinfo
 next-env.d.ts
+
+# the 4K film original (179 MB) — over GitHub's file limit; public/video holds the web cut
+/design-source/video/*.mov
+# the couple's full-resolution photographs (~270 MB); public/img/couple holds the web cuts
+/design-source/couple/

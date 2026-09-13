@@ -1,4 +1,4 @@
-# Tonny & Linh — Design System
+# Tony & Linh — Design System
 
 Everything lives in [`src/app/globals.css`](src/app/globals.css). Build a new
 section by **applying these classes** — avoid one-off styles.
@@ -61,7 +61,7 @@ viewport-height one.
 | Class | Art | Used by | Text colour |
 |---|---|---|---|
 | `ground--silk` | `1.png` red silk drape | intro, hero, thank you | on-dark |
-| `ground--red` | `red background.png` damask | time & venue, dress code | on-dark |
+| `ground--red` | `red background.png` damask | time & venue, dress code, honeymoon fund | on-dark |
 | `ground--cream` | `2.png` cream damask | gallery, agenda, rsvp | ink |
 
 `ground--silk` lays a radial scrim over the drape via `::before` so type stays
@@ -123,25 +123,36 @@ Base `.btn` plus exactly one modifier. All are 48px tall for touch.
 `.card` (gold hairline frame) · `.panel` (a bordered block on a dark ground,
 tied with `.panel__ribbon`) · `.field` `.fieldset` `.label` `.input` `.select`
 `.textarea` · `.choice-group` (`--stack` for one per row) `.choice` (radio and
-checkbox pills) · `.gallery` `.gallery__lane` `.gallery__item` (the proportion
-and tilt come from the data, per picture) · `.weekstrip` · `.thread`
-`.thread__stop` `.thread__pearl` · `.langswitch` (via `<LanguageToggle>`) ·
-`.emblem` (via `<Emblem>`, a gold motif centred above a section label) ·
-`.lace` (via `<Lace>`) · `.reveal` (via `<Reveal>`)
+checkbox pills) · `.reel` `.film` (the gallery's film strip and its carousel) ·
+`.weekstrip` · `.thread` `.thread__silk` `.thread__stop` · `.gilt` (the hero's
+framed portrait) · `.langswitch` (via `<LanguageToggle>`) · `.emblem` (via
+`<Emblem>`, a gold motif centred above a section label) · `.lace` (via
+`<Lace>`) · `.reveal` (via `<Reveal>`)
 
-The gallery is two lanes, not a grid, and the second lane starts lower — so no
-two neighbours share a top edge and the wall reads as pinned up rather than
-tabulated. The lanes are built in the component rather than left to CSS
-columns, which balance their heights and reintroduce the row alignment being
-avoided.
+The gallery is a reel of film, one frame of three photographs per slide, with
+white edge printing on the darkest wine stock. Every frame is the SAME size
+(`.film` is a fixed 5:8) — a reel that grew and shrank as it turned moved the
+page under the guest's thumb. So the photographs fill the film rather than
+keeping their own proportions: a `landscape` frame stacks three wide stills with
+the printing between each, like cine film, and a `portrait` frame hangs one tall
+print beside two stacked ones.
 
-The agenda's ribbon is one continuous curve, not a chain of arcs: the stops are
-read as a Catmull-Rom spline and converted to cubics in `Agenda.tsx`, so the
-tangent carries THROUGH every pearl rather than being reset at it. The pearls
-are laid out against the SVG's own units, not against the rows — the rows are
-only as tall as their content happens to make them. `SWING` is deliberately
-uneven: swings within a few units of each other read as a machine-made zig-zag
-however smooth the spline through them is.
+Time & Venue is written on one lace-edged letter (`venue-lace.webp`), centred,
+with calla lilies laid across its top-right corner (`venue-calla.webp`); the
+writing sits between the two pictures. See the TIME & VENUE block in `globals.css` for the measured
+writing area and why the letter runs wider than the column.
+
+The intro envelope carries two bouquets (`bouquet-top.webp`,
+`bouquet-foot.webp`). The top one is tucked BEHIND the envelope, because the
+card rises straight into that corner and a bouquet on top covered its type. Frames are listed in `gallery` in `wedding.ts`,
+and a landscape still can carry an optional `caption`, set like a subtitle.
+
+The agenda's ribbon is a PICTURE of red satin (`agenda-silk.webp`), not a drawn
+line, so the stops are placed against its box in percentages (`STOPS` in
+`Agenda.tsx`) — each in the hollow of one turn, on the side the ribbon has just
+swung away from. Those numbers were measured off the asset's alpha; re-cut the
+silk and they have to be measured again. Its two ends are cut square across the
+cloth in the source, which is why they are faded with a mask.
 
 **Nothing on the page is dimmed.** Ornaments and dividers are always full
 opacity; the only `opacity` below 1 is the disabled button state.
@@ -238,44 +249,31 @@ repeated on `.env__flap-face--front::before`, nudged down two pixels and
 blurred, painted under the paper — a `drop-shadow` spreads round the whole
 silhouette and gives a halo, and what a fold needs is a line.
 
+## The film
+
+After the card is up, the intro gives way to a short film (`film` in
+`wedding.ts`, `public/video/our-film.mp4`): the dark comes down over the
+envelope, one line of caption is held for 3.6s, and the video plays WITH sound —
+pressing the seal is the user gesture that allows it (it falls back to muted if
+a browser still refuses). The curtain starts to lift 1.4s before the last frame,
+so the film dissolves into the hero rather than stopping first. The video is
+contained, not covered: it is 2:1 and a phone held upright would crop most of
+every shot. The 4K original lives in `design-source/video/` (git-ignored).
+
 ## The hero
 
-`src/components/Hero.tsx`. A flat-lay in three layers: a strip of polaroids
-leaning in from the left, an OPEN envelope lying across the foot, and the
-letter drawn out of it resting on top. The letter is where the invitation is
-actually printed, so it is the biggest thing in the frame.
+`src/components/Hero.tsx`. The couple's portrait hung in a carved gilt frame on
+the silk, and a plate beneath it — THE WEDDING OF, the names in Edwardian
+Script, the date — with the guest addressed last.
 
-The salutation sits ABOVE the flat-lay and only the button below it, so the
-page opens on a picture rather than on a header and a wall of type.
-
-- The polaroids lean the opposite way to everything else, so the strip crosses
-  the envelope instead of lying parallel to it. Each is a real polaroid — a
-  wide margin all round and a much deeper one at the foot.
-- The letter is the brightest thing in the frame and the envelope sits a step
-  below it. When both were near-white they merged into one pale mass.
-- `.hero__note` is a second sheet directly UNDER the letter, showing only as a
-  margin at its head and right edge and nowhere else — backing paper supporting
-  the letter, not another card in the pile. It is a child of `.hero__letter`, so
-  it takes the letter's angle and shadow and is measured against the letter's
-  own box, which is what keeps the margin even however tall the content makes
-  the letter.
-
-  It is SIZED (`108% x 105%` off the top-left corner), not stretched between
-  insets. An absolutely positioned REPLACED element with `width: auto` takes its
-  intrinsic size and ignores the opposing inset, so `inset: -5% -8% 0 0` left it
-  narrower than the letter and hanging below it — the opposite of the margin it
-  was meant to give.
-- The bow sits OUTSIDE `.polaroid`, at z-index 2 — over the prints it is
-  holding and under the letter lying on them. It has to be outside: `.polaroid`
-  is a stacking context of its own, so a bow inside it can never come forward
-  of anything the strip itself is behind.
-- The seal sits on the point of the envelope's mouth, which is the one place in
-  the frame that centres the whole arrangement.
+- The photograph sits BEHIND `gilt-frame.webp` and is sized to the frame's
+  opening, which was measured off the asset's alpha (19.4%–80.6% across,
+  15.6%–83.8% down). The print is pushed a little past those lines so the
+  carving laps it; re-cut the frame and the numbers have to be measured again.
+- The language switch is the only thing above the frame, so the page opens on
+  the picture.
 - The salutation spaces itself with margins rather than a `gap`, because DEAR
   belongs tight to the name under it and one row gap cannot say that.
-- All three are positioned in percentages of one box, `.hero__scene`, so the
-  composition scales with the column and nothing in it is in `rem`. Percentage
-  padding resolves against the CONTAINING BLOCK's width, not the element's own.
 
 ## Language
 
@@ -310,6 +308,7 @@ Latin + Vietnamese woff2 in `src/fonts/` and loaded through `next/font/local`.
 All copy lives in [`src/data/wedding.ts`](src/data/wedding.ts):
 
 - `guest.name` — hardcoded, pending the personalisation backend
-- `gallery[].src` — `null` until the couple's photos land in `public/gallery/`.
-  The hero's film strip takes its first three frames from the same list.
 - `Rsvp.handleSubmit` — currently local state only; needs the real endpoint
+
+The couple's photographs are exported from `design-source/couple/` (git-ignored,
+full resolution) to `public/img/couple/` at 1400px on the long edge, WebP.
