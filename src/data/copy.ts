@@ -20,14 +20,28 @@ export type Copy = {
   /** Shown on the language switch itself — never translated. */
   langLabel: Record<Lang, string>;
 
-  intro: { hint: string; opened: string };
+  intro: {
+    hint: string;
+    opened: string;
+    /** The line shown over the dark before the film starts. */
+    film: string;
+    skip: string;
+  };
 
   hero: {
+    weddingOf: string;
     dear: string;
     invitation: string;
   };
 
-  gallery: { eyebrow: string; heading: string; note: string; placeholder: string };
+  gallery: {
+    eyebrow: string;
+    heading: string;
+    /** Printed along the film strip's edge, between the frame numbers. */
+    strip: string;
+    prev: string;
+    next: string;
+  };
 
   details: {
     eyebrow: string;
@@ -80,7 +94,15 @@ export type Copy = {
     thanksBody: string;
   };
 
-  thanks: { eyebrow: string; heading: string; body: string };
+  honeymoon: {
+    eyebrow: string;
+    heading: string;
+    body: string;
+    account: string;
+  };
+
+  /** `and` joins the two names in the signature. */
+  thanks: { eyebrow: string; heading: string; body: string; and: string };
 };
 
 const en: Copy = {
@@ -88,10 +110,13 @@ const en: Copy = {
 
   intro: {
     hint: "Press the seal",
-    opened: "You are invited",
+    opened: "You are invited to our wedding",
+    film: "Let's watch a little film of ours",
+    skip: "Skip",
   },
 
   hero: {
+    weddingOf: "The wedding of",
     dear: "Dear",
     invitation: "Together with our families, we joyfully invite you to our wedding",
   },
@@ -99,8 +124,9 @@ const en: Copy = {
   gallery: {
     eyebrow: "Our Moments",
     heading: "Us, in pictures",
-    note: "Our photographs are on their way — this space is waiting for them.",
-    placeholder: "Photo",
+    strip: "Wedding Photos",
+    prev: "Previous photos",
+    next: "Next photos",
   },
 
   details: {
@@ -166,11 +192,20 @@ const en: Copy = {
     thanksBody: "Your reply is with us. We cannot wait to celebrate together on",
   },
 
+  honeymoon: {
+    eyebrow: "Honeymoon",
+    heading: "Fund",
+    body:
+      "We're fortunate enough to have a home full of everything we need. If you would like to give us a wedding gift, we'd be very grateful to receive contributions towards our honeymoon, by scanning the QR code above.",
+    account: "Or transfer to",
+  },
+
   thanks: {
     eyebrow: "With all our love",
     heading: "Thank You",
     body:
       "Your presence is the greatest gift of all. Thank you for being part of our story — and for standing with us as it turns a new page.",
+    and: "and",
   },
 };
 
@@ -179,10 +214,13 @@ const vi: Copy = {
 
   intro: {
     hint: "Chạm vào dấu niêm",
-    opened: "Trân trọng kính mời",
+    opened: "Trân trọng kính mời bạn đến dự lễ cưới",
+    film: "Hãy cùng xem một thước phim ngắn của chúng mình nhé",
+    skip: "Bỏ qua",
   },
 
   hero: {
+    weddingOf: "Lễ thành hôn của",
     dear: "Kính gửi",
     invitation: "Cùng gia đình hai bên, chúng mình kính mời bạn đến chung vui ngày cưới",
   },
@@ -190,8 +228,9 @@ const vi: Copy = {
   gallery: {
     eyebrow: "Khoảnh khắc",
     heading: "Chúng mình, qua ảnh",
-    note: "Ảnh của chúng mình sắp về — chỗ này đang chờ sẵn.",
-    placeholder: "Ảnh",
+    strip: "Ảnh cưới",
+    prev: "Ảnh trước",
+    next: "Ảnh tiếp theo",
   },
 
   details: {
@@ -258,11 +297,20 @@ const vi: Copy = {
       "Chúng mình đã nhận được phản hồi của bạn. Hẹn gặp bạn trong ngày",
   },
 
+  honeymoon: {
+    eyebrow: "Quỹ",
+    heading: "Tuần trăng mật",
+    body:
+      "Tổ ấm của chúng mình đã có đủ mọi thứ cần thiết. Nếu bạn muốn gửi quà cưới, chúng mình rất biết ơn nếu được bạn góp một phần cho chuyến trăng mật, bằng cách quét mã QR phía trên.",
+    account: "Hoặc chuyển khoản tới",
+  },
+
   thanks: {
     eyebrow: "Thương mến",
     heading: "Cảm ơn bạn",
     body:
       "Sự hiện diện của bạn là món quà quý giá nhất. Cảm ơn bạn đã là một phần trong câu chuyện của chúng mình — và đồng hành cùng chúng mình sang trang mới.",
+    and: "và",
   },
 };
 

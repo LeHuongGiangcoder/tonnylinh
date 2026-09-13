@@ -7,9 +7,9 @@ import { Rule } from "./Divider";
 import { Reveal } from "./Reveal";
 
 /**
- * The venue, engraved, with the two facts you actually need set beneath it in a
- * pair of panels — when, and where. Each panel is tied with the satin ribbon,
- * so the two read as a pair of parcels rather than as two boxes.
+ * When and where, written on one lace-edged letter with calla lilies laid
+ * across its corner. The writing sits between the two pictures — over the
+ * paper, under the flowers — see the TIME & VENUE block in globals.css.
  */
 export function TimeVenue() {
   const t = useCopy();
@@ -24,33 +24,33 @@ export function TimeVenue() {
         </Reveal>
 
         <Reveal delay={120}>
-          <Image
-            src="/img/venue.webp"
-            alt={`An engraving of ${wedding.venue.name}`}
-            width={1100}
-            height={619}
-            sizes="(max-width: 40rem) 92vw, 34rem"
-            className="venue__art"
-          />
-        </Reveal>
+          <div className="letter">
+            <Image
+              src="/img/venue-lace.webp"
+              alt=""
+              width={770}
+              height={1216}
+              sizes="(max-width: 34rem) 80vw, 25rem"
+              aria-hidden="true"
+              className="letter__sheet"
+            />
 
-        <Reveal delay={200}>
-          <div className="panels">
-            <div className="panel">
-              <Ribbon />
+            <div className="letter__writing">
               <p className="eyebrow">{t.details.day}</p>
-              <p className="stat stat--gold">{wedding.dateShort}</p>
-              <p className="body-text body-text--muted">{t.details.date}</p>
-            </div>
+              <p className="stat">{wedding.dateShort}</p>
+              <p className="body-text">{t.details.date}</p>
 
-            <div className="panel">
-              <Ribbon />
+              <Rule />
+
               <p className="eyebrow">{t.details.place}</p>
-              <p className="stat stat--gold">{wedding.venue.name}</p>
-              <p className="body-text body-text--muted">{wedding.venue.hall}</p>
-              <p className="body-text body-text--muted">{t.details.address}</p>
+              <p className="stat">{wedding.venue.name}</p>
+              <p className="body-text">
+                {wedding.venue.hall}
+                <br />
+                {t.details.address}
+              </p>
               <a
-                className="btn btn--outline"
+                className="btn btn--wine"
                 href={wedding.venue.mapUrl}
                 target="_blank"
                 rel="noreferrer noopener"
@@ -58,24 +58,19 @@ export function TimeVenue() {
                 {t.details.map}
               </a>
             </div>
+
+            <Image
+              src="/img/venue-calla.webp"
+              alt=""
+              width={542}
+              height={758}
+              sizes="(max-width: 34rem) 36vw, 12rem"
+              aria-hidden="true"
+              className="letter__lily"
+            />
           </div>
         </Reveal>
       </div>
     </section>
-  );
-}
-
-/** Tied across the head of a panel, its tails overhanging both edges. */
-function Ribbon() {
-  return (
-    <Image
-      src="/img/ribbon.webp"
-      alt=""
-      width={1000}
-      height={921}
-      sizes="(max-width: 34rem) 34vw, 10rem"
-      aria-hidden="true"
-      className="panel__ribbon"
-    />
   );
 }

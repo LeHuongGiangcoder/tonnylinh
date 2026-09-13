@@ -1,13 +1,18 @@
 "use client";
 
 import Image from "next/image";
-import { useCallback, useEffect, useState } from "react";
-import { couple, wedding } from "@/data/wedding";
+import { useCallback, useEffect, useRef, useState } from "react";
+import { couple, film } from "@/data/wedding";
 import { useCopy } from "@/lib/lang";
-import { Conjunction, CoupleName } from "./CoupleName";
 import { Rule } from "./Divider";
 
-type State = "sealed" | "opening" | "open" | "dismissed";
+type State = "sealed" | "opening" | "open" | "caption" | "film" | "dismissed";
+
+/** How long the line before the film is held on screen. */
+const CAPTION_MS = 3600;
+/** Start lifting the curtain this long before the film's last frame, so the
+ *  hero is fading in while the film is still moving rather than after a stop. */
+const FADE_LEAD_S = 1.4;
 
 /**
  * The opening beat. Pressing the wax seal breaks it, the flap hinges back
@@ -30,10 +35,15 @@ type State = "sealed" | "opening" | "open" | "dismissed";
  * card. Only the FLAP needs three dimensions, so only the flap gets them, and
  * the one moment its order changes is handled by switching its z-index at the
  * half-way point of the fold — where it is edge-on and the swap cannot be seen.
+ *
+ * Once the card is up the envelope gives way to the film: a line of caption
+ * over the dark, then the video, and as it ends the whole intro fades off the
+ * hero. Pressing the seal is the gesture that lets the film play WITH sound.
  */
 export function Intro() {
   const t = useCopy();
   const [state, setState] = useState<State>("sealed");
+  const video = useRef<HTMLVideoElement>(null);
   // Stays true through "dismissed" as well, or the envelope would snap shut
   // behind the fade on its way out.
   const opened = state !== "sealed";
@@ -58,9 +68,44 @@ export function Intro() {
 
   useEffect(() => {
     if (state !== "open") return;
-    const toHero = setTimeout(() => setState("dismissed"), 3400);
-    return () => clearTimeout(toHero);
+    const toCaption = setTimeout(() => setState("caption"), 3400);
+    return () => clearTimeout(toCaption);
   }, [state]);
+
+  useEffect(() => {
+    if (state !== "caption") return;
+    const toFilm = setTimeout(() => setState("film"), CAPTION_MS);
+    return () => clearTimeout(toFilm);
+  }, [state]);
+
+  useEffect(() => {
+    const el = video.current;
+    if (!el) return;
+
+    if (state === "film") {
+      // Sound is allowed after the seal was pressed; if a browser still
+      // refuses, play muted rather than not at all.
+      el.play().catch(() => {
+        el.muted = true;
+        el.play().catch(() => setState("dismissed"));
+      });
+    } else if (state === "dismissed") {
+      // Let it run on under the fade, and stop once it is out of sight.
+      const stop = setTimeout(() => el.pause(), 1800);
+      return () => clearTimeout(stop);
+    }
+  }, [state]);
+
+  const toHero = useCallback(() => {
+    setState((s) => (s === "film" || s === "caption" ? "dismissed" : s));
+  }, []);
+
+  function onTimeUpdate() {
+    const el = video.current;
+    if (el && el.duration && el.duration - el.currentTime <= FADE_LEAD_S) toHero();
+  }
+
+  const filmUp = state === "caption" || state === "film" || state === "dismissed";
 
   return (
     <div
@@ -68,8 +113,8 @@ export function Intro() {
       data-state={state}
       aria-hidden={state === "dismissed"}
       inert={state === "dismissed"}
-      // Once it is open, a tap anywhere goes straight through to the hero.
-      onClick={state === "open" ? () => setState("dismissed") : undefined}
+      // Once it is open, a tap anywhere goes straight on to the film.
+      onClick={state === "open" ? () => setState("caption") : undefined}
     >
       <div className="intro__stage">
         <div className="env__tilt" data-open={opened}>
@@ -85,12 +130,14 @@ export function Intro() {
                 <div className="env__card-content">
                   <p className="eyebrow">{t.intro.opened}</p>
                   <Rule />
-                  <span className="env__names">
-                    <CoupleName initial={couple.groom.initial} rest={couple.groom.rest} />
-                    <Conjunction />
-                    <CoupleName initial={couple.bride.initial} rest={couple.bride.rest} />
-                  </span>
-                  <p className="stat stat--sm">{wedding.dateShort}</p>
+                  {/* One line: Tony & Linh. */}
+                  <p className="env__names">
+                    {couple.groom.initial}
+                    {couple.groom.rest}
+                    <span className="env__amp"> &amp; </span>
+                    {couple.bride.initial}
+                    {couple.bride.rest}
+                  </p>
                 </div>
               </div>
             </div>
@@ -120,9 +167,54 @@ export function Intro() {
             <Image src="/img/seal.webp" alt="" width={760} height={776} priority />
             </button>
           </div>
+
+          {/* Two bouquets laid across opposite corners — inside the tilt, so
+              they settle with the envelope as it opens, but outside .env, so
+              they never fold with the flap. */}
+          <Image
+            src="/img/bouquet-top.webp"
+            alt=""
+            width={619}
+            height={900}
+            sizes="(max-width: 34rem) 40vw, 11rem"
+            priority
+            aria-hidden="true"
+            className="env__bouquet env__bouquet--top"
+          />
+          <Image
+            src="/img/bouquet-foot.webp"
+            alt=""
+            width={540}
+            height={900}
+            sizes="(max-width: 34rem) 36vw, 10rem"
+            priority
+            aria-hidden="true"
+            className="env__bouquet env__bouquet--foot"
+          />
         </div>
 
         <p className="intro__hint">{t.intro.hint}</p>
+      </div>
+
+      <div className="intro__film" data-up={filmUp}>
+        <video
+          ref={video}
+          className="intro__video"
+          src={film.src}
+          poster={film.poster}
+          // Starts loading as soon as the seal breaks, so it is ready by the
+          // time the caption has been read.
+          preload={opened ? "auto" : "none"}
+          playsInline
+          onTimeUpdate={onTimeUpdate}
+          onEnded={toHero}
+        />
+
+        <p className="intro__caption">{t.intro.film}</p>
+
+        <button type="button" className="intro__skip" onClick={toHero}>
+          {t.intro.skip}
+        </button>
       </div>
     </div>
   );

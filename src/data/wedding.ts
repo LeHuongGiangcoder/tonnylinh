@@ -4,9 +4,8 @@
  */
 
 export const couple = {
-  groom: { initial: "T", rest: "onny" },
+  groom: { initial: "T", rest: "ony" },
   bride: { initial: "L", rest: "inh" },
-  hashtag: "#TonnyAndLinh",
 } as const;
 
 export const wedding = {
@@ -16,9 +15,25 @@ export const wedding = {
   venue: {
     name: "An Lâm Retreat",
     hall: "Saigon River House",
-    mapUrl:
-      "https://maps.google.com/?q=An+Lam+Retreat+Saigon+River,+Thuan+An,+Binh+Duong",
+    mapUrl: "https://maps.app.goo.gl/zjrW2eL4Z433c7919",
   },
+} as const;
+
+/** The short film played between the envelope and the hero. Cut down from
+ *  the 4K original with ffmpeg (1920 wide, H.264, faststart) — re-export under
+ *  a new name if it changes, since browsers cache by URL. */
+export const film = {
+  src: "/video/our-film.mp4",
+  poster: "/video/our-film-poster.webp",
+} as const;
+
+/** Where honeymoon gifts go. `qr` is a VietQR (NAPAS 247) code for exactly
+ *  this account, with no amount set — regenerate it if the account changes. */
+export const honeymoon = {
+  bank: "Techcombank",
+  accountName: "CHU DIEU LINH",
+  accountNumber: "1903 2957 0500 18",
+  qr: "/img/honeymoon-qr.svg",
 } as const;
 
 /** Hardcoded for now — the backend will personalise this per invitation. */
@@ -53,17 +68,30 @@ export const palette = [
   { id: "olive", hex: "#6e7a33" },
 ] as const;
 
-/** Gallery slots. Dealt alternately into two offset lanes, so `ratio` is what
- *  keeps the two from falling back into rows — no two consecutive entries
- *  should share one. `tilt` is the degrees the picture hangs off square. Drop
- *  files into /public/gallery and fill in `src`. */
-export const gallery: { src: string | null; ratio: string; tilt?: number }[] = [
-  { src: null, ratio: "3 / 4", tilt: -2.5 },
-  { src: null, ratio: "2 / 3", tilt: 1.8 },
-  { src: null, ratio: "1 / 1", tilt: -1.2 },
-  { src: null, ratio: "3 / 4", tilt: 2.2 },
-  { src: null, ratio: "2 / 3", tilt: -1.6 },
-  { src: null, ratio: "4 / 5", tilt: 1.4 },
-  { src: null, ratio: "3 / 4", tilt: -2 },
-  { src: null, ratio: "1 / 1", tilt: 2 },
+/** The photograph set in the gilt frame on the hero. */
+export const heroPhoto = {
+  src: "/img/couple/hero.webp",
+  width: 1067,
+  height: 1600,
+} as const;
+
+/** The gallery, one film-strip frame per slide, three photographs to each.
+ *  A `portrait` frame lays its three side by side; a `landscape` frame stacks
+ *  them like stills from a film. Files are the web cuts of
+ *  design-source/couple/gallery/<frame>.<shot>.jpg. `caption` is optional and
+ *  runs over the foot of a landscape still, like a subtitle. */
+export type GalleryFrame = {
+  shape: "portrait" | "landscape";
+  shots: { src: string; caption?: string }[];
+};
+
+const shots = (frame: number) =>
+  [1, 2, 3].map((shot) => ({ src: `/img/couple/gallery-${frame}-${shot}.webp` }));
+
+export const gallery: GalleryFrame[] = [
+  { shape: "portrait", shots: shots(1) },
+  { shape: "landscape", shots: shots(2) },
+  { shape: "landscape", shots: shots(3) },
+  { shape: "landscape", shots: shots(4) },
+  { shape: "portrait", shots: shots(5) },
 ];

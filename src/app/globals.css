@@ -644,69 +644,186 @@ body[data-locked="true"] {
   }
 
   /* ========================================================================
-     GALLERY — a free arrangement, not a grid
+     GALLERY — a film strip, one frame at a time
 
-     Two lanes, but nothing lines up: every picture keeps its own proportion,
-     hangs a degree or two off square, and the odd one takes both lanes. The
-     frame stays the site's gold hairline — the looseness is in the hanging.
+     Each slide is a length of film: dark stock with the frame numbers and a
+     title printed along its edges in white, and three photographs exposed on
+     it. The stock is the site's darkest wine rather than black, so the strip
+     belongs to the page.
+
+     EVERY frame is the same size, whatever its shape — a reel that grows and
+     shrinks as it turns moves the page under the guest's thumb. So the film
+     has a fixed proportion and the photographs fill it: a landscape frame
+     stacks three wide stills with an edge printed between each, like cine
+     film; a portrait frame hangs one tall print beside two stacked ones.
      ======================================================================== */
 
-  .gallery {
-    display: grid;
-    grid-template-columns: repeat(2, 1fr);
-    gap: var(--space-sm);
-    align-items: start;
-    /* Room for the tilt: a rotated item reaches past its own box. */
-    padding: var(--space-2xs) var(--space-3xs) var(--space-sm);
-  }
-
-  .gallery__lane {
-    display: grid;
-    gap: var(--space-sm);
-  }
-
-  /* The whole point: the second lane starts lower, so the two never line up
-     into rows however the pictures are proportioned. */
-  .gallery__lane:nth-child(2) { margin-block-start: var(--space-2xl); }
-
-  .gallery__item {
+  .reel {
     position: relative;
+    margin-inline: calc(var(--section-pad-left) * -0.5);
+  }
+
+  .reel__window {
     overflow: hidden;
+    touch-action: pan-y;
+  }
+
+  .reel__track {
+    display: flex;
+    transition: transform 620ms var(--ease-silk);
+  }
+
+  .reel__track[data-dragging="true"] { transition: none; }
+
+  .reel__slide {
+    flex: 0 0 100%;
+    min-width: 0;
+    padding-inline: 2px;
+    user-select: none;
+  }
+
+  .film {
+    display: flex;
+    flex-direction: column;
+    aspect-ratio: 5 / 8;
+    background-color: #1a0509;
+    background-image: linear-gradient(180deg, #230810, #140306);
+    box-shadow: 0 22px 36px -22px rgba(20, 3, 8, 0.85);
+  }
+
+  /* The printing along the edge: ▸ 01   WEDDING PHOTOS   ▸ 02 … */
+  .film__edge {
+    flex: none;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: var(--space-2xs);
+    padding: 0.55rem 0.8rem;
+    font-family: var(--font-name);
+    font-size: clamp(0.5rem, 2.1vw, 0.625rem);
+    letter-spacing: 0.14em;
+    text-transform: uppercase;
+    line-height: 1;
+    color: #fff;
+    white-space: nowrap;
+  }
+
+  .film__num {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.4em;
+  }
+
+  .film__num::before {
+    content: "";
+    width: 1.1em;
+    height: 0.62em;
+    background: currentColor;
+    clip-path: polygon(0 0, 100% 50%, 0 100%, 0 70%, 30% 50%, 0 30%);
+  }
+
+  /* minmax(0, …) throughout: a bare 1fr track is at least its content's
+     min-content size, and a photograph's is its full pixel size. */
+  .film__frames {
+    flex: 1;
+    min-height: 0;
+    display: grid;
+    padding-inline: 0.45rem;
+  }
+
+  .film[data-shape="landscape"] .film__frames {
+    grid-template-columns: minmax(0, 1fr);
+    grid-template-rows: minmax(0, 1fr) auto minmax(0, 1fr) auto minmax(0, 1fr);
+  }
+
+  /* The edges between stills run the full width of the film, out over the
+     frames' own side padding. */
+  .film__frames > .film__edge { margin-inline: -0.45rem; }
+
+  .film[data-shape="portrait"] .film__frames {
+    grid-template-columns: minmax(0, 1.12fr) minmax(0, 1fr);
+    grid-template-rows: minmax(0, 1fr) minmax(0, 1fr);
+    gap: 0.45rem;
+  }
+
+  .film[data-shape="portrait"] .film__shot:first-child { grid-row: 1 / span 2; }
+
+  .film__shot {
+    position: relative;
     margin: 0;
-    border: var(--hairline);
-    background: color-mix(in srgb, var(--color-wine) 6%, transparent);
-    box-shadow: 0 10px 22px -14px rgba(64, 10, 21, 0.6);
-    /* aspect-ratio and rotate come from the data, per picture. */
-    aspect-ratio: 3 / 4;
-    transition: rotate var(--dur-base) var(--ease-silk),
-                box-shadow var(--dur-base) var(--ease-silk);
+    overflow: hidden;
+    background: #0d0204;
   }
 
-  @media (hover: hover) {
-    .gallery__item:hover {
-      rotate: 0deg !important;
-      box-shadow: 0 16px 30px -14px rgba(64, 10, 21, 0.7);
-    }
-  }
-
-  .gallery__item img {
+  .film__shot img {
     width: 100%;
     height: 100%;
     object-fit: cover;
+    pointer-events: none;
   }
 
-  /* Placeholder shown until the couple's photos are dropped in. */
-  .gallery__placeholder {
+  /* A subtitle, where a still has one. */
+  .film__caption {
+    position: absolute;
+    inset-inline: 0;
+    bottom: 0.6rem;
+    padding-inline: var(--space-sm);
+    text-align: center;
+    font-family: var(--font-body);
+    font-size: var(--text-body);
+    color: #fff;
+    text-shadow: 0 1px 6px rgba(0, 0, 0, 0.8);
+  }
+
+  /* Under the strip: ‹  2 / 5  › */
+  .reel__nav {
     display: flex;
     align-items: center;
     justify-content: center;
-    height: 100%;
-    font-family: var(--font-name);
-    font-size: 0.6875rem;
-    letter-spacing: var(--tracking-eyebrow);
-    text-transform: uppercase;
-    color: color-mix(in srgb, var(--color-gold) 75%, transparent);
+    gap: var(--space-md);
+    margin-block-start: var(--space-md);
   }
+
+  .reel__arrow {
+    display: grid;
+    place-items: center;
+    width: 2.75rem;
+    height: 2.75rem;
+    border: var(--hairline);
+    border-radius: 50%;
+    background: color-mix(in srgb, #ffffff 42%, transparent);
+    color: var(--color-wine);
+    cursor: pointer;
+    transition: background-color var(--dur-fast) var(--ease-silk),
+                color var(--dur-fast) var(--ease-silk);
+  }
+
+  .reel__arrow svg { width: 1rem; height: 1rem; }
+
+  @media (hover: hover) {
+    .reel__arrow:hover:not(:disabled) {
+      background: var(--color-wine);
+      color: var(--color-ivory);
+    }
+  }
+
+  .reel__arrow:disabled { opacity: 0.4; cursor: default; }
+
+  .reel__arrow:focus-visible {
+    outline: 2px solid var(--color-gold);
+    outline-offset: 2px;
+  }
+
+  .reel__count {
+    min-width: 4.5rem;
+    font-family: var(--font-name);
+    font-size: var(--text-lead);
+    letter-spacing: var(--tracking-name);
+    font-variant-numeric: tabular-nums;
+    color: var(--color-wine);
+  }
+
+  .reel__count span { color: var(--color-gold-deep); }
 
   /* ========================================================================
      SECTION FURNITURE — the lace that hems a seam
@@ -789,58 +906,97 @@ body[data-locked="true"] {
   }
 
   /* ========================================================================
-     TIME & VENUE — the engraving, then the two facts under it, each tied
+     TIME & VENUE — both facts written on one lace-edged letter
+
+     The letter is centred in the column, with a spray of calla lilies laid
+     across its top-right corner and breaking its edge. The two are separate
+     pictures, each cut to its own bounds — venue-lace.webp (the sheet, with
+     the stems under it) and venue-calla.webp — so the lilies can be sized
+     and placed on their own: smaller than in the source artwork, where they
+     reached so far past the lace that the letter had to sit off-centre to
+     keep them on screen. The writing sits between the two — over the paper,
+     under the flowers.
+
+     Both sources carried a faint paper texture across the whole canvas at 30%
+     alpha, meant for a light page; it was lifted out on export and the lace's
+     own alpha raised, so the lace reads on the red.
+
+     The paper's writing area, measured off the sheet's alpha, is 12.2%–87.1%
+     across and 8.2%–80.9% down the lace picture. Re-cut it and these have to
+     be measured again.
      ======================================================================== */
 
-  /* Gold line work on a transparent ground: it needs no blend mode to sit on
-     the damask, only a shadow to lift it off. */
-  .venue__art {
-    width: 100%;
-    height: auto;
-    filter: drop-shadow(0 14px 26px rgba(20, 3, 8, 0.5));
-  }
-
-  .panels {
-    display: grid;
-    gap: var(--space-xl);
-    /* The first panel's bow reaches above the grid. */
-    margin-block-start: var(--space-lg);
-  }
-
-  @media (min-width: 40rem) {
-    .panels { grid-template-columns: 1fr 1fr; align-items: start; }
-  }
-
-  .panel {
+  .letter {
     position: relative;
+    width: 84%;
+    aspect-ratio: 770 / 1216;
+    margin-inline: auto;
+    filter: drop-shadow(0 22px 30px rgba(20, 3, 8, 0.5));
+  }
+
+  .letter__sheet {
+    position: absolute;
+    inset: 0;
+    width: 100%;
+    height: 100%;
+    pointer-events: none;
+  }
+
+  /* Its flowers lap only the paper's right-hand margin; the rest of the
+     spray hangs out past the lace, which the 84% width leaves room for. */
+  .letter__lily {
+    position: absolute;
+    z-index: 2;
+    left: 72%;
+    top: -9%;
+    width: 48%;
+    height: auto;
+    rotate: 4deg;
+    pointer-events: none;
+  }
+
+  .letter__writing {
+    position: absolute;
+    z-index: 1;
+    left: 12.2%;
+    right: 12.9%;
+    top: 8.2%;
+    bottom: 19.1%;
     display: flex;
     flex-direction: column;
     align-items: center;
-    gap: var(--space-2xs);
-    /* Head padding leaves the knot somewhere to sit. */
-    padding: calc(var(--space-lg) + 0.75rem) var(--space-md) var(--space-lg);
+    justify-content: center;
+    gap: var(--space-3xs);
+    /* Percentages of the paper's width: a little more on the right, under
+       the lilies. */
+    padding: 10% 12% 6% 8%;
     text-align: center;
-    background: color-mix(in srgb, var(--color-wine-deep) 62%, transparent);
-    border: var(--hairline);
-    backdrop-filter: blur(2px);
+    color: var(--color-ink);
   }
 
-  /* Tied across the head of the panel, sitting mostly INSIDE it: the knot
-     straddles the edge and the loops fall into the panel's own head padding,
-     which is what the padding is there for. */
-  .panel__ribbon {
-    position: absolute;
-    left: 50%;
-    top: 0;
-    z-index: 2;
-    width: 21%;
-    height: auto;
-    translate: -50% -32%;
-    pointer-events: none;
-    filter: drop-shadow(0 8px 14px rgba(20, 3, 8, 0.55));
+  .letter__writing .eyebrow { color: var(--color-gold-deep); }
+  .letter__writing .rule { color: var(--color-gold); margin-block: var(--space-2xs); }
+
+  .letter__writing .stat {
+    font-size: clamp(1rem, 4.6vw, 1.25rem);
+    line-height: 1.2;
+    color: var(--color-wine);
   }
 
-  .panel .btn { margin-block-start: var(--space-sm); }
+  .letter__writing .body-text {
+    font-size: clamp(0.75rem, 3.3vw, 0.9rem);
+    line-height: 1.3;
+    color: color-mix(in srgb, var(--color-ink) 78%, transparent);
+  }
+
+  /* Smaller than the page's 48px button: it is written on the letter, and the
+     paper has only so much room under the address. */
+  .letter__writing .btn {
+    margin-block-start: var(--space-xs);
+    min-height: 2.25rem;
+    padding-inline: var(--space-sm);
+    font-size: clamp(0.6rem, 2.6vw, 0.7rem);
+  }
 
   /* ========================================================================
      DRESS CODE — the palette, held up
@@ -936,7 +1092,7 @@ body[data-locked="true"] {
   }
 
   /* ========================================================================
-     AGENDA — a red thread stitched from the calendar down through the day
+     AGENDA — the red silk laid from the calendar down through the day
      ======================================================================== */
 
   .weekstrip { width: 100%; }
@@ -990,78 +1146,57 @@ body[data-locked="true"] {
     color: var(--color-ivory);
   }
 
+  /* The red silk, laid down the page, with the day's stops set in the hollows
+     of its turns — each on the side the ribbon has just swung away from. The
+     silk is a picture, so the stops are placed against ITS box in percentages
+     (STOPS in Agenda.tsx), measured off the asset's alpha. Re-cut the silk and
+     they have to be measured again. */
   .thread {
     position: relative;
     width: 100%;
     margin-block-start: var(--space-md);
   }
 
-  /* Stretched to the list, so the stitch always meets the stops wherever they
-     land; the stroke is exempted from that stretch. */
-  .thread__line {
-    position: absolute;
-    inset: 0;
+  /* Shown whole: the final cut keeps both tapered ends of the cloth, so
+     nothing needs fading. */
+  .thread__silk {
+    display: block;
     width: 100%;
-    height: 100%;
-    pointer-events: none;
-  }
-
-  /* The pearls ride the ribbon. They are laid out against the SVG's own
-     units — not against the rows, whose heights follow their content — so a
-     pearl always lands exactly where the curve crosses that row. */
-  .thread__pearls {
-    position: absolute;
-    inset: 0;
-    pointer-events: none;
-  }
-
-  .thread__pearl {
-    position: absolute;
-    width: clamp(1.15rem, 5.4vw, 1.6rem);
     height: auto;
-    translate: -50% -50%;
-    filter: drop-shadow(0 2px 4px rgba(64, 10, 21, 0.4));
-  }
-
-  .thread__line path {
-    fill: none;
-    stroke: var(--color-wine);
-    stroke-width: 1.8;
-    stroke-linecap: round;
-    vector-effect: non-scaling-stroke;
+    filter: drop-shadow(0 14px 18px rgba(64, 10, 21, 0.28));
+    pointer-events: none;
   }
 
   .thread__stops {
-    position: relative;
+    position: absolute;
+    inset: 0;
     list-style: none;
     margin: 0;
     padding: 0;
   }
 
-  /* Every stop is the same height, which is what lets the SVG above be laid
-     out in flat units of 100 and still line up. The drawing and its time sit
-     together on one side; the thread swings out to the other. */
+  /* The drawing beside its time and title, not above them: a stop has to fit
+     the hollow of one turn, and the hollows are wider than they are tall. */
   .thread__stop {
-    position: relative;
-    display: grid;
-    justify-items: center;
-    align-content: center;
-    gap: var(--space-3xs);
-    height: 9rem;
-    width: 52%;
+    position: absolute;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: var(--space-2xs);
+    width: 48%;
+    translate: -50% -50%;
   }
-
-  .thread__stop[data-side="left"] { margin-inline-end: auto; }
-  .thread__stop[data-side="right"] { margin-inline-start: auto; }
 
   .thread__label {
     display: grid;
-    justify-items: center;
+    justify-items: start;
     gap: var(--space-3xs);
+    text-align: start;
   }
 
   .thread__icon {
-    width: clamp(3.25rem, 15vw, 4.5rem);
+    flex: none;
+    width: clamp(2.75rem, 12vw, 3.75rem);
     aspect-ratio: 1;
     background: var(--color-wine);
     mask-size: contain;
@@ -1086,9 +1221,42 @@ body[data-locked="true"] {
     letter-spacing: var(--tracking-wide);
     text-transform: uppercase;
     line-height: 1.2;
-    text-align: center;
     color: color-mix(in srgb, var(--color-ink) 82%, transparent);
   }
+
+  /* ========================================================================
+     HONEYMOON FUND — the QR, mounted on ivory
+     ======================================================================== */
+
+  /* The code has to scan, so it sits on solid ivory with a quiet zone of its
+     own rather than straight on the damask. */
+  .fund__qr {
+    width: min(64vw, 15rem);
+    margin-inline: auto;
+    padding: var(--space-md);
+    background: var(--color-ivory);
+    border: var(--hairline);
+    border-radius: var(--radius-card);
+    box-shadow: var(--shadow-letter);
+  }
+
+  .fund__qr img {
+    display: block;
+    width: 100%;
+    height: auto;
+  }
+
+  .fund__bank {
+    margin-block-start: var(--space-sm);
+    font-family: var(--font-name);
+    font-size: var(--text-eyebrow);
+    letter-spacing: var(--tracking-wide);
+    text-transform: uppercase;
+    color: var(--color-wine);
+  }
+
+  .fund__account { user-select: all; }
+
 
   /* ========================================================================
      THANK YOU — the closing note under a rose
@@ -1134,7 +1302,7 @@ body[data-locked="true"] {
     width: 13%;
     height: auto;
     /* Only the ball at its head laps the card; hung any higher, the cord runs
-       up through the hashtag. */
+       up through the signature. */
     translate: -50% 88%;
     pointer-events: none;
     filter: drop-shadow(0 14px 20px rgba(20, 3, 8, 0.55));
@@ -1153,22 +1321,13 @@ body[data-locked="true"] {
     color: color-mix(in srgb, var(--color-ink) 76%, transparent);
   }
 
+  /* Signed in script, by name. */
   .closing__signature {
-    margin-block: var(--space-md);
-    font-family: var(--font-name);
-    font-size: calc(var(--text-couple) * 0.82);
-    line-height: 1;
-    letter-spacing: var(--tracking-name);
-    text-indent: var(--tracking-name);
+    margin-block: var(--space-sm) var(--space-md);
+    font-family: var(--font-heading);
+    font-size: var(--text-h2);
+    line-height: 1.1;
     color: var(--color-wine);
-  }
-
-  .closing__amp {
-    font-family: var(--font-body);
-    font-style: italic;
-    font-size: 0.44em;
-    letter-spacing: 0;
-    color: var(--color-gold-deep);
   }
 
   /* ========================================================================
@@ -1222,301 +1381,111 @@ body[data-locked="true"] {
   .ground--cream .langswitch__option { color: var(--color-ink-muted); }
 
   /* ========================================================================
-     HERO — a flat-lay in three layers
+     HERO — the portrait in a gilt frame, and its plate
 
-     A strip of photographs leaning in from the left, an OPEN envelope lying
-     across the foot, and the letter drawn out of it resting on top. The letter
-     is where the invitation is actually printed, so it is the biggest thing in
-     the frame and everything else is arranged around it.
+     The couple's photograph hangs in a carved gold frame on the silk, with
+     the title card set under it like the plate beneath a painting: THE
+     WEDDING OF, the names in script, the date. The guest is addressed last.
 
-     All three are positioned in percentages of one box, `.hero__scene`, so the
-     whole composition scales with the column and nothing in it is in `rem`.
-     Note that percentage padding and margin resolve against the CONTAINING
-     BLOCK's width — here the scene's, not the element's own — so the strip's
-     own paddings look small for what they buy.
+     The photograph sits BEHIND the frame and is sized to the frame's opening,
+     measured off the asset's own alpha: 19.4%–80.6% across, 15.6%–83.8% down.
+     It is pushed a little past those lines on every side so the carving laps
+     the print rather than leaving a hairline of silk at the join. Re-cut the
+     frame and those four numbers have to be measured again.
      ======================================================================== */
 
   .hero__top {
-    display: grid;
-    justify-items: center;
-    /* Gaps by margin, not by `gap`: DEAR belongs tight to the name under it,
-       and a single row gap cannot say that. */
-    gap: 0;
+    display: flex;
+    justify-content: center;
+    margin-block-end: var(--space-lg);
   }
 
-  .hero__top > .langswitch { margin-block-end: var(--space-lg); }
-  .hero__top > .eyebrow { margin-block-end: var(--space-3xs); }
-
-  .hero__top > .note {
-    max-width: 22rem;
-    margin-block-start: var(--space-sm);
-  }
-
-  .hero__scene {
+  .gilt {
     position: relative;
-    width: min(100%, 24rem);
-    aspect-ratio: 1 / 1.34;
-    margin-inline: auto;
+    width: min(84vw, 23rem);
+    aspect-ratio: 1000 / 1411;
+    margin: 0 auto;
+    filter: drop-shadow(0 28px 40px rgba(12, 2, 5, 0.6));
   }
 
-  /* --- the photo strip -------------------------------------------------- */
-
-  /* ONE card with three windows cut in it: a strip of prints is a single piece
-     of paper, not three cards that happen to be stacked. Leaning the opposite
-     way to everything else in the frame, so it crosses the envelope rather
-     than lying parallel to it. */
-  .polaroid {
+  .gilt__photo {
     position: absolute;
-    left: 0;
-    top: 4%;
-    z-index: 1;
-    width: 31%;
-    display: grid;
-    padding: 2.2% 2.2% 5.4%;
-    rotate: 7deg;
-    /* Pivot on the middle, not the head: about the head the whole length of
-       the strip swings one way and its foot walks off the side of the page. */
-    transform-origin: 50% 50%;
-    background-color: #fdfaf3;
-    background-image: url("/img/paper.webp");
-    background-size: 120%;
-    background-blend-mode: multiply;
-    border-radius: 1px;
-    box-shadow:
-      0 10px 20px -6px rgba(20, 3, 8, 0.6),
-      inset 0 0 0 1px rgba(120, 82, 40, 0.10);
-  }
-
-  .polaroid__well {
-    display: block;
-    margin: 0;
-    aspect-ratio: 1;
+    left: 18.6%;
+    right: 18.6%;
+    top: 14.8%;
+    bottom: 15.4%;
     overflow: hidden;
-    background: linear-gradient(148deg, #ded3c1, #c9bda8);
-    box-shadow: inset 0 1px 4px rgba(20, 3, 8, 0.4);
+    background: var(--color-wine-deep);
   }
 
-  /* A grid's percentage row-gap resolves against a block size that is `auto`
-     here, which computes to zero and closes the windows up. A top margin
-     resolves against the WIDTH, which is defined. */
-  .polaroid__well + .polaroid__well { margin-block-start: 6%; }
-
-  .polaroid__well img {
+  .gilt__photo img {
     width: 100%;
     height: 100%;
     object-fit: cover;
+    /* The kiss sits low in the picture; keep it clear of the frame's foot. */
+    object-position: 50% 62%;
   }
 
-  /* Tied to the head of the strip: over the prints it is holding, and under
-     the letter that is lying on top of them. It sits OUTSIDE .polaroid to get
-     there — that is a stacking context of its own, so a bow inside it can
-     never come forward of anything the strip itself is behind. */
-  .polaroid__bow {
-    position: absolute;
-    left: 17%;
-    top: 3%;
-    z-index: 2;
-    width: 20%;
-    height: auto;
-    translate: -50% -42%;
-    pointer-events: none;
-    filter: drop-shadow(0 6px 10px rgba(20, 3, 8, 0.5));
-  }
-
-  /* --- the open envelope ------------------------------------------------ */
-
-  /* Built from the same three surfaces as the intro's, and lit the same way:
-     the flap folded back above it, the front with its V mouth, and the bottom
-     flap folded up over that. Turned further off square than the letter and
-     sat a little low, so it reads as the thing UNDERNEATH rather than as a
-     second panel parallel to it. */
-  .hero__envelope {
-    position: absolute;
-    left: 5%;
-    bottom: -3%;
-    z-index: 2;
-    width: 80%;
-    aspect-ratio: 1.42;
-    rotate: -4.5deg;
-    /* Read through the mouth: the shadowed inside of the envelope. */
-    background-color: #e3d4ba;
-    background-image:
-      radial-gradient(120% 96% at 50% 4%, rgba(74, 44, 16, 0.30), rgba(74, 44, 16, 0) 66%),
-      url("/img/paper.webp");
-    background-size: cover, 46%;
-    background-blend-mode: normal, multiply;
-    filter: drop-shadow(0 16px 26px rgba(20, 3, 8, 0.7));
-  }
-
-  .hero__envelope-flap,
-  .hero__envelope-pocket,
-  .hero__envelope-fold {
+  .gilt__frame {
     position: absolute;
     inset: 0;
-  }
-
-  /* The flap, folded back: it stands ABOVE the envelope with its point at the
-     top, which is what an opened envelope reads as head-on. */
-  .hero__envelope-flap {
-    inset: auto 0 100% 0;
-    aspect-ratio: 1.42 / 0.72;
-    clip-path: url(#env-flap);
-    transform: scaleY(-1);
-    background-color: #e9ddc4;
-    background-image:
-      linear-gradient(0deg, rgba(120, 84, 42, 0.20), rgba(255, 250, 238, 0.16)),
-      url("/img/paper.webp");
-    background-size: cover, 46%;
-    background-blend-mode: normal, multiply;
-    filter: drop-shadow(0 -4px 8px rgba(20, 3, 8, 0.45));
-  }
-
-  .hero__envelope-pocket {
-    clip-path: url(#env-mouth);
-    background-color: #f0e6d0;
-    background-image:
-      linear-gradient(148deg, rgba(255, 255, 255, 0.72), rgba(255, 255, 255, 0) 40%),
-      radial-gradient(130% 92% at 22% 8%, rgba(255, 255, 255, 0.5), rgba(255, 255, 255, 0) 58%),
-      linear-gradient(196deg, rgba(112, 74, 34, 0) 46%, rgba(112, 74, 34, 0.16)),
-      url("/img/paper.webp");
-    background-size: cover, cover, cover, 44%;
-    background-blend-mode: normal, normal, normal, multiply;
-    filter: drop-shadow(0 -2px 6px rgba(58, 28, 10, 0.5));
-  }
-
-  .hero__envelope-fold {
-    clip-path: url(#env-fold);
-    background-color: #f5ecd9;
-    background-image:
-      linear-gradient(2deg, rgba(112, 74, 34, 0.14), rgba(255, 255, 255, 0.4) 60%),
-      url("/img/paper.webp");
-    background-size: cover, 44%;
-    background-blend-mode: normal, multiply;
-    filter: drop-shadow(0 -2px 4px rgba(58, 28, 10, 0.30));
-  }
-
-  /* --- the letter ------------------------------------------------------- */
-
-  .hero__letter {
-    position: absolute;
-    left: 27%;
-    top: 2%;
-    z-index: 3;
-    width: 63%;
-    min-height: 66%;
-    rotate: 1.5deg;
-    display: grid;
-    filter: drop-shadow(0 18px 30px rgba(20, 3, 8, 0.6));
-  }
-
-  /* A second sheet directly under the letter, offset just far enough to show
-     as a margin at the head and the right edge — and NOWHERE else, so it reads
-     as backing paper supporting the letter rather than as another card in the
-     pile. Being a child of the letter, it takes its angle and its shadow, and
-     its inset is measured against the letter's own box, so the margin holds
-     whatever the letter's content makes its height. */
-  .hero__note {
-    position: absolute;
-    left: 0;
-    top: -5%;
-    z-index: -1;
-    /* Sized, not stretched between insets. An absolutely positioned REPLACED
-       element with `width: auto` takes its intrinsic size and ignores the
-       opposing inset, so `inset: -5% -8% 0 0` left it narrower than the letter
-       and hanging below it — the opposite of the margin it was meant to give.
-       108% x 105% off the top-left corner puts the overhang at the head and
-       the right edge and nowhere else. */
-    width: 108%;
-    height: 105%;
-    max-width: none;
-    object-fit: cover;
-    object-position: 100% 0;
-  }
-
-  .hero__letter-face {
-    grid-area: 1 / 1;
-    border-radius: 1px;
-    background-color: #fffdf8;
-    background-image:
-      linear-gradient(160deg, rgba(255, 255, 255, 0.8), rgba(255, 255, 255, 0) 38%,
-        rgba(112, 74, 34, 0.09)),
-      url("/img/paper.webp");
-    background-size: cover, 38%;
-    background-blend-mode: normal, multiply;
-    box-shadow:
-      inset 0 0 0 1px color-mix(in srgb, var(--color-gold) 40%, transparent),
-      inset 0 0 0 5px rgba(255, 255, 255, 0.55),
-      inset 0 0 0 6px color-mix(in srgb, var(--color-gold) 20%, transparent);
-  }
-
-  .hero__letter-content {
-    grid-area: 1 / 1;
-    display: grid;
-    justify-items: center;
-    align-content: center;
-    gap: var(--space-2xs);
-    padding: 13% 11%;
-    color: var(--color-wine);
-  }
-
-  .hero__letter-content .lead {
-    font-size: clamp(0.8rem, 3.4vw, 0.95rem);
-    line-height: 1.45;
-    color: color-mix(in srgb, var(--color-ink) 74%, transparent);
-  }
-
-  .hero__letter-content .rule { color: var(--color-gold); }
-  .hero__letter-content .stat { color: var(--color-wine); }
-
-  .hero__letter-content .eyebrow {
-    font-size: clamp(0.62rem, 2.6vw, 0.72rem);
-    letter-spacing: 0.2em;
-    text-indent: 0.2em;
-    color: var(--color-gold-deep);
-  }
-
-  /* Tonny / and / Linh read as one block, so the three lines sit close. */
-  .hero__names { display: block; }
-
-  .hero__names .couple-name {
-    font-size: min(2.9rem, 12vw);
-    line-height: 0.94;
-    color: var(--color-wine);
-  }
-
-  .hero__names .couple-name__conj {
-    font-size: min(1.05rem, 4.4vw);
-    margin-block: 0.06em;
-    color: var(--color-gold-deep);
-  }
-
-  /* Laid on the letter's foot corner and breaking its edge, so the flower
-     reads as resting ON the paper rather than as printed on it. */
-  .hero__bloom {
-    position: absolute;
-    right: 0;
-    bottom: 0;
-    z-index: 2;
-    width: 33%;
-    height: auto;
-    translate: 26% 26%;
-    rotate: -8deg;
+    width: 100%;
+    height: 100%;
     pointer-events: none;
   }
 
-  /* On the point of the envelope's mouth — where the wax on a real one sits,
-     and the one place in the frame that centres the whole arrangement. The
-     envelope spans 5%…85% of the scene, so its centre line is 45%; its mouth
-     dips to a point at 54.5% of its own height. */
-  .hero__seal {
-    position: absolute;
-    left: 45%;
-    top: 84%;
-    z-index: 4;
-    width: 16%;
-    height: auto;
-    translate: -50% -50%;
-    filter: drop-shadow(0 5px 9px rgba(20, 3, 8, 0.55));
+  .hero__plate {
+    display: grid;
+    justify-items: center;
+    margin-block-start: var(--space-md);
+  }
+
+  .hero__of {
+    font-family: var(--font-name);
+    font-size: var(--text-small);
+    letter-spacing: var(--tracking-eyebrow);
+    text-indent: var(--tracking-eyebrow);
+    text-transform: uppercase;
+    color: var(--color-gold-light);
+  }
+
+  .hero__names {
+    margin: var(--space-3xs) 0 var(--space-2xs);
+    font-family: var(--font-initial);
+    font-size: min(3.6rem, 15vw);
+    font-weight: 400;
+    line-height: 1.05;
+    color: var(--color-gold-light);
+    text-shadow: 0 2px 14px rgba(12, 2, 5, 0.55);
+  }
+
+  .hero__amp {
+    font-family: var(--font-body);
+    font-style: italic;
+    font-size: 0.5em;
+    color: var(--color-on-dark);
+  }
+
+  .hero__date {
+    font-family: var(--font-name);
+    font-size: var(--text-lead);
+    letter-spacing: var(--tracking-name);
+    text-indent: var(--tracking-name);
+    color: var(--color-gold-light);
+  }
+
+  /* DEAR belongs tight to the name under it, so this spaces by margin. */
+  .hero__address {
+    display: grid;
+    justify-items: center;
+    margin-block-start: var(--space-xl);
+  }
+
+  .hero__address > .eyebrow { margin-block-end: var(--space-3xs); }
+
+  .hero__address > .note {
+    max-width: 22rem;
+    margin-block-start: var(--space-sm);
   }
 
   /* ========================================================================
@@ -1889,10 +1858,13 @@ body[data-locked="true"] {
     display: flex;
     flex-direction: column;
     align-items: center;
-    gap: var(--space-2xs);
+    gap: var(--space-xs);
     width: 84%;
     margin-inline: auto;
-    padding-block-start: 9%;
+    /* Set down into the part of the card that clears the pocket — the V of
+       the mouth leaves a deep window at the centre, and content hugging the
+       head left most of it empty. */
+    padding-block-start: 17%;
     text-align: center;
     color: var(--color-wine);
     opacity: 0;
@@ -1911,19 +1883,59 @@ body[data-locked="true"] {
   .env__card-content .stat { color: var(--color-wine); }
 
   /* Sized to the card, not to the page: the card is only ever about 280px
-     wide, and the names have to sit on three lines inside its head. */
-  .env__names { display: block; }
-
-  .env__names .couple-name {
-    font-size: min(2.5rem, 9.2vw);
-    line-height: 0.98;
+     wide, and Tony & Linh has to fit on ONE line inside its head. */
+  .env__names {
+    margin-block-start: var(--space-2xs);
+    font-family: var(--font-initial);
+    font-size: min(2.8rem, 10.5vw);
+    line-height: 1.1;
+    white-space: nowrap;
     color: var(--color-wine);
   }
 
-  .env__names .couple-name__conj {
-    font-size: min(1.05rem, 4vw);
-    margin-block: 0.08em;
+  .env__amp {
+    font-family: var(--font-body);
+    font-style: italic;
+    font-size: 0.5em;
     color: var(--color-gold-deep);
+  }
+
+  /* The bouquets, laid across two corners of the envelope and breaking its
+     edges. Above every layer of the envelope — they are lying ON it. */
+  .env__tilt { position: relative; }
+
+  .env__bouquet {
+    position: absolute;
+    z-index: 7;
+    height: auto;
+    pointer-events: none;
+    filter: drop-shadow(0 12px 16px rgba(20, 3, 8, 0.5));
+  }
+
+  /* Held inside the screen: the envelope is nearly as wide as a phone, so
+     each bouquet only breaks its own corner, not the viewport's edge.
+
+     The top one is tucked BEHIND the envelope. The card rises out of the top,
+     straight into that corner, and a bouquet lying on top of it covered the
+     line of type on the card's head. .env__tilt isolates, so -1 still keeps it
+     in front of the silk. */
+  .env__tilt { isolation: isolate; }
+
+  .env__bouquet--top {
+    right: 0;
+    top: 0;
+    z-index: -1;
+    width: 40%;
+    translate: 22% -58%;
+    rotate: 12deg;
+  }
+
+  .env__bouquet--foot {
+    left: 0;
+    bottom: 0;
+    width: 36%;
+    translate: -8% 40%;
+    rotate: -10deg;
   }
 
   .intro__hint {
@@ -1943,6 +1955,92 @@ body[data-locked="true"] {
   .intro[data-state="opening"] .intro__hint,
   .intro[data-state="open"] .intro__hint {
     opacity: 0;
+  }
+
+  /* ---- The film: a curtain of dark over the envelope, a line of caption,
+     then the video. The curtain lifts off the hero slower than the envelope
+     alone would, so the film's last seconds dissolve into the page. ---- */
+
+  .intro[data-state="dismissed"] {
+    transition-duration: 1.6s;
+  }
+
+  .intro__film {
+    position: absolute;
+    inset: 0;
+    z-index: 10;
+    display: grid;
+    place-items: center;
+    background: #0b0305;
+    opacity: 0;
+    visibility: hidden;
+    transition: opacity 1.2s var(--ease-silk), visibility 1.2s var(--ease-silk);
+  }
+
+  .intro__film[data-up="true"] {
+    opacity: 1;
+    visibility: visible;
+  }
+
+  /* Contained, not covered: the film is 2:1 and a phone held upright would
+     otherwise crop away most of every shot. */
+  .intro__video {
+    grid-area: 1 / 1;
+    width: 100%;
+    height: 100%;
+    object-fit: contain;
+    opacity: 0;
+    transition: opacity 1.4s var(--ease-silk);
+  }
+
+  .intro[data-state="film"] .intro__video,
+  .intro[data-state="dismissed"] .intro__video {
+    opacity: 1;
+  }
+
+  .intro__caption {
+    grid-area: 1 / 1;
+    max-width: min(88vw, 34rem);
+    padding-inline: var(--page-gutter);
+    text-align: center;
+    text-wrap: balance;
+    font-family: var(--font-heading);
+    font-size: var(--text-h2);
+    line-height: 1.25;
+    color: var(--color-gold-light);
+    opacity: 0;
+    transform: translateY(0.5rem);
+    transition: opacity 1s var(--ease-silk), transform 1.4s var(--ease-silk);
+  }
+
+  .intro[data-state="caption"] .intro__caption {
+    opacity: 1;
+    transform: none;
+    transition-delay: 0.6s;
+  }
+
+  .intro__skip {
+    position: absolute;
+    right: var(--page-gutter);
+    bottom: calc(var(--page-gutter) + env(safe-area-inset-bottom, 0px));
+    padding: var(--space-2xs) var(--space-sm);
+    min-height: 44px;
+    font-family: var(--font-name);
+    font-size: var(--text-eyebrow);
+    letter-spacing: var(--tracking-eyebrow);
+    text-transform: uppercase;
+    color: var(--color-on-dark);
+    background: transparent;
+    border: var(--hairline);
+    border-radius: var(--radius-pill);
+    cursor: pointer;
+    opacity: 0;
+    transition: opacity var(--dur-base) var(--ease-silk);
+  }
+
+  .intro[data-state="caption"] .intro__skip,
+  .intro[data-state="film"] .intro__skip {
+    opacity: 1;
   }
 
   @media (prefers-reduced-motion: reduce) {
