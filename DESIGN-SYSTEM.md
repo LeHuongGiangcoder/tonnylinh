@@ -27,6 +27,20 @@ Semantic aliases: `--color-ink`, `--color-ink-muted`, `--color-on-dark`,
 | Alex Brush | `--font-heading` | Every section heading |
 | Cormorant Garamond | `--font-body` | All body copy |
 | TAN Aegean / TAN Pearl | `--font-display` / `--font-pearl` | Reserved, unused |
+| Noto Serif Display | `--font-name-vi` | Stands in for Mencken in Vietnamese |
+
+**Mencken has no Vietnamese.** It is missing Ơ, Ư, Đ and the stacked tone marks
+(Ủ, Ặ, Ự …), and the browser patches the gaps from a fallback face, so every
+Vietnamese label came out in two fonts at once. Under `html[lang="vi"]`,
+`--font-name` is pointed at `--font-name-vi` — Noto Serif Display, the nearest
+high-contrast narrow serif that has the full set — and `font-stretch: 72%`
+narrows it on its width axis to Mencken's proportions. Faces without a width
+axis ignore the stretch. It is loaded through `next/font/google` with the
+`latin` and `vietnamese` subsets. English keeps Mencken.
+
+Edwardian Script and the two TAN faces have no Vietnamese either. That is safe
+only while Edwardian sets nothing but the couple's names, and the TAN faces
+stay unused; give any of them Vietnamese copy and it needs the same treatment.
 
 Fluid sizes: `--text-couple`, `--text-display`, `--text-h1`, `--text-h2`,
 `--text-stat`, `--text-lead`, `--text-body`, `--text-small`, `--text-eyebrow`.
@@ -67,7 +81,7 @@ viewport-height one.
 `ground--silk` lays a radial scrim over the drape via `::before` so type stays
 legible across its highlights.
 
-Heading, eyebrow, label and agenda-time colours flip automatically with the
+Heading, eyebrow and label colours flip automatically with the
 ground — no per-section overrides needed.
 
 **Sections butt straight against each other** and the change of ground *is* the
@@ -124,7 +138,7 @@ Base `.btn` plus exactly one modifier. All are 48px tall for touch.
 tied with `.panel__ribbon`) · `.field` `.fieldset` `.label` `.input` `.select`
 `.textarea` · `.choice-group` (`--stack` for one per row) `.choice` (radio and
 checkbox pills) · `.reel` `.film` (the gallery's film strip and its carousel) ·
-`.weekstrip` · `.thread` `.thread__silk` `.thread__stop` · `.gilt` (the hero's
+`.weekstrip` · `.programme` `.polaroid` (the agenda) · `.gilt` (the hero's
 framed portrait) · `.langswitch` (via `<LanguageToggle>`) · `.emblem` (via
 `<Emblem>`, a gold motif centred above a section label) · `.lace` (via
 `<Lace>`) · `.reveal` (via `<Reveal>`)
@@ -147,15 +161,34 @@ The intro envelope carries two bouquets (`bouquet-top.webp`,
 card rises straight into that corner and a bouquet on top covered its type. Frames are listed in `gallery` in `wedding.ts`,
 and a landscape still can carry an optional `caption`, set like a subtitle.
 
-The agenda's ribbon is a PICTURE of red satin (`agenda-silk.webp`), not a drawn
-line, so the stops are placed against its box in percentages (`STOPS` in
-`Agenda.tsx`) — each in the hollow of one turn, on the side the ribbon has just
-swung away from. Those numbers were measured off the asset's alpha; re-cut the
-silk and they have to be measured again. Its two ends are cut square across the
-cloth in the source, which is why they are faded with a mask.
-
 **Nothing on the page is dimmed.** Ornaments and dividers are always full
-opacity; the only `opacity` below 1 is the disabled button state.
+opacity; the only resting `opacity` below 1 is the disabled button state.
+
+## The agenda
+
+`src/components/Agenda.tsx`. Under the week strip, the day is a spread of
+polaroids on a `.programme` panel: the day's span (first time – last time) over
+a grid of **two prints to a row, three rows**, one print per event, then a line
+of script telling the guest they can leave a heart.
+
+- **The panel is flat.** Plain `--color-wine`, square corners, no sheen, no
+  shadow — and the prints on it carry no shadow either. It is a field the
+  photographs are laid on, not a card floating over the cream.
+- **Each `.polaroid` is a print laid down by hand**: an ivory border with a
+  deeper lip, tilted a degree or two, alternate prints leaning the other way.
+  The time is a pill pinned to the photo's top-left; the event's name and its
+  line drawing (the `icon` masks in `public/img/icon/`, painted wine) are
+  written on the lip.
+- **Tapping a photo leaves a heart** — the button in its bottom-right corner
+  fills pink with a small pop, and a second tap takes it back. Hearts are local
+  state: nothing is saved or sent, and they are gone on reload.
+- **Every photograph is the same 4:5 crop, 720×900**, cut by hand to frame the
+  couple, in `public/img/couple/agenda/` named by event id (`welcome.webp` …
+  `party.webp`) and listed as `photo` on each entry of `agenda` in `wedding.ts`.
+  A grid whose prints changed shape would not line up across its rows.
+
+The earlier agenda — stops set in the hollows of a picture of red satin
+(`agenda-silk.webp`) — is retired; the asset is no longer referenced.
 
 ## Paper
 
@@ -167,50 +200,63 @@ grain would halve the brightness and turn the paper to slate.
 
 ## The die-cuts
 
-`src/components/PaperDefs.tsx`, rendered once from the page root. Two SVG
-`clipPath`s in `objectBoundingBox` units, so one definition fits the intro's
-envelope and the hero's at any size:
+`src/components/PaperDefs.tsx`, rendered once from the page root. SVG
+`clipPath`s in `objectBoundingBox` units, so one definition fits the envelope
+at any size.
 
-- `#env-flap` — the flap. Its sides run straight DOWN from the top corners for
-  14% of its box before the diagonal starts, so the closed flap covers the
-  opening right into the corners.
-- `#env-mouth` — everything BELOW a V that dips to a soft point at the centre.
-  Its shoulders sit at 10% of the envelope, exactly where the flap's own sides
-  stop running straight down.
-- `#env-fold` — the bottom flap, folded up over the pocket. Its apex sits below
-  the mouth's point, so it never pokes into the opening.
+The envelope is cut the classic way: **four flaps whose creases all run from the
+exact corners towards the centre**, so every corner is the same mitre. The
+creases are straight lines; only the tips are rounded, over their last few
+percent. Heights below are fractions of the ENVELOPE:
 
-They are SVG rather than `clip-path: polygon()` because paper edges are not
-quite straight — but only just. The control points sit within a hundredth of the
-straight line between corner and point, so an edge reads as a crease with a
-little life in it. Bow them properly and the flap stops reading as folded paper
-and starts reading as a swag of cloth.
+| Clip | Shape | Tip |
+|---|---|---|
+| `#env-flap` | the top flap, from both top corners | 0.64 — its box is 66% of the envelope, the tip at 97% of the box |
+| `#env-mouth` | the two side flaps as one shape: everything below the V from the top corners | 0.50 — the bottom of the opening |
+| `#env-side-right` | the right side flap alone, for its own shade | — |
+| `#env-fold` | the bottom flap, from both bottom corners | 0.58 |
+
+The order of those tips is what makes it read as folded paper: the bottom
+flap's tip sits just BELOW the mouth, so it never pokes into the opening, and
+the top flap's tip laps over both, where the seal holds them shut.
+
+An earlier cut gave the top flap short vertical shoulders (14% of its box) and
+the mouth matching ones at 10%, with only a shallow seam for a bottom flap and
+no side flaps at all. With the envelope also tilted at rest, the four corners
+came out visibly unequal.
 
 ## The intro
 
 `src/components/Intro.tsx`. Pressing the wax seal breaks it, the flap hinges
-back through 180°, and the invitation rides up out of the pocket. A tap
-anywhere skips ahead once the card is up.
+back through 180°, the invitation rides up out of the pocket, and the couple's
+photograph follows it out. A tap anywhere skips ahead once the card is up.
 
 It stacks in **plain z-index**, not in 3D depth:
 
 | z | Layer | |
 |---|---|---|
+| 7 | `.env__bouquet--foot` | the lower bouquet, lying on the envelope |
 | 6 | `.env__seal` | the wax; the button you press |
 | 5 → 0 | `.env__flap` | the flap; drops to 0 half way through the fold |
-| 3 | `.env__fold` | the bottom flap, folded up over the pocket |
-| 2 | `.env__pocket` | the front, clipped to `#env-mouth` |
-| 1 | `.env__card` | the invitation, in a well that clips its foot |
+| 3 | `.env__fold` | the bottom flap, clipped to `#env-fold` |
+| 2 | `.env__pocket` | the side flaps, clipped to `#env-mouth`, with the right one shaded on `::before` |
+| 1 | `.env__well` | holds, in order, the card and the photo (`.env__photo`, z 1 inside it) |
 | 0 | `.env__back` | the back panel |
+| −1 | `.env__bouquet--top` | the upper bouquet, tucked behind |
 
 An earlier version put the whole envelope in one `preserve-3d` scene and let the
 browser sort the layers by their z offsets. **It does not**: with the flap laid
 back at `-11px` and the card at `-3px` it still painted the flap over the card.
 So only the FLAP gets three dimensions — `.env` carries the perspective it folds
-in, `.env__tilt` carries the whole envelope's tilt (an element cannot both give
-its children perspective and be rotated in its own parent's 3D space) — and the
-one moment the flap's order changes is a z-index swap timed to where the flap
-is EDGE-ON — zero width to the viewer, so the change of order cannot be seen.
+in — and the one moment the flap's order changes is a z-index swap timed to
+where the flap is EDGE-ON — zero width to the viewer, so the change of order
+cannot be seen.
+
+**The envelope is square to the viewer at rest.** `.env__tilt` used to lean it
+back 10°, which under perspective turns the rectangle into a trapezoid — narrower
+at the top than the bottom — and its four corners stop matching. It now only
+carries the drop down the stage as the envelope opens, to make room for the
+card.
 
 That moment is **not** half the duration. Under
 `cubic-bezier(0.62, 0.02, 0.2, 1)` the flap is already at 125° by 875ms, well
@@ -221,23 +267,29 @@ the duration and both numbers have to be solved again.
 
 Three things govern how it looks:
 
-1. **The flap must overlap the mouth it closes.** Its point sits at 67% of the
-   envelope's height and the mouth's apex at 55%. Cut to meet, the flap's edge
-   disappears into the mouth's and the front reads as one blank cream shape.
-2. **The flap's sides and the mouth's shoulders have to agree**, at 10% of the
-   envelope. Lower the shoulders and a wedge of bare back panel shows at each
-   top corner, where the flap's edge has already curved away inboard; raise them
-   and the card is read through a narrow triangle instead of the envelope's
-   width.
+1. **The flaps overlap in order.** Mouth at 0.50, bottom flap's tip at 0.58, top
+   flap's tip at 0.64 (see *The die-cuts*). Cut to meet, an edge disappears into
+   the one under it and the front reads as one blank cream shape.
+2. **Every crease starts in a corner.** The top flap's diagonals run below the
+   side flaps' everywhere, so the closed flap covers the opening right into the
+   corners with no wedge of bare back panel.
 3. **The card is taller than the envelope, on purpose.** Its foot has to stay
    below the mouth's point even with its head 45% clear of the top, which comes
    to 1.295 × the envelope's height — so it needs `.env__well`, open at the top
-   and closed at the envelope's foot, or it spills out underneath.
+   and closed at the envelope's foot, or it spills out underneath. The well
+   reaches 110% above the envelope, so the photo has room too.
 
 Light comes from the upper left throughout, and each surface is a distinct step:
-flap lightest, then the bottom flap, then the pocket, with the back panel darker
-still because it is a surface in shadow seen through the mouth. When they were
-all within a few units of each other the envelope read as flat shapes.
+top flap lightest, then the bottom flap, then the side flaps — the left one lit,
+the right one turned away (`#env-side-right`) — with the back panel darker still
+because it is a surface in shadow seen through the mouth. When they were all
+within a few units of each other the envelope read as flat shapes.
+
+**Every fold has an edge.** Each flap's filter starts with a one-pixel
+`drop-shadow` in warm ivory, offset towards the flap it lies on — the cut edge of
+the paper catching the light — followed by the soft shadow it casts. The whole
+envelope casts two shadows onto the silk: a tight contact shadow under a wide
+soft one; the pair is what lifts it off the cloth rather than printing it on.
 
 But the step is ONE step, and the highlight is warm. Pushed to four steps and
 lit with an 80%-white wash the flap went cold and grey — and since the flap IS
@@ -249,11 +301,43 @@ repeated on `.env__flap-face--front::before`, nudged down two pixels and
 blurred, painted under the paper — a `drop-shadow` spreads round the whole
 silhouette and gives a halo, and what a fold needs is a line.
 
+### The seal
+
+It sits on the top flap's tip, where the flaps meet. When pressed it **lifts off
+rather than vanishing**: over about a second the wax rises 35% of its height,
+grows to 1.12 and dissolves into a 3px blur. The exit lives on the `img`, not
+the button, so the button's breathing animation can simply pause where it is
+(`animation-play-state: paused`) instead of snapping back to scale 1. The button
+keeps focus after the press, so its focus ring is turned off once the envelope
+is open — otherwise a gold circle is left hanging where the wax was.
+
+### The photograph
+
+`.env__photo` — the couple's picture (`couple/intro.webp`, a 1000×778 crop of
+the full frame) as a print with a white border. It lies **in front of the card,
+over its top-right corner**, tilted 6°, clear of the card's type (which starts
+0.23 of the envelope's height above its top edge).
+
+- 36% of the envelope's width, which with the border comes to 0.46 of its
+  height. At rest it sits inside the pocket; open, it is pushed up 290% of
+  itself, to a head 0.80 above the envelope and a foot 0.34 above — over the
+  card's corner (the card's head is at 0.45) but above the eyebrow.
+- It is centred 80% across, so its tilted corner stays inside the well, which
+  clips at the envelope's sides.
+- **It is a second beat, not a passenger.** It waits 2.3s — until the card,
+  which lands at 2.8s, is nearly home — then rises over 2.8s, settling at 5.1s.
+  The open envelope is held until 6.8s before the film's caption comes down, so
+  the photo is seen at rest.
+
+The border is plain white, like a photographic print — not the stationery's
+paper grain.
+
 ## The film
 
 After the card is up, the intro gives way to a short film (`film` in
 `wedding.ts`, `public/video/our-film.mp4`): the dark comes down over the
-envelope, one line of caption is held for 3.6s, and the video plays WITH sound —
+envelope (4s after the card lands), one line of caption is held for 3.6s, and
+the video plays WITH sound —
 pressing the seal is the user gesture that allows it (it falls back to muted if
 a browser still refuses). The curtain starts to lift 1.4s before the last frame,
 so the film dissolves into the hero rather than stopping first. The video is
@@ -274,6 +358,28 @@ Script, the date — with the guest addressed last.
   the picture.
 - The salutation spaces itself with margins rather than a `gap`, because DEAR
   belongs tight to the name under it and one row gap cannot say that.
+
+## RSVP
+
+`src/components/Rsvp.tsx`. Name, phone or email, and *will you attend?* — then,
+**only for a guest who is coming**, number of guests, dietary needs and the
+hotel / transport asks. A guest who declines is asked for nothing but a note;
+the other questions are not rendered for them, so they arrive empty rather than
+as stale defaults, and they are thanked with their own line (`thanksBodyDecline`)
+instead of *see you on the day*.
+
+Replies are sent to a **Google Apps Script web app** that appends a row to the
+RSVP sheet — the script is `apps-script/Code.gs`, deployment steps are in its
+header, and its `/exec` URL goes in `NEXT_PUBLIC_RSVP_ENDPOINT` (see
+`.env.example`; set it in Vercel too). The script writes to an `RSVP` tab, with
+Vietnamese column headers, and prefixes any guest text that starts like a
+formula so it cannot run in the sheet.
+
+Apps Script cannot answer a CORS preflight, so the body goes as `text/plain` in
+`no-cors` mode and the response is opaque. The form can therefore only show its
+error line when the request cannot be sent at all — or when the endpoint is not
+set — not when the script fails after receiving it. Send one test reply after
+every redeploy of the script and check the row lands.
 
 ## Language
 
@@ -300,15 +406,20 @@ names — stays in [`src/data/wedding.ts`](src/data/wedding.ts).
 Source art and licensed font files live in `design-source/` — **outside**
 `public/`, so they are never deployed. `public/img/` holds the web-optimised
 WebP derivatives (~2 MB total, down from 134 MB), and `assets/retired/` holds
-art a redesign superseded. Fonts are subset to
-Latin + Vietnamese woff2 in `src/fonts/` and loaded through `next/font/local`.
+art a redesign superseded. The brand fonts are woff2 in `src/fonts/`, loaded
+through `next/font/local`; Noto Serif Display, the Vietnamese stand-in for
+Mencken, comes through `next/font/google`. Subsetting a font does not add glyphs
+it never had — check a face's Vietnamese coverage before giving it Vietnamese
+copy (see *Type*).
 
 ## Still to be filled in
 
-All copy lives in [`src/data/wedding.ts`](src/data/wedding.ts):
-
-- `guest.name` — hardcoded, pending the personalisation backend
-- `Rsvp.handleSubmit` — currently local state only; needs the real endpoint
+- `guest.name` in [`src/data/wedding.ts`](src/data/wedding.ts) — hardcoded,
+  pending the personalisation backend
+- `NEXT_PUBLIC_RSVP_ENDPOINT` — the RSVP form is wired, but posts nowhere until
+  the Apps Script is deployed and its URL is set (see *RSVP*)
 
 The couple's photographs are exported from `design-source/couple/` (git-ignored,
-full resolution) to `public/img/couple/` at 1400px on the long edge, WebP.
+full resolution) to `public/img/couple/`, WebP. The intro photo and the six
+agenda prints are hand-cropped — see *The intro* and *The agenda*. Full-resolution
+originals do not belong in `public/`: everything there is deployed.
