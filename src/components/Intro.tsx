@@ -24,6 +24,7 @@ const FADE_LEAD_S = 1.4;
  *
  *   0  .env__back    the back panel, and the envelope's shadow
  *   1  .env__card    the invitation, in a well that clips its foot
+ *   1  .env__photo   the couple's photograph, over the card's corner
  *   2  .env__pocket  the front, with the V mouth the card is read through
  *   3  .env__fold    the bottom flap, folded up over the pocket
  *   5  .env__flap    the flap — drops to 0 halfway through the fold
@@ -125,6 +126,19 @@ export function Intro() {
             {/* The invitation, sitting in the pocket and riding up out of it.
                 The well clips its foot at the envelope's bottom edge. */}
             <div className="env__well">
+              {/* The couple's photograph, drawn out just after the card and
+                  lying over its corner. */}
+              <div className="env__photo">
+                <Image
+                  src="/img/couple/intro.webp"
+                  alt=""
+                  width={1000}
+                  height={778}
+                  sizes="(max-width: 34rem) 33vw, 10rem"
+                  priority
+                />
+              </div>
+
               <div className="env__card">
                 <div className="env__card-face" />
                 <div className="env__card-content">

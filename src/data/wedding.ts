@@ -45,13 +45,15 @@ export const guest = {
 
 /** `icon` names a file in /public/img/icon — the red line drawings that mark
  *  each stop on the ribbon. Titles are in copy.ts, keyed by `id`. */
+/** Each photo is a 4:5 crop (720×900) of the matching shot in
+ *  public/img/couple/agenda/, framed on the couple. */
 export const agenda = [
-  { id: "welcome", time: "3:00 pm", icon: "11" },
-  { id: "ceremony", time: "4:00 pm", icon: "15" },
-  { id: "cocktail", time: "5:00 pm", icon: "29" },
-  { id: "dinner", time: "6:00 pm", icon: "33" },
-  { id: "show", time: "7:30 pm", icon: "23" },
-  { id: "party", time: "8:30 pm", icon: "31" },
+  { id: "welcome", time: "3:00 pm", icon: "11", photo: "/img/couple/agenda/welcome.webp" },
+  { id: "ceremony", time: "4:00 pm", icon: "15", photo: "/img/couple/agenda/ceremony.webp" },
+  { id: "cocktail", time: "5:00 pm", icon: "29", photo: "/img/couple/agenda/cocktail.webp" },
+  { id: "dinner", time: "6:00 pm", icon: "33", photo: "/img/couple/agenda/dinner.webp" },
+  { id: "show", time: "7:30 pm", icon: "23", photo: "/img/couple/agenda/show.webp" },
+  { id: "party", time: "8:30 pm", icon: "31", photo: "/img/couple/agenda/party.webp" },
 ] as const;
 
 /** The week the wedding falls in, for the little calendar above the ribbon.
