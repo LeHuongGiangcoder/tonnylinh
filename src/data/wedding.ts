@@ -27,13 +27,15 @@ export const film = {
   poster: "/video/our-film-poster.webp",
 } as const;
 
-/** Where honeymoon gifts go. `qr` is a VietQR (NAPAS 247) code for exactly
- *  this account, with no amount set — regenerate it if the account changes. */
+/** Where honeymoon gifts go. `qr` is the bank's own VietQR (NAPAS 247) code
+ *  for exactly this account, with no amount set, cropped from the Techcombank
+ *  app's export (design-source/img/honeymoon-qr-techcombank.png). Replace it
+ *  if the account changes. */
 export const honeymoon = {
   bank: "Techcombank",
   accountName: "CHU DIEU LINH",
   accountNumber: "1903 2957 0500 18",
-  qr: "/img/honeymoon-qr.svg",
+  qr: "/img/honeymoon-qr.webp",
 } as const;
 
 /** Hardcoded for now — the backend will personalise this per invitation. */

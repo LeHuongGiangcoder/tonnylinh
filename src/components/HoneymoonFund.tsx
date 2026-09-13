@@ -1,5 +1,6 @@
 "use client";
 
+import Image from "next/image";
 import { honeymoon } from "@/data/wedding";
 import { useCopy } from "@/lib/lang";
 import { Rule } from "./Divider";
@@ -24,13 +25,14 @@ export function HoneymoonFund() {
 
         <Reveal delay={120}>
           <div className="fund__qr">
-            {/* An SVG, so next/image's optimiser has nothing to do with it. */}
-            {/* eslint-disable-next-line @next/next/no-img-element */}
-            <img
+            {/* Served as exported (32 KB): the optimiser's re-compression at
+                its default quality softens the modules a scanner reads. */}
+            <Image
               src={honeymoon.qr}
               alt={`VietQR — ${honeymoon.bank}, ${honeymoon.accountName}`}
-              width={240}
-              height={240}
+              width={900}
+              height={900}
+              unoptimized
             />
             <p className="fund__bank">{honeymoon.bank}</p>
           </div>

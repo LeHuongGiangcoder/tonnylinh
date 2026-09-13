@@ -947,9 +947,9 @@ body[data-locked="true"] {
   .letter__lily {
     position: absolute;
     z-index: 2;
-    left: 72%;
-    top: -9%;
-    width: 48%;
+    left: 71%;
+    top: 9%;
+    width: 46%;
     height: auto;
     rotate: 4deg;
     pointer-events: none;
@@ -967,9 +967,9 @@ body[data-locked="true"] {
     align-items: center;
     justify-content: center;
     gap: var(--space-3xs);
-    /* Percentages of the paper's width: a little more on the right, under
-       the lilies. */
-    padding: 10% 12% 6% 8%;
+    /* Even on both sides, so the writing is centred on the letter itself;
+       the lilies lie over the lace margin rather than the lines of type. */
+    padding: 8%;
     text-align: center;
     color: var(--color-ink);
   }
