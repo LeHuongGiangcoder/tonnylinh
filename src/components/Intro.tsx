@@ -69,7 +69,8 @@ export function Intro() {
 
   useEffect(() => {
     if (state !== "open") return;
-    const toCaption = setTimeout(() => setState("caption"), 3400);
+    // Long enough for the photo, which lands at 5.1s, to be seen at rest.
+    const toCaption = setTimeout(() => setState("caption"), 4000);
     return () => clearTimeout(toCaption);
   }, [state]);
 
