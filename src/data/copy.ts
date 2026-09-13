@@ -60,6 +60,10 @@ export type Copy = {
     /** Seven, in the same order as `weddingWeek.dates`. */
     days: readonly string[];
     events: Record<EventId, string>;
+    /** Under the programme: how to leave a heart on a photo. */
+    tapHint: string;
+    /** Screen-reader label for the heart, followed by the event's name. */
+    heart: string;
   };
 
   dresscode: {
@@ -90,8 +94,11 @@ export type Copy = {
     message: string;
     messagePlaceholder: string;
     submit: string;
+    sending: string;
+    error: string;
     thanksTitle: string;
     thanksBody: string;
+    thanksBodyDecline: string;
   };
 
   honeymoon: {
@@ -152,6 +159,8 @@ const en: Copy = {
       show: "Mini Show",
       party: "After Party",
     },
+    tapHint: "tap a photo to leave a heart",
+    heart: "Leave a heart on",
   },
 
   dresscode: {
@@ -188,8 +197,11 @@ const en: Copy = {
     message: "A note for us",
     messagePlaceholder: "Your wishes for the couple",
     submit: "Send my reply",
+    sending: "Sending…",
+    error: "Your reply didn't go through. Please try again in a moment.",
     thanksTitle: "Thank you",
     thanksBody: "Your reply is with us. We cannot wait to celebrate together on",
+    thanksBodyDecline: "Your reply is with us. We will miss you, and we're grateful for your wishes.",
   },
 
   honeymoon: {
@@ -256,6 +268,8 @@ const vi: Copy = {
       show: "Tiết mục đặc biệt",
       party: "Tiệc sau",
     },
+    tapHint: "chạm vào ảnh để thả tim",
+    heart: "Thả tim cho",
   },
 
   dresscode: {
@@ -263,7 +277,7 @@ const vi: Copy = {
     heading: "Dress Code",
     note: "Lịch sự & Trang nhã",
     description:
-      "Chúng mình rất mong được thấy bạn trong bốn sắc màu của ngày hôm ấy. Xin bạn tránh màu trắng và đỏ tươi để những khung hình của cô dâu chú rể luôn nổi bật.",
+      "Chúng mình rất mong bạn có thể chọn trang phục theo bảng màu sắc bên dưới để chúng mình cùng lên hình được đẹp nhất nhé.",
     colours: {
       black: "Đen",
       chocolate: "Nâu sô-cô-la",
@@ -292,9 +306,13 @@ const vi: Copy = {
     message: "Lời nhắn cho chúng mình",
     messagePlaceholder: "Lời chúc dành cho cô dâu chú rể",
     submit: "Gửi phản hồi",
+    sending: "Đang gửi…",
+    error: "Phản hồi chưa gửi được. Bạn thử lại sau giây lát nhé.",
     thanksTitle: "Cảm ơn bạn",
     thanksBody:
       "Chúng mình đã nhận được phản hồi của bạn. Hẹn gặp bạn trong ngày",
+    thanksBodyDecline:
+      "Chúng mình đã nhận được phản hồi của bạn. Tiếc vì không gặp được bạn, cảm ơn lời chúc của bạn nhiều nhé.",
   },
 
   honeymoon: {
@@ -309,7 +327,7 @@ const vi: Copy = {
     eyebrow: "Thương mến",
     heading: "Cảm ơn bạn",
     body:
-      "Sự hiện diện của bạn là món quà quý giá nhất. Cảm ơn bạn đã là một phần trong câu chuyện của chúng mình — và đồng hành cùng chúng mình sang trang mới.",
+      "Sự hiện diện của bạn là món quà quý giá nhất. Cảm ơn bạn đã là một phần trong câu chuyện của chúng mình — và đồng hành cùng chúng mình cho hành trình mới.",
     and: "và",
   },
 };

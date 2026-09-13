@@ -33,6 +33,8 @@
   --font-display: var(--ff-display), "TAN Aegean", serif;
   --font-pearl: var(--ff-pearl), "TAN Pearl", serif;
 
+  --font-name-vi: var(--ff-name-vi), "Noto Serif Display", Didot, serif;
+
   /* --- Type scale (fluid, mobile-first) -------------------------------- */
   --text-couple: clamp(3.25rem, 15vw, 5.5rem);   /* Hero / Thank-you names */
   --text-display: clamp(2.5rem, 11vw, 4rem);     /* Alex Brush hero heading */
@@ -98,6 +100,14 @@
 html {
   scroll-behavior: smooth;
   -webkit-text-size-adjust: 100%;
+}
+
+/* Mencken has no Vietnamese glyphs, so in Vietnamese every Mencken role takes
+   Noto Serif Display, narrowed to match. Faces without a width axis ignore
+   the stretch. */
+html[lang="vi"] {
+  --font-name: var(--font-name-vi);
+  font-stretch: 72%;
 }
 
 body {
@@ -1099,7 +1109,7 @@ body[data-locked="true"] {
 
   .weekstrip__month {
     font-family: var(--font-name);
-    font-size: var(--text-eyebrow);
+    font-size: var(--text-small);
     letter-spacing: var(--tracking-eyebrow);
     text-indent: var(--tracking-eyebrow);
     text-transform: uppercase;
@@ -1123,10 +1133,10 @@ body[data-locked="true"] {
 
   .weekstrip__name {
     font-family: var(--font-name);
-    font-size: clamp(0.5rem, 2.2vw, 0.625rem);
+    font-size: clamp(0.6875rem, 2.8vw, 0.8125rem);
     letter-spacing: 0.14em;
     text-transform: uppercase;
-    color: color-mix(in srgb, var(--color-ink) 55%, transparent);
+    color: color-mix(in srgb, var(--color-ink) 70%, transparent);
   }
 
   .weekstrip__date {
@@ -1135,7 +1145,7 @@ body[data-locked="true"] {
     width: 2em;
     height: 2em;
     font-family: var(--font-name);
-    font-size: var(--text-small);
+    font-size: clamp(1.125rem, 4.8vw, 1.375rem);
     color: var(--color-ink);
   }
 
@@ -1146,57 +1156,143 @@ body[data-locked="true"] {
     color: var(--color-ivory);
   }
 
-  /* The red silk, laid down the page, with the day's stops set in the hollows
-     of its turns — each on the side the ribbon has just swung away from. The
-     silk is a picture, so the stops are placed against ITS box in percentages
-     (STOPS in Agenda.tsx), measured off the asset's alpha. Re-cut the silk and
-     they have to be measured again. */
-  .thread {
-    position: relative;
+  /* The programme: the day laid out as polaroids on a wine panel, two to a
+     row. Each print carries its time as a pill and a heart the guest can
+     leave by tapping the photo; the event's name is written on the lip. */
+  .programme {
     width: 100%;
     margin-block-start: var(--space-md);
+    padding: var(--space-md) var(--space-sm) var(--space-sm);
+    border-radius: 1.25rem;
+    background:
+      linear-gradient(180deg, rgba(255, 255, 255, 0.06), rgba(255, 255, 255, 0) 40%),
+      var(--color-wine);
+    box-shadow:
+      inset 0 0 0 1px rgba(255, 255, 255, 0.12),
+      0 18px 36px rgba(64, 10, 21, 0.28);
   }
 
-  /* Shown whole: the final cut keeps both tapered ends of the cloth, so
-     nothing needs fading. */
-  .thread__silk {
-    display: block;
-    width: 100%;
-    height: auto;
-    filter: drop-shadow(0 14px 18px rgba(64, 10, 21, 0.28));
-    pointer-events: none;
+  .programme__span {
+    font-family: var(--font-name);
+    font-size: clamp(1.25rem, 5.4vw, 1.5rem);
+    letter-spacing: var(--tracking-wide);
+    color: var(--color-ivory);
+    margin-block-end: var(--space-md);
   }
 
-  .thread__stops {
-    position: absolute;
-    inset: 0;
+  .programme__grid {
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: var(--space-md) var(--space-sm);
     list-style: none;
     margin: 0;
     padding: 0;
   }
 
-  /* The drawing beside its time and title, not above them: a stop has to fit
-     the hollow of one turn, and the hollows are wider than they are tall. */
-  .thread__stop {
+  /* A print, a little askew — alternate ones lean the other way, so the grid
+     reads as photos laid down by hand rather than as tiles. */
+  .polaroid {
+    padding: 6% 6% 0;
+    background-color: #fbf8f1;
+    border-radius: 2px;
+    box-shadow: 0 10px 18px rgba(20, 3, 8, 0.35), 0 1px 2px rgba(20, 3, 8, 0.25);
+    rotate: -1.6deg;
+    transition: rotate var(--dur-base) var(--ease-silk), scale var(--dur-base) var(--ease-silk);
+  }
+
+  .polaroid:nth-child(even) { rotate: 1.4deg; }
+  .polaroid:nth-child(4n + 3) { rotate: 1deg; }
+  .polaroid:nth-child(4n + 4) { rotate: -1.2deg; }
+
+  .polaroid__print {
+    position: relative;
+    display: block;
+    width: 100%;
+    padding: 0;
+    border: 0;
+    background: #2a1a1a;
+    cursor: pointer;
+    overflow: hidden;
+    -webkit-tap-highlight-color: transparent;
+  }
+
+  .polaroid__print:focus-visible {
+    outline: 2px solid var(--color-gold);
+    outline-offset: 3px;
+  }
+
+  .polaroid__photo {
+    display: block;
+    width: 100%;
+    height: auto;
+    aspect-ratio: 4 / 5;
+    object-fit: cover;
+    transition: scale 900ms var(--ease-silk);
+  }
+
+  .polaroid__print:hover .polaroid__photo { scale: 1.04; }
+
+  .polaroid__time {
     position: absolute;
+    top: 0.5rem;
+    left: 0.5rem;
+    padding: 0.2rem 0.55rem;
+    border-radius: var(--radius-pill);
+    font-family: var(--font-name);
+    font-size: clamp(0.8125rem, 3.4vw, 0.9375rem);
+    line-height: 1.2;
+    letter-spacing: 0.02em;
+    color: var(--color-ivory);
+    background: rgba(40, 8, 16, 0.6);
+    backdrop-filter: blur(4px);
+  }
+
+  .polaroid__heart {
+    position: absolute;
+    right: 0.5rem;
+    bottom: 0.5rem;
+    display: grid;
+    place-items: center;
+    width: 2rem;
+    height: 2rem;
+    border-radius: 50%;
+    background: rgba(40, 8, 16, 0.55);
+    backdrop-filter: blur(4px);
+  }
+
+  .polaroid__heart svg {
+    fill: none;
+    stroke: var(--color-ivory);
+    stroke-width: 2;
+    transition: fill var(--dur-fast) var(--ease-silk), stroke var(--dur-fast) var(--ease-silk);
+  }
+
+  .polaroid[data-hearted="true"] .polaroid__heart svg {
+    fill: #e2425c;
+    stroke: #e2425c;
+    animation: heart-pop 480ms var(--ease-silk);
+  }
+
+  /* The lip: the wide white strip a polaroid is written on. */
+  .polaroid__title {
     display: flex;
     align-items: center;
     justify-content: center;
-    gap: var(--space-2xs);
-    width: 48%;
-    translate: -50% -50%;
+    gap: 0.35rem;
+    min-height: 3.4rem;
+    padding: 0.4rem 0.1rem;
+    font-family: var(--font-name);
+    font-size: clamp(0.8125rem, 3.5vw, 1rem);
+    letter-spacing: var(--tracking-wide);
+    text-transform: uppercase;
+    line-height: 1.15;
+    text-wrap: balance;
+    color: var(--color-ink);
   }
 
-  .thread__label {
-    display: grid;
-    justify-items: start;
-    gap: var(--space-3xs);
-    text-align: start;
-  }
-
-  .thread__icon {
+  .polaroid__icon {
     flex: none;
-    width: clamp(2.75rem, 12vw, 3.75rem);
+    width: 1.6rem;
     aspect-ratio: 1;
     background: var(--color-wine);
     mask-size: contain;
@@ -1207,22 +1303,14 @@ body[data-locked="true"] {
     -webkit-mask-repeat: no-repeat;
   }
 
-  .thread__time {
-    font-family: var(--font-body);
-    font-style: italic;
-    font-size: var(--text-lead);
-    line-height: 1;
-    color: var(--color-wine);
+  .programme__hint {
+    margin-block-start: var(--space-md);
+    font-family: var(--font-heading);
+    font-size: clamp(1.125rem, 4.8vw, 1.375rem);
+    color: var(--color-on-dark-muted);
   }
 
-  .thread__title {
-    font-family: var(--font-name);
-    font-size: var(--text-small);
-    letter-spacing: var(--tracking-wide);
-    text-transform: uppercase;
-    line-height: 1.2;
-    color: color-mix(in srgb, var(--color-ink) 82%, transparent);
-  }
+  .programme__hint span { color: #e2425c; }
 
   /* ========================================================================
      HONEYMOON FUND — the QR, mounted on ivory
@@ -1542,16 +1630,17 @@ body[data-locked="true"] {
     perspective-origin: 50% 34%;
   }
 
-  /* Tilted away at rest, settling flat and dropping down the stage as it opens
-     — the beat that sells the paper as an object on a table. */
+  /* Square to the viewer at rest — any tilt under perspective turns the
+     envelope into a trapezoid and its four corners stop matching — and
+     dropping down the stage as it opens to make room for the card. */
   .env__tilt {
     width: 100%;
-    transform: translate3d(0, 0, 0) rotateX(10deg);
+    transform: translate3d(0, 0, 0);
     transition: transform 1600ms var(--ease-silk);
   }
 
   .env__tilt[data-open="true"] {
-    transform: translate3d(0, 20%, 0) rotateX(0deg);
+    transform: translate3d(0, 20%, 0);
   }
 
   .env {
@@ -1561,7 +1650,10 @@ body[data-locked="true"] {
     /* For the flap alone. Everything else here is stacked, not sorted. */
     perspective: 1300px;
     perspective-origin: 50% 0%;
-    filter: drop-shadow(0 26px 34px rgba(20, 3, 8, 0.55));
+    /* A tight contact shadow under a wide soft one: the pair is what lifts
+       the paper off the silk rather than printing it on. */
+    filter: drop-shadow(0 3px 4px rgba(20, 3, 8, 0.45))
+            drop-shadow(0 28px 38px rgba(20, 3, 8, 0.55));
   }
 
   /* --- the back panel ---------------------------------------------------- */
@@ -1594,6 +1686,7 @@ body[data-locked="true"] {
   .env__pocket { z-index: 2; }
   .env__fold { z-index: 3; }
 
+  .env__pocket::before,
   .env__pocket::after,
   .env__fold::after {
     content: "";
@@ -1601,35 +1694,47 @@ body[data-locked="true"] {
     inset: 0;
   }
 
+  /* The two side flaps. Each is shaded as a face of its own: darkening
+     towards the centre, where the paper bows in to meet the other flaps. */
   .env__pocket::after {
     clip-path: url(#env-mouth);
-    background-color: #f0e6d0;
+    background-color: #efe4cc;
     background-image:
-      /* Light from the upper left, and the paper turning away at the foot. */
-      linear-gradient(148deg, rgba(255, 255, 255, 0.72), rgba(255, 255, 255, 0) 40%),
-      radial-gradient(130% 92% at 22% 8%, rgba(255, 255, 255, 0.5), rgba(255, 255, 255, 0) 58%),
-      linear-gradient(196deg, rgba(112, 74, 34, 0) 46%, rgba(112, 74, 34, 0.16)),
+      linear-gradient(90deg, rgba(255, 252, 242, 0.55), rgba(255, 252, 242, 0) 44%),
+      radial-gradient(60% 70% at 50% 52%, rgba(112, 74, 34, 0.16), rgba(112, 74, 34, 0) 70%),
       url("/img/paper.webp");
-    background-size: cover, cover, cover, 44%;
-    background-blend-mode: normal, normal, normal, multiply;
-    /* The shadow the mouth's cut edge throws UP onto the card behind it. A
-       drop-shadow follows the clipped silhouette, so it traces the V exactly —
-       a box-shadow would be cut away by the clip. */
-    filter: drop-shadow(0 -2px 6px rgba(58, 28, 10, 0.5));
+    background-size: cover, cover, 44%;
+    background-blend-mode: normal, normal, multiply;
+    /* The mouth's cut edge: a hairline of light along the paper's edge, then
+       the shadow it throws UP onto the card behind. A drop-shadow follows the
+       clipped silhouette, so both trace the V exactly. */
+    filter: drop-shadow(0 -1px 0 rgba(255, 250, 238, 0.7))
+            drop-shadow(0 -3px 6px rgba(58, 28, 10, 0.45));
   }
 
-  /* The bottom flap, folded up over the pocket. A hair lighter than the
-     pocket, with its own shadow above the fold — the seam that stops the front
-     reading as one blank sheet. */
+  /* The right side flap, turned away from the light. */
+  .env__pocket::before {
+    z-index: 1;
+    clip-path: url(#env-side-right);
+    background: linear-gradient(270deg, rgba(92, 60, 26, 0.07), rgba(92, 60, 26, 0.18));
+  }
+
+  /* The bottom flap, folded up over the sides: lit along its top, falling
+     into shade at the corners it is folded from, with a bright cut edge and a
+     crisp shadow cast onto the side flaps under it. */
   .env__fold::after {
     clip-path: url(#env-fold);
-    background-color: #f5ecd9;
+    background-color: #f4ead6;
     background-image:
-      linear-gradient(2deg, rgba(112, 74, 34, 0.14), rgba(255, 255, 255, 0.4) 60%),
+      linear-gradient(180deg, rgba(255, 252, 242, 0.5) 0%, rgba(255, 252, 242, 0) 45%,
+        rgba(112, 74, 34, 0.14) 100%),
+      radial-gradient(120% 60% at 50% 100%, rgba(112, 74, 34, 0), rgba(112, 74, 34, 0.08)),
       url("/img/paper.webp");
-    background-size: cover, 44%;
-    background-blend-mode: normal, multiply;
-    filter: drop-shadow(0 -2px 4px rgba(58, 28, 10, 0.30));
+    background-size: cover, cover, 44%;
+    background-blend-mode: normal, normal, multiply;
+    filter: drop-shadow(0 -1px 0 rgba(255, 250, 238, 0.85))
+            drop-shadow(0 -2px 3px rgba(58, 28, 10, 0.45))
+            drop-shadow(0 -7px 12px rgba(58, 28, 10, 0.2));
   }
 
   /* --- the flap: the V that folds all the way back ----------------------- */
@@ -1667,11 +1772,11 @@ body[data-locked="true"] {
     top: 0;
     left: 0;
     width: 100%;
-    /* 72% of the envelope's height, and the envelope is 1.42 : 1. That puts
-       the flap's point at 67% — a clear 12% BELOW the mouth's apex at 55%, so
-       the flap visibly overlaps the opening it closes. Cut it to meet the
-       mouth and its edge disappears into it and there is no flap to see. */
-    aspect-ratio: 1.42 / 0.72;
+    /* 66% of the envelope's height, and the envelope is 1.42 : 1. That puts
+       the flap's point at 64% — BELOW both the mouth's apex at 50% and the
+       bottom flap's at 58%, so the flap visibly laps over the fold it closes,
+       with its creases running from the same corners as the others. */
+    aspect-ratio: 1.42 / 0.66;
     backface-visibility: hidden;
   }
 
@@ -1716,7 +1821,8 @@ body[data-locked="true"] {
       url("/img/paper.webp");
     background-size: cover, cover, 44%;
     background-blend-mode: normal, normal, multiply;
-    filter: drop-shadow(0 12px 20px rgba(58, 28, 10, 0.42));
+    filter: drop-shadow(0 1px 0 rgba(255, 250, 238, 0.75))
+            drop-shadow(0 12px 20px rgba(58, 28, 10, 0.42));
   }
 
   /* Turned about the VERTICAL axis. Flipping it top to bottom would put the
@@ -1747,31 +1853,37 @@ body[data-locked="true"] {
   .env__seal {
     position: absolute;
     left: 50%;
-    top: 66%;
+    /* On the flap's tip, where it holds the three lower flaps shut. */
+    top: 59%;
     z-index: 6;
-    width: 15%;
+    width: 16%;
     aspect-ratio: 760 / 776;
     /* Centred with negative margins, not `translate`: the minifier drops an
        individual `translate` when the same rule also carries a `transform`.
        Percentage margins resolve against the containing block's WIDTH, which
        is what the seal's own size is derived from, so both axes land right. */
-    margin-left: -7.5%;
-    margin-top: -7.66%;
+    margin-left: -8%;
+    margin-top: -8.17%;
     padding: 0;
     border: 0;
     background: none;
     cursor: pointer;
-    transition: opacity 420ms var(--ease-silk),
-                scale 620ms var(--ease-silk),
-                rotate 620ms var(--ease-silk);
     animation: seal-breathe 3.4s var(--ease-silk) infinite;
   }
 
+  /* The exit lives on the wax, not the button, so the breathing can simply
+     pause where it is instead of snapping back to scale 1. */
   .env__seal img {
     display: block;
     width: 100%;
     height: auto;
+    /* The exit's longer filter list (with its blur) interpolates from this
+       one, so no `blur(0)` placeholder is needed here. */
     filter: drop-shadow(0 4px 6px rgba(20, 3, 8, 0.5));
+    transition: opacity 1100ms cubic-bezier(0.4, 0, 0.2, 1),
+                filter 1100ms cubic-bezier(0.4, 0, 0.2, 1),
+                translate 1300ms cubic-bezier(0.22, 1, 0.36, 1),
+                scale 1300ms cubic-bezier(0.22, 1, 0.36, 1);
   }
 
   .env__seal:focus-visible {
@@ -1780,12 +1892,21 @@ body[data-locked="true"] {
     border-radius: var(--radius-pill);
   }
 
+  /* Lifted off with the flap's first movement: it rises a little, grows as it
+     comes towards the viewer, and dissolves into a soft blur on the way. */
+  /* The button keeps focus after it is pressed, so its focus ring would be
+     left hanging where the wax was. */
   .env[data-open="true"] .env__seal {
-    animation: none;
-    opacity: 0;
-    scale: 0.8;
-    rotate: -16deg;
+    animation-play-state: paused;
     pointer-events: none;
+    outline: none;
+  }
+
+  .env[data-open="true"] .env__seal img {
+    opacity: 0;
+    filter: drop-shadow(0 10px 14px rgba(20, 3, 8, 0)) blur(3px);
+    translate: 0 -35%;
+    scale: 1.12;
   }
 
   /* --- the invitation ---------------------------------------------------- */
@@ -1800,10 +1921,51 @@ body[data-locked="true"] {
     left: 0;
     right: 0;
     bottom: 0;
-    top: -70%;
+    top: -110%;
     z-index: 1;
     overflow: hidden;
     pointer-events: none;
+  }
+
+  /* The couple's photograph, a print with a white border lying IN FRONT of the
+     invitation, clipped over its top-right corner — clear of the type, which
+     starts 0.23 of the envelope's height above its top edge. It rides straight
+     up a beat after the card, so it lands on the card rather than under it.
+
+     36% of the envelope's width comes to 0.46 of its height with the border.
+     At rest it sits inside the pocket, its head 0.54 down; open, it is pushed
+     up 290% of itself, so its head is 0.80 above the envelope's top edge and
+     its foot 0.34 above — over the card's corner (the card's head is at 0.45)
+     but above the eyebrow. Centred at 80% across, so its tilted corner stays
+     inside the well, which clips at the envelope's sides. */
+  .env__photo {
+    position: absolute;
+    left: 50%;
+    bottom: 0;
+    z-index: 1;
+    width: 36%;
+    /* Percentages of the WELL's width, as padding always is. */
+    padding: 1.6% 1.6% 5.4%;
+    /* Plain white, like a photographic print — not the stationery's paper. */
+    background-color: #fbf8f1;
+    box-shadow: 0 8px 16px rgba(20, 3, 8, 0.38), 0 1px 2px rgba(20, 3, 8, 0.24);
+    translate: 33% 0;
+    rotate: 0deg;
+    transition: translate 1900ms var(--ease-silk) 1300ms,
+                rotate 1900ms var(--ease-silk) 1300ms;
+  }
+
+  .env__photo img {
+    display: block;
+    width: 100%;
+    height: auto;
+    aspect-ratio: 1000 / 778;
+    object-fit: cover;
+  }
+
+  .env[data-open="true"] .env__photo {
+    translate: 33% -290%;
+    rotate: 6deg;
   }
 
   .env__card {
@@ -2047,6 +2209,8 @@ body[data-locked="true"] {
     .env__tilt,
     .env__flap,
     .env__card,
+    .env__photo,
+    .env__seal img,
     .env__card-content {
       transition-duration: 1ms;
       transition-delay: 0ms;
@@ -2075,6 +2239,12 @@ body[data-locked="true"] {
 /* ==========================================================================
    KEYFRAMES
    ========================================================================== */
+
+@keyframes heart-pop {
+  0%   { scale: 1; }
+  40%  { scale: 1.35; }
+  100% { scale: 1; }
+}
 
 @keyframes seal-breathe {
   0%, 100% { scale: 1; }

@@ -20,53 +20,52 @@ export function PaperDefs() {
       style={{ position: "absolute", width: 0, height: 0, overflow: "hidden" }}
     >
       <defs>
-        {/* The flap. Its sides run straight DOWN from the top corners before
-            the diagonal starts — 14% of the flap's box, which is the 10% of
-            the envelope where the mouth's own shoulders sit, so the closed
-            flap covers the opening right into the corners. The control points
-            then sit almost exactly on the straight line between corner and
-            point — the curve pulls barely a hundredth off it — so the edge
-            reads as a crease with a little life in it rather than as an arc.
-            The point itself is rounded off over the last 5%. */}
+        {/* The envelope is cut the classic way: four flaps whose creases all
+            run from the exact corners towards the centre, so every corner is
+            the same mitre. Only the tips are softened, over the last few
+            percent — the creases themselves are straight.
+
+            Heights, in fractions of the ENVELOPE:
+              0.50  where the side flaps meet — the bottom of the mouth
+              0.58  the bottom flap's tip, just under the mouth so it never
+                    pokes into the opening
+              0.64  the top flap's tip, lapping over both of them */}
+
+        {/* The top flap. Its box is 66% of the envelope's height, so the tip at
+            97% of the box lands at 0.64. */}
         <clipPath id="env-flap" clipPathUnits="objectBoundingBox">
           <path
-            d="M 0 0 L 1 0 L 1 0.14
-               C 0.87 0.37, 0.67 0.66, 0.53 0.93
-               C 0.515 0.975, 0.485 0.975, 0.47 0.93
-               C 0.33 0.66, 0.13 0.37, 0 0.14 Z"
+            d="M 0 0 L 1 0
+               L 0.535 0.93
+               Q 0.5 0.99, 0.465 0.93 Z"
           />
         </clipPath>
 
-        {/* The pocket's mouth: everything BELOW a V that dips to a soft point
-            at the centre. The card behind is read through the gap above it, so
-            its lower corners stay tucked in and only its middle comes down to
-            the point — which is what makes it look inserted rather than
-            propped in front. The shoulders sit at 10%, exactly where the
-            closed flap's own sides stop running straight down — any lower and
-            a wedge of bare back panel shows at each top corner; any higher and
-            the card is read through a narrow triangle instead of through the
-            width of the envelope. */}
+        {/* The two side flaps, as one shape: everything below the V the mouth
+            makes from the top corners to the centre. The card is read through
+            the triangle above it. */}
         <clipPath id="env-mouth" clipPathUnits="objectBoundingBox">
           <path
-            d="M 0 0.10
-               C 0.16 0.30, 0.34 0.46, 0.455 0.545
-               C 0.483 0.572, 0.517 0.572, 0.545 0.545
-               C 0.666 0.46, 0.84 0.30, 1 0.10
-               L 1 1 L 0 1 Z"
+            d="M 0 0
+               L 0.47 0.475
+               Q 0.5 0.505, 0.53 0.475
+               L 1 0 L 1 1 L 0 1 Z"
           />
         </clipPath>
 
-        {/* The bottom flap, folded up over the pocket. Its apex sits BELOW the
-            mouth's point, so it never pokes into the opening — it is only ever
-            a seam across the lower half, which is the detail that stops the
-            front reading as one blank sheet of paper. */}
+        {/* The right side flap alone, for its own shade: light comes from the
+            upper left, so this face is turned away from it. */}
+        <clipPath id="env-side-right" clipPathUnits="objectBoundingBox">
+          <path d="M 1 0 L 0.5 0.5 L 0.5 1 L 1 1 Z" />
+        </clipPath>
+
+        {/* The bottom flap, folded up over the sides from the bottom corners. */}
         <clipPath id="env-fold" clipPathUnits="objectBoundingBox">
           <path
-            d="M 0 0.95
-               C 0.16 0.88, 0.35 0.79, 0.46 0.735
-               C 0.484 0.723, 0.516 0.723, 0.54 0.735
-               C 0.65 0.79, 0.84 0.88, 1 0.95
-               L 1 1 L 0 1 Z"
+            d="M 0 1
+               L 0.465 0.6
+               Q 0.5 0.57, 0.535 0.6
+               L 1 1 Z"
           />
         </clipPath>
       </defs>

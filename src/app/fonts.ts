@@ -1,3 +1,4 @@
+import { Noto_Serif_Display } from "next/font/google";
 import localFont from "next/font/local";
 
 /** Cormorant Garamond — all body copy. Variable weight. */
@@ -34,6 +35,18 @@ export const mencken = localFont({
   display: "swap",
 });
 
+/**
+ * Noto Serif Display — stands in for Mencken in Vietnamese. Mencken has no
+ * Ơ, Ư, Đ or stacked tone marks; this is the nearest high-contrast narrow
+ * serif that does, narrowed on its width axis to Mencken's proportions.
+ */
+export const notoSerifDisplay = Noto_Serif_Display({
+  subsets: ["latin", "vietnamese"],
+  axes: ["wdth"],
+  variable: "--ff-name-vi",
+  display: "swap",
+});
+
 /** TAN Aegean / TAN Pearl — reserved display faces from the brand system. */
 export const tanAegean = localFont({
   src: "../fonts/tan-aegean.woff2",
@@ -54,6 +67,7 @@ export const fontVariables = [
   alexBrush.variable,
   edwardian.variable,
   mencken.variable,
+  notoSerifDisplay.variable,
   tanAegean.variable,
   tanPearl.variable,
 ].join(" ");
