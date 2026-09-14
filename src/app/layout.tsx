@@ -3,9 +3,9 @@ import { fontVariables } from "./fonts";
 import "./globals.css";
 
 export const metadata: Metadata = {
-  title: "Tony & Linh — Wedding Invitation",
+  title: "Linh & Tony — Wedding Invitation",
   description:
-    "With hearts full of joy, Tony and Linh invite you to celebrate their wedding day — 6 December 2026, An Lam Retreat, Saigon River House.",
+    "With hearts full of joy, Linh and Tony invite you to celebrate their wedding day — 6 December 2026, An Lam Retreat, Saigon River House.",
 };
 
 export const viewport: Viewport = {

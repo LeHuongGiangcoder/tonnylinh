@@ -145,13 +145,13 @@ export function Intro() {
                 <div className="env__card-content">
                   <p className="eyebrow">{t.intro.opened}</p>
                   <Rule />
-                  {/* One line: Tony & Linh. */}
+                  {/* One line: Linh & Tony. */}
                   <p className="env__names">
-                    {couple.groom.initial}
-                    {couple.groom.rest}
-                    <span className="env__amp"> &amp; </span>
                     {couple.bride.initial}
                     {couple.bride.rest}
+                    <span className="env__amp"> &amp; </span>
+                    {couple.groom.initial}
+                    {couple.groom.rest}
                   </p>
                 </div>
               </div>

@@ -43,9 +43,9 @@ export function ThankYou() {
 
             {/* Signed in script, the way a note is. */}
             <p className="closing__signature">
-              {couple.groom.initial}
-              {couple.groom.rest} {t.thanks.and} {couple.bride.initial}
-              {couple.bride.rest}
+              {couple.bride.initial}
+              {couple.bride.rest} {t.thanks.and} {couple.groom.initial}
+              {couple.groom.rest}
             </p>
           </div>
 
