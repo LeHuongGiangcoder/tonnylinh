@@ -18,5 +18,5 @@ export async function generateMetadata({ params }: PageProps<"/[slug]">): Promis
   const { slug } = await params;
   const guest = await getGuest(slug);
   if (!guest) return {};
-  return { title: `Tony & Linh — ${guest.name}` };
+  return { title: `Linh & Tony — ${guest.name}` };
 }

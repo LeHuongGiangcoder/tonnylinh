@@ -1,4 +1,4 @@
-# Tony & Linh — Design System
+# Linh & Tony — Design System
 
 Everything lives in [`src/app/globals.css`](src/app/globals.css). Build a new
 section by **applying these classes** — avoid one-off styles.

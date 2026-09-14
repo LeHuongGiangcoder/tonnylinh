@@ -31,7 +31,7 @@ export function Hero({ guestName }: { guestName: string | null }) {
             <div className="gilt__photo">
               <Image
                 src={heroPhoto.src}
-                alt={`${couple.groom.initial}${couple.groom.rest} & ${couple.bride.initial}${couple.bride.rest}`}
+                alt={`${couple.bride.initial}${couple.bride.rest} & ${couple.groom.initial}${couple.groom.rest}`}
                 width={heroPhoto.width}
                 height={heroPhoto.height}
                 sizes="(max-width: 34rem) 52vw, 16rem"
@@ -54,11 +54,11 @@ export function Hero({ guestName }: { guestName: string | null }) {
         <Reveal delay={220} className="hero__plate">
           <p className="hero__of">{t.hero.weddingOf}</p>
           <h1 className="hero__names">
-            {couple.groom.initial}
-            {couple.groom.rest}
-            <span className="hero__amp"> &amp; </span>
             {couple.bride.initial}
             {couple.bride.rest}
+            <span className="hero__amp"> &amp; </span>
+            {couple.groom.initial}
+            {couple.groom.rest}
           </h1>
           <p className="hero__date">{wedding.dateShort}</p>
         </Reveal>

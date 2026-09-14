@@ -1,7 +1,7 @@
 @import "tailwindcss";
 
 /* ==========================================================================
-   TONNY & LINH — DESIGN SYSTEM
+   LINH & TONNY — DESIGN SYSTEM
    Timeless & Elegant. Key element: the red silk ribbon.
    Mobile-first: every token is tuned for a 375–430px viewport, then scales up.
    Build sections by APPLYING the classes below — avoid one-off utilities.
@@ -2071,7 +2071,7 @@ body[data-locked="true"] {
   .env__card-content .stat { color: var(--color-wine); }
 
   /* Sized to the card, not to the page: the card is only ever about 280px
-     wide, and Tony & Linh has to fit on ONE line inside its head. */
+     wide, and Linh & Tony has to fit on ONE line inside its head. */
   .env__names {
     margin-block-start: var(--space-2xs);
     font-family: var(--font-initial);

@@ -328,7 +328,7 @@ function Postmark({ x, y, w, r }: Layout["postmark"]) {
       <circle cx="60" cy="60" r="36" fill="none" strokeWidth="1.5" />
       <text className="postmark__ring">
         <textPath href={`#${ring}`} startOffset="2%">
-          TONY &amp; LINH · WEDDING · TONY &amp; LINH ·
+          LINH &amp; TONY · WEDDING · LINH &amp; TONY ·
         </textPath>
       </text>
       <text x="60" y="56" textAnchor="middle" className="postmark__date">

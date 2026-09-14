@@ -1,5 +1,5 @@
 /**
- * Tony & Linh — the guest list and the RSVPs, on one tab.
+ * Linh & Tony — the guest list and the RSVPs, on one tab.
  *
  * The sheet is both where the guest list comes FROM (the website reads a guest
  * by their link) and where the replies go TO (the website writes each reply

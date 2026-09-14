@@ -208,8 +208,8 @@ const en: Copy = {
   },
 
   honeymoon: {
-    eyebrow: "Honeymoon",
-    heading: "Fund",
+    eyebrow: "Fund",
+    heading: "Honeymoon",
     body:
       "We're fortunate enough to have a home full of everything we need. If you would like to give us a wedding gift, we'd be very grateful to receive contributions towards our honeymoon, by scanning the QR code above.",
     account: "Or transfer to",
