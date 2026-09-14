@@ -36,7 +36,7 @@ export function Dresscode() {
             />
 
             <div className="held__card">
-              <p className="held__title">{t.dresscode.note}</p>
+              <p className="held__title heading--lines">{t.dresscode.note}</p>
               <ul className="swatches">
                 {palette.map((swatch) => (
                   <li key={swatch.id} className="swatch">
