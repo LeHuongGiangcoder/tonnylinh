@@ -1332,13 +1332,17 @@ body[data-locked="true"] {
 
   .fund__account { user-select: all; }
 
-  /* RSVP: a red satin bow under the reply card, centred, a little askew. */
+  /* RSVP: a red satin bow tied on at the foot of the reply card, centred and
+     a little askew — pulled up so its knot laps the card's bottom edge. */
   .rsvp__bow {
+    position: relative;
+    z-index: 1;
     display: block;
     width: min(36%, 10rem);
     height: auto;
-    margin: var(--space-md) auto 0;
+    margin: -1.25rem auto 0;
     rotate: -4deg;
+    filter: drop-shadow(0 4px 6px rgba(64, 10, 21, 0.25));
     pointer-events: none;
   }
 
