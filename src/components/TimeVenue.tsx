@@ -21,7 +21,7 @@ export function TimeVenue() {
       <div className="container center stack">
         <Reveal className="stack-sm">
           <p className="eyebrow">{t.details.eyebrow}</p>
-          <h2 className="heading">{t.details.heading}</h2>
+          <h2 className="heading heading--lines">{t.details.heading}</h2>
           <Rule />
         </Reveal>
 

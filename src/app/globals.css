@@ -284,6 +284,10 @@ body[data-locked="true"] {
   .heading--lg { font-size: var(--text-display); }
   .heading--sm { font-size: var(--text-h2); }
 
+  /* A heading whose copy carries its own line breaks (a 
+ in copy.ts). */
+  .heading--lines { white-space: pre-line; }
+
   /* Couple name — All Edwardian Script. See <CoupleName />. */
   .couple-name {
     font-family: var(--font-initial);
