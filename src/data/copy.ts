@@ -245,7 +245,7 @@ const vi: Copy = {
 
   gallery: {
     eyebrow: "Khoảnh khắc",
-    heading: "Chúng mình, qua ảnh",
+    heading: "Album ảnh của chúng mình",
     prev: "Trang trước",
     next: "Trang tiếp theo",
     tapHint: "chạm vào ảnh để thả tim",
@@ -254,7 +254,8 @@ const vi: Copy = {
 
   details: {
     eyebrow: "Lưu lại ngày này",
-    heading: "Thời gian & Địa điểm",
+    // The line break is kept (see .heading--lines): "& Địa điểm" on its own line.
+    heading: "Thời gian\n& Địa điểm",
     day: "Ngày cưới",
     place: "Địa điểm",
     date: "Chủ Nhật, ngày 6 tháng 12 năm 2026",
