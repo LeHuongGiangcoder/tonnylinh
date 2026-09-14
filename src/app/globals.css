@@ -981,85 +981,120 @@ body[data-locked="true"] {
   }
 
   /* ========================================================================
-     TIME & VENUE — both facts written on one sheet of note paper, sealed
+     TIME & VENUE — the place card of a laid table
 
-     note-paper.webp is a sheet of deckle-edged cotton paper, cut to its own
-     bounds (its torn edges run about 3% in). A wax seal (the intro's
-     seal.webp) is pressed over its head, breaking the top edge, and the
-     writing sits in the paper below it.
+     venue-setting.webp is a silver charger between fork and knife with a blank
+     card on it, cut to its own bounds (1400 × 1136). The card's embossed inner
+     border, measured off the picture, runs 21.4%–78.9% across and 28.3%–72.4%
+     down; the writing sits inside it. Re-cut the picture and these have to be
+     measured again.
 
-     The letter leans a degree, like a sheet laid on a table, and casts one
-     soft shadow onto the damask.
+     The wax seal is pressed on the card's top-right corner — off the lines of
+     type, which fill the card — and the burgundy callas lie across the fork's
+     handle and the charger's rim below the card, their stems hanging past the
+     picture's foot.
+
+     Everything on the card is sized in container units (cqw) of the setting,
+     so the writing keeps its place on the card at any width.
      ======================================================================== */
 
-  .letter {
+  .setting {
     position: relative;
-    width: 88%;
-    aspect-ratio: 900 / 1356;
-    margin-inline: auto;
-    margin-block-start: var(--space-lg);
-    rotate: -1deg;
-    filter: drop-shadow(0 18px 26px rgba(20, 3, 8, 0.5));
+    container-type: inline-size;
+    /* Out over most of the section's side padding: the card is only 57% of
+       the picture, and every pixel of the picture is a pixel of card. */
+    margin-inline: calc(var(--section-pad-left) * -0.75);
+    /* Room for the stems that hang below the picture. */
+    margin-block-end: 14%;
   }
 
-  .letter__sheet {
-    position: absolute;
-    inset: 0;
+  .setting__table {
+    display: block;
     width: 100%;
-    height: 100%;
-    pointer-events: none;
-  }
-
-  /* Centred on the top edge, a little over half of it above the paper. */
-  .letter__seal {
-    position: absolute;
-    z-index: 2;
-    left: 50%;
-    top: 0;
-    width: 22%;
     height: auto;
-    translate: -50% -42%;
-    rotate: 8deg;
-    filter: drop-shadow(0 4px 6px rgba(20, 3, 8, 0.45));
+    filter: drop-shadow(0 16px 22px rgba(20, 3, 8, 0.45));
     pointer-events: none;
   }
 
-  /* Clear of the seal at the top and of the torn edges all round. */
-  .letter__writing {
+  .setting__card {
     position: absolute;
     z-index: 1;
-    inset: 14% 9% 7%;
+    inset: 29.5% 22.5% 29% 22.5%;
     display: flex;
     flex-direction: column;
     align-items: center;
     justify-content: center;
-    gap: var(--space-3xs);
+    gap: 0.5cqw;
     text-align: center;
     color: var(--color-ink);
   }
 
-  .letter__writing .eyebrow { color: var(--color-gold-deep); }
-  .letter__writing .rule { color: var(--color-gold); margin-block: var(--space-2xs); }
+  .setting__card .eyebrow {
+    font-size: 2.35cqw;
+    letter-spacing: 0.22em;
+    text-indent: 0.22em;
+    line-height: 1.1;
+    color: var(--color-gold-deep);
+  }
 
-  .letter__writing .stat {
-    font-size: clamp(1.125rem, 5vw, 1.375rem);
-    line-height: 1.2;
+  .setting__card .stat {
+    font-size: 4.4cqw;
+    line-height: 1.1;
     color: var(--color-wine);
   }
 
-  .letter__writing .body-text {
-    font-size: clamp(0.8125rem, 3.5vw, 0.95rem);
-    line-height: 1.35;
-    color: color-mix(in srgb, var(--color-ink) 80%, transparent);
+  .setting__card .body-text {
+    font-size: 2.9cqw;
+    line-height: 1.25;
+    color: color-mix(in srgb, var(--color-ink) 82%, transparent);
   }
 
-  /* Smaller than the page's 48px button: it is written on the letter, and the
-     paper has only so much room under the address. */
-  .letter__writing .btn {
-    margin-block-start: var(--space-xs);
-    min-height: 2.25rem;
-    padding-inline: var(--space-sm);
-    font-size: clamp(0.6rem, 2.6vw, 0.7rem);
+  /* A short gold hairline with a diamond — the page's .rule, drawn to the
+     card's scale. */
+  .setting__rule {
+    position: relative;
+    width: 22cqw;
+    height: 1px;
+    margin-block: 1.4cqw;
+    background: linear-gradient(90deg, transparent, var(--color-gold) 25%,
+      var(--color-gold) 75%, transparent);
+  }
+
+  .setting__rule::after {
+    content: "";
+    position: absolute;
+    left: 50%;
+    top: 50%;
+    width: 1.4cqw;
+    height: 1.4cqw;
+    background: var(--color-gold);
+    translate: -50% -50%;
+    rotate: 45deg;
+  }
+
+  .setting__seal {
+    position: absolute;
+    z-index: 2;
+    left: 81%;
+    top: 26%;
+    width: 13%;
+    height: auto;
+    translate: -50% -50%;
+    rotate: 14deg;
+    filter: drop-shadow(0 3px 5px rgba(20, 3, 8, 0.45));
+    pointer-events: none;
+  }
+
+  .setting__calla {
+    position: absolute;
+    z-index: 3;
+    left: 0;
+    top: 66%;
+    width: 38%;
+    height: auto;
+    rotate: -22deg;
+    filter: drop-shadow(0 10px 14px rgba(20, 3, 8, 0.5));
+    pointer-events: none;
   }
 
   /* ========================================================================

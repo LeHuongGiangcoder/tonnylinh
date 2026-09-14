@@ -141,17 +141,22 @@ tied with `.panel__ribbon`) · `.field` `.fieldset` `.label` `.input` `.select`
 `.textarea` · `.choice-group` (`--stack` for one per row) `.choice` (radio and
 checkbox pills) · `.reel` (the gallery's carousel) `.album` `.print`
 `.postmark` (its pages) · `.weekstrip` · `.thread` `.thread__silk`
-`.thread__stop` (the agenda) · `.letter` `.letter__seal` · `.fund__intl` ·
+`.thread__stop` (the agenda) · `.setting` (time & venue) · `.fund__intl` ·
 `.gilt` (the hero's
 framed portrait) · `.langswitch` (via `<LanguageToggle>`) · `.emblem` (via
 `<Emblem>`, a gold motif centred above a section label) · `.lace` (via
 `<Lace>`) · `.reveal` (via `<Reveal>`)
 
-Time & Venue is written on one sheet of deckle-edged note paper
-(`note-paper.webp`), leaning a degree, with the intro's wax seal (`seal.webp`)
-pressed over the middle of its top edge. The writing sits in the paper below the
-seal, clear of the torn edges. The lace-edged letter and its calla lilies it
-replaced are in `assets/retired/`.
+Time & Venue is written on the place card of a laid table (`venue-setting.webp`):
+a silver charger between fork and knife, the card on it sealed with wax at its
+top-right corner (`seal.webp`), and a bouquet of burgundy callas
+(`venue-calla-bouquet.webp`) laid across the fork and the charger's rim, its
+stems hanging below the picture. The writing fills the card's embossed inner
+border — measured at 21.4%–78.9% across and 28.3%–72.4% down the picture — and
+is sized in container units (`cqw`) of `.setting`, so it keeps its place on the
+card at any width. The card only has room for the facts, so *View on map* is a
+button under the table. The note-paper letter and the lace letter before it are
+in `assets/retired/`.
 
 The honeymoon fund gives the local account first, then — under a hairline, as
 a second set — what a transfer from abroad needs: the bank's English name and
