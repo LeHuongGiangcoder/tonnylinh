@@ -901,23 +901,15 @@ body[data-locked="true"] {
   .reel__count span { color: var(--color-gold-deep); }
 
   /* ========================================================================
-     SECTION FURNITURE — the lace that hems a seam
+     SECTION FURNITURE — the silk swag over a seam
 
-     Where a red ground meets the cream one below it, the change of ground is
-     not left as a ruled line. There are two dressings:
-
-     LACE sits INSIDE the cream section, which pays for it out of its own top
-     padding — a band of the red carried down and hemmed with lace, whose
-     scallop hangs into the cream. Both sections stay free to clip their own
-     contents.
-
-     The SILK SWAG hangs off the FOOT of the section above and falls across the
-     boundary, so it can cover not just the seam but whatever that section cuts
-     off at its own edge — the hand photograph in the dress code stands right
-     on it. That costs the section above its clipping and its foot padding.
+     Sections butt straight against each other and the change of ground is the
+     break. The one seam still dressed is under the dress code: the SILK SWAG
+     hangs off the FOOT of the section above and falls across the boundary, so
+     it can cover not just the seam but whatever that section cuts off at its
+     own edge — the hand photograph in the dress code stands right on it. That
+     costs the section above its clipping and its foot padding.
      ======================================================================== */
-
-  .section--laced { padding-top: calc(var(--section-pad-top) + 5rem); }
 
   /* The section the swag hangs off. It has to stop clipping AND out-stack the
      one below it — every section isolates, so without the z-index the next
@@ -958,26 +950,6 @@ body[data-locked="true"] {
     height: auto;
     margin-block-start: -1px;
     filter: drop-shadow(0 6px 10px rgba(30, 5, 12, 0.45));
-  }
-
-  /* Pulled a couple of pixels above the section's top edge. The asset is
-     cropped to its own bounds and opaque edge to edge from its third row, so
-     that is enough to put solid braid on the join — and it needs no band of
-     ground behind it, which is what used to show as a patch of the wrong red
-     whenever the section above was the silk rather than the damask. The
-     section clips the overhang. */
-  .lace {
-    position: absolute;
-    inset-inline: 0;
-    top: -2px;
-    z-index: 0;
-    pointer-events: none;
-  }
-  .lace__band {
-    display: block;
-    width: 100%;
-    height: auto;
-    filter: drop-shadow(0 3px 5px rgba(40, 8, 16, 0.35));
   }
 
   /* ========================================================================
@@ -1082,6 +1054,16 @@ body[data-locked="true"] {
     translate: -50% -50%;
     rotate: 14deg;
     filter: drop-shadow(0 3px 5px rgba(20, 3, 8, 0.45));
+    pointer-events: none;
+  }
+
+  /* Under the map button, centred, a little askew. */
+  .setting__bow {
+    display: block;
+    width: min(36%, 10rem);
+    height: auto;
+    margin: var(--space-md) auto 0;
+    rotate: -4deg;
     pointer-events: none;
   }
 
@@ -1262,7 +1244,6 @@ body[data-locked="true"] {
     display: block;
     width: 100%;
     height: auto;
-    filter: drop-shadow(0 14px 18px rgba(64, 10, 21, 0.28));
     pointer-events: none;
   }
 

@@ -17,10 +17,8 @@ import { LanguageProvider } from "@/lib/lang";
  * earlier reply already filled in.
  *
  * Sections butt straight against each other, and the change of ground is the
- * break. Where a red ground meets the cream one below it that seam is dressed:
- * with lace (<Lace />) everywhere, and with the red silk swag (<Drape />) at
- * the one seam below the dress code. Either goes in as the first child of the
- * cream section, which pays for it out of its own top padding.
+ * break. The one seam still dressed is below the dress code, where the red
+ * silk swag (<Drape />) hangs off its foot across into the RSVP.
  */
 export function Invitation({ guest }: { guest: Guest | null }) {
   return (

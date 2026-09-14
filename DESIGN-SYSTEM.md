@@ -85,28 +85,12 @@ Heading, eyebrow and label colours flip automatically with the
 ground — no per-section overrides needed.
 
 **Sections butt straight against each other** and the change of ground *is* the
-break — except where a red ground meets the cream one below it. There the seam
-is dressed, and there are two dressings:
+break. The one seam still dressed is dress code → RSVP, with `<Drape />`
+(`section--spill` on the dress code, `section--under-spill` on the RSVP). The
+lace that once hemmed hero → gallery and time & venue → agenda was taken off at
+the couple's request; `Lace.tsx` is gone and `lace.webp` is in
+`assets/retired/`.
 
-| Seam | Dressing | Classes |
-|---|---|---|
-| hero → gallery | `<Lace />` | `section--laced` on the gallery |
-
-Time & venue → agenda is the one red-to-cream seam left undressed, by the
-couple's choice: the lace there was taken off.
-| dress code → RSVP | `<Drape />` | `section--spill` on the dress code, `section--under-spill` on the RSVP |
-
-The two hang differently, and it matters:
-
-- **Lace** (`src/components/Lace.tsx`) goes in as the **first child of the
-  cream section**, which buys the room out of its own top padding — so the seam
-  lives inside the section below it and both sections stay free to clip their
-  own contents. It needs nothing behind it: `lace.webp` is cropped to its own
-  bounds and opaque edge to edge from its third row, so pulling it 2px above
-  the section's top edge puts solid braid on the join. An earlier version sat
-  it on a band of red damask to guarantee that, which showed as a rectangular
-  patch of the wrong red wherever the section above was the silk rather than
-  the damask.
 - **The silk swag** (`src/components/Drape.tsx`) goes in **last in the section
   above** and falls across the boundary, so it can cover not just the seam but
   whatever that section cuts off at its own edge — the hand photograph in the
@@ -144,8 +128,8 @@ checkbox pills) · `.reel` (the gallery's carousel) `.album` `.print`
 `.thread__stop` (the agenda) · `.setting` (time & venue) · `.fund__intl` ·
 `.gilt` (the hero's
 framed portrait) · `.langswitch` (via `<LanguageToggle>`) · `.emblem` (via
-`<Emblem>`, a gold motif centred above a section label) · `.lace` (via
-`<Lace>`) · `.reveal` (via `<Reveal>`)
+`<Emblem>`, a gold motif centred above a section label) · `.reveal` (via
+`<Reveal>`)
 
 Time & Venue is written on the place card of a laid table (`venue-setting.webp`):
 a silver charger between fork and knife, the card on it sealed with wax at its
@@ -155,7 +139,8 @@ stems hanging below the picture. The writing fills the card's embossed inner
 border — measured at 21.4%–78.9% across and 28.3%–72.4% down the picture — and
 is sized in container units (`cqw`) of `.setting`, so it keeps its place on the
 card at any width. The card only has room for the facts, so *View on map* is a
-button under the table. The note-paper letter and the lace letter before it are
+button under the table, with a red satin bow (`ribbon.webp`, `.setting__bow`)
+tied under it. The note-paper letter and the lace letter before it are
 in `assets/retired/`.
 
 The honeymoon fund gives the local account first, then — under a hairline, as
@@ -176,7 +161,8 @@ of red satin (`agenda-silk-full.webp`), with each stop — its line drawing, tim
 and title — set in the hollow of one turn, on the side the ribbon has just
 swung away from. The stops are placed against the picture's box in percentages
 (`STOPS` in `Agenda.tsx`), measured off the asset's alpha; re-cut the silk and
-they have to be measured again.
+they have to be measured again. The silk casts no shadow: it lies flat on the
+paper.
 
 The silk is loud, so the stops carry weight: a large, semibold italic time, a
 title in full ink, and a soft ivory halo behind both that lifts them off any
