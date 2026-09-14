@@ -1,7 +1,7 @@
 "use client";
 
 import Image from "next/image";
-import { couple, guest, heroPhoto, wedding } from "@/data/wedding";
+import { couple, heroPhoto, wedding } from "@/data/wedding";
 import { LanguageToggle, useCopy } from "@/lib/lang";
 import { Reveal } from "./Reveal";
 
@@ -10,8 +10,11 @@ import { Reveal } from "./Reveal";
  * and the title card beneath it — THE WEDDING OF, the names in script, the
  * date — the way a painting in a hall carries its plate. The guest's own name
  * follows, so the invitation is addressed before the page moves on.
+ *
+ * `guestName` comes from the guest's personal link; on the plain address there
+ * is none, and the invitation is addressed to every guest instead.
  */
-export function Hero() {
+export function Hero({ guestName }: { guestName: string | null }) {
   const t = useCopy();
 
   return (
@@ -62,8 +65,7 @@ export function Hero() {
 
         <Reveal delay={320} className="hero__address">
           <p className="eyebrow">{t.hero.dear}</p>
-          {/* Personalised per invitation — hardcoded until the backend lands. */}
-          <p className="stat">{guest.name}</p>
+          <p className="stat">{guestName ?? t.hero.everyone}</p>
           <p className="note body-text--muted">{t.hero.invitation}</p>
         </Reveal>
       </div>

@@ -38,15 +38,9 @@ export const honeymoon = {
   qr: "/img/honeymoon-qr.webp",
 } as const;
 
-/** Hardcoded for now — the backend will personalise this per invitation. */
-export const guest = {
-  name: "Mr. & Mrs. Nguyen",
-} as const;
-
-/** `icon` names a file in /public/img/icon — the red line drawings that mark
- *  each stop on the ribbon. Titles are in copy.ts, keyed by `id`. */
-/** Each photo is a 4:5 crop (720×900) of the matching shot in
- *  public/img/couple/agenda/, framed on the couple. */
+/** One polaroid per event. `icon` names a line drawing in /public/img/icon;
+ *  `photo` is a 4:5 crop (720×900) of the matching shot, framed on the couple.
+ *  Titles are in copy.ts, keyed by `id`. */
 export const agenda = [
   { id: "welcome", time: "3:00 pm", icon: "11", photo: "/img/couple/agenda/welcome.webp" },
   { id: "ceremony", time: "4:00 pm", icon: "15", photo: "/img/couple/agenda/ceremony.webp" },

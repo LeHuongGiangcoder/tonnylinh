@@ -31,6 +31,8 @@ export type Copy = {
   hero: {
     weddingOf: string;
     dear: string;
+    /** Who the hero addresses when there is no personal link. */
+    everyone: string;
     invitation: string;
   };
 
@@ -125,6 +127,7 @@ const en: Copy = {
   hero: {
     weddingOf: "The wedding of",
     dear: "Dear",
+    everyone: "Our dear guest",
     invitation: "Together with our families, we joyfully invite you to our wedding",
   },
 
@@ -234,6 +237,7 @@ const vi: Copy = {
   hero: {
     weddingOf: "Lễ thành hôn của",
     dear: "Kính gửi",
+    everyone: "Quý khách thân mến",
     invitation: "Cùng gia đình hai bên, chúng mình kính mời bạn đến chung vui ngày cưới",
   },
 

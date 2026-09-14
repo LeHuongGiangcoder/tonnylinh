@@ -2,56 +2,57 @@
 
 import { useState, type FormEvent } from "react";
 import { wedding } from "@/data/wedding";
+import type { Guest } from "@/lib/guests";
 import { useCopy, useLang } from "@/lib/lang";
 import { Rule } from "./Divider";
 import { Emblem } from "./Ornament";
 import { Reveal } from "./Reveal";
 
-/** The Google Apps Script web app that appends each reply to the RSVP sheet. */
-const ENDPOINT = process.env.NEXT_PUBLIC_RSVP_ENDPOINT;
-
 type Status = "idle" | "sending" | "sent" | "error";
 
-export function Rsvp() {
+/**
+ * The reply form. On a personal link the guest is already known — the sheet
+ * has their name — so they are not asked for it, and whatever they answered
+ * last time is filled in: sending again updates their row rather than adding
+ * one. On the plain address they type their name and get a row of their own.
+ */
+export function Rsvp({ guest }: { guest: Guest | null }) {
   const t = useCopy();
   const { lang } = useLang();
-  const [attending, setAttending] = useState<"yes" | "no">("yes");
+  const [attending, setAttending] = useState<"yes" | "no">(
+    guest?.attending === false ? "no" : "yes",
+  );
   const [status, setStatus] = useState<Status>("idle");
+
+  const helpAsked = guest?.help.split(",").map((h) => h.trim()) ?? [];
 
   async function handleSubmit(event: FormEvent<HTMLFormElement>) {
     event.preventDefault();
     const form = new FormData(event.currentTarget);
+    const field = (name: string) => String(form.get(name) ?? "");
 
     // Questions for a guest who is coming are not rendered for one who isn't,
     // so they arrive empty rather than as stale defaults.
     const reply = {
-      name: form.get("name") ?? "",
-      contact: form.get("contact") ?? "",
-      attending,
-      guests: form.get("guests") ?? "",
-      diet: form.get("diet") ?? "",
+      slug: guest?.slug,
+      name: guest?.name ?? field("name"),
+      contact: field("contact"),
+      attending: attending === "yes",
+      guests: field("guests"),
+      diet: field("diet"),
       help: form.getAll("help").join(", "),
-      message: form.get("message") ?? "",
+      message: field("message"),
       lang,
     };
 
-    if (!ENDPOINT) {
-      console.error("NEXT_PUBLIC_RSVP_ENDPOINT is not set; the reply was not sent.");
-      setStatus("error");
-      return;
-    }
-
     setStatus("sending");
     try {
-      // Apps Script can't answer a CORS preflight, so the body goes as plain
-      // text and the response is opaque: a network failure still throws.
-      await fetch(ENDPOINT, {
+      const res = await fetch("/api/rsvp", {
         method: "POST",
-        mode: "no-cors",
-        headers: { "Content-Type": "text/plain;charset=utf-8" },
+        headers: { "Content-Type": "application/json" },
         body: JSON.stringify(reply),
       });
-      setStatus("sent");
+      setStatus(res.ok ? "sent" : "error");
     } catch {
       setStatus("error");
     }
@@ -80,20 +81,23 @@ export function Rsvp() {
             </div>
           ) : (
             <form className="card stack" onSubmit={handleSubmit}>
-              <div className="field">
-                <label className="label" htmlFor="rsvp-name">
-                  {t.rsvp.name}
-                </label>
-                <input
-                  id="rsvp-name"
-                  name="name"
-                  type="text"
-                  className="input"
-                  placeholder={t.rsvp.namePlaceholder}
-                  autoComplete="name"
-                  required
-                />
-              </div>
+              {/* On a personal link the hero has already named them. */}
+              {!guest && (
+                <div className="field">
+                  <label className="label" htmlFor="rsvp-name">
+                    {t.rsvp.name}
+                  </label>
+                  <input
+                    id="rsvp-name"
+                    name="name"
+                    type="text"
+                    className="input"
+                    placeholder={t.rsvp.namePlaceholder}
+                    autoComplete="name"
+                    required
+                  />
+                </div>
+              )}
 
               <div className="field">
                 <label className="label" htmlFor="rsvp-contact">
@@ -105,6 +109,7 @@ export function Rsvp() {
                   type="text"
                   className="input"
                   placeholder={t.rsvp.contactPlaceholder}
+                  defaultValue={guest?.contact}
                   required
                 />
               </div>
@@ -148,7 +153,12 @@ export function Rsvp() {
                     <label className="label" htmlFor="rsvp-guests">
                       {t.rsvp.guests}
                     </label>
-                    <select id="rsvp-guests" name="guests" className="select" defaultValue="1">
+                    <select
+                      id="rsvp-guests"
+                      name="guests"
+                      className="select"
+                      defaultValue={guest?.guests || "1"}
+                    >
                       {[1, 2, 3, 4, 5].map((n) => (
                         <option key={n} value={n}>
                           {n}
@@ -167,6 +177,7 @@ export function Rsvp() {
                       type="text"
                       className="input"
                       placeholder={t.rsvp.dietPlaceholder}
+                      defaultValue={guest?.diet}
                     />
                   </div>
 
@@ -185,6 +196,7 @@ export function Rsvp() {
                             type="checkbox"
                             name="help"
                             value={option.id}
+                            defaultChecked={helpAsked.includes(option.id)}
                           />
                           <label className="choice__label" htmlFor={`rsvp-help-${option.id}`}>
                             {option.label}
@@ -205,6 +217,7 @@ export function Rsvp() {
                   name="message"
                   className="textarea"
                   placeholder={t.rsvp.messagePlaceholder}
+                  defaultValue={guest?.message}
                 />
               </div>
 
