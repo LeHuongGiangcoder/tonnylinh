@@ -60,12 +60,13 @@ export const weddingWeek = {
   theDay: 6,
 } as const;
 
-/** The four colours of the day. Names are translated in copy.ts by `id`. */
+/** The four colours of the day, matched to the couple's mood board (deep
+ *  burgundy, olive and chocolate). Names are translated in copy.ts by `id`. */
 export const palette = [
   { id: "black", hex: "#111111" },
-  { id: "chocolate", hex: "#3a2a22" },
-  { id: "burgundy", hex: "#600f20" },
-  { id: "olive", hex: "#6e7a33" },
+  { id: "chocolate", hex: "#36231c" },
+  { id: "burgundy", hex: "#4a0c14" },
+  { id: "olive", hex: "#535e1f" },
 ] as const;
 
 /** The photograph set in the gilt frame on the hero. */

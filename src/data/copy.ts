@@ -240,7 +240,7 @@ const vi: Copy = {
     weddingOf: "Lễ thành hôn của",
     dear: "Kính gửi",
     everyone: "Quý khách thân mến",
-    invitation: "Cùng gia đình hai bên, chúng mình kính mời bạn đến chung vui ngày cưới",
+    invitation: "Cùng gia đình hai bên, chúng mình thân mời bạn đến chung vui ngày cưới",
   },
 
   gallery: {
@@ -282,9 +282,11 @@ const vi: Copy = {
   dresscode: {
     eyebrow: "Trang phục",
     heading: "Dress Code",
-    note: "Lịch sự & Trang nhã",
+    // Broken before "&" (see .heading--lines).
+    note: "Lịch sự
+& Trang nhã",
     description:
-      "Chúng mình rất mong bạn có thể chọn trang phục theo bảng màu sắc bên dưới để chúng mình cùng lên hình được đẹp nhất nhé.",
+      "Chúng mình rất mong các bạn sẽ xuất hiện thật đẹp trong những bộ trang phục với bảng màu bên dưới nhé:",
     colours: {
       black: "Đen",
       chocolate: "Nâu sô-cô-la",
@@ -295,7 +297,9 @@ const vi: Copy = {
 
   rsvp: {
     eyebrow: "Bạn sẽ đến chứ?",
-    heading: "Xác nhận tham dự",
+    // Broken after "nhận" (see .heading--lines).
+    heading: "Xác nhận
+tham dự",
     deadline: "Vui lòng phản hồi trước ngày 6 tháng 11 năm 2026",
     name: "Tên của bạn",
     namePlaceholder: "Họ và tên",
@@ -336,7 +340,7 @@ const vi: Copy = {
     eyebrow: "Thương mến",
     heading: "Cảm ơn bạn",
     body:
-      "Sự hiện diện của bạn là món quà quý giá nhất. Cảm ơn bạn đã là một phần trong câu chuyện của chúng mình — và đồng hành cùng chúng mình cho hành trình mới.",
+      "Cảm ơn bạn đã là một phần trong câu chuyện của chúng mình, hãy tiếp tục đồng hành cùng nhau trong hành trình mới sắp tới nhé!",
     and: "và",
   },
 };

@@ -75,7 +75,7 @@ export function Rsvp({ guest }: { guest: Guest | null }) {
         <Reveal className="stack-sm">
           <Emblem name="crest" />
           <p className="eyebrow">{t.rsvp.eyebrow}</p>
-          <h2 className="heading">{t.rsvp.heading}</h2>
+          <h2 className="heading heading--lines">{t.rsvp.heading}</h2>
           <Rule />
           <p className="body-text body-text--muted">{t.rsvp.deadline}</p>
         </Reveal>

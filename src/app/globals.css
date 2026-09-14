@@ -1583,6 +1583,9 @@ body[data-locked="true"] {
     font-style: italic;
     font-size: 0.5em;
     color: var(--color-on-dark);
+    /* The spaces around it are set at half size, and Linh's final stroke
+       ends low and close, so the ampersand needs air on its left. */
+    margin-inline-start: 0.35em;
   }
 
   .hero__date {
@@ -2099,6 +2102,7 @@ body[data-locked="true"] {
     font-style: italic;
     font-size: 0.5em;
     color: var(--color-gold-deep);
+    margin-inline-start: 0.35em; /* as .hero__amp */
   }
 
   /* The bouquets, laid across two corners of the envelope and breaking its
