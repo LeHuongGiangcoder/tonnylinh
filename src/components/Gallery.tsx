@@ -5,7 +5,6 @@ import { useId, useRef, useState, type CSSProperties, type PointerEvent } from "
 import { gallery, type GalleryLayout } from "@/data/wedding";
 import { useCopy } from "@/lib/lang";
 import { Rule } from "./Divider";
-import { Lace } from "./Lace";
 import { Emblem } from "./Ornament";
 import { Reveal } from "./Reveal";
 
@@ -141,9 +140,7 @@ export function Gallery() {
   }
 
   return (
-    <section id="gallery" className="section ground--cream section--laced">
-      <Lace />
-
+    <section id="gallery" className="section ground--cream">
       <div className="container center stack">
         <Reveal className="stack-sm">
           <Emblem name="flower" />

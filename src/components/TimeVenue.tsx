@@ -82,6 +82,17 @@ export function TimeVenue() {
           >
             {t.details.map}
           </a>
+
+          {/* A red satin bow tied under the way there. */}
+          <Image
+            src="/img/ribbon.webp"
+            alt=""
+            width={1000}
+            height={921}
+            sizes="(max-width: 34rem) 36vw, 10rem"
+            aria-hidden="true"
+            className="setting__bow"
+          />
         </Reveal>
       </div>
     </section>
