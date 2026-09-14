@@ -1334,6 +1334,13 @@ body[data-locked="true"] {
     color: var(--color-wine);
   }
 
+  /* The account number and SWIFT code are set well below the stat rank: at
+     full size they shouted over the note, and they only need to be copied. */
+  .fund__account,
+  .fund__swift {
+    font-size: clamp(1.125rem, 4.8vw, 1.375rem);
+  }
+
   .fund__account { user-select: all; }
 
   /* RSVP: a red satin bow tied on at the foot of the reply card, centred and
@@ -1975,10 +1982,6 @@ body[data-locked="true"] {
     box-shadow: 0 8px 16px rgba(20, 3, 8, 0.38), 0 1px 2px rgba(20, 3, 8, 0.24);
     translate: 33% 0;
     rotate: 0deg;
-    /* Starts only once the card is nearly home (it lands at 2800ms) and takes
-       its time, so the photo reads as a second beat rather than riding along. */
-    transition: translate 2800ms var(--ease-silk) 2300ms,
-                rotate 2800ms var(--ease-silk) 2300ms;
   }
 
   .env__photo img {
@@ -1989,9 +1992,14 @@ body[data-locked="true"] {
     object-fit: cover;
   }
 
+  /* Starts only once the card is nearly home (it lands at 2800ms) and takes
+     its time, so the photo reads as a second beat rather than riding along.
+     Open state only, for the same iOS reason as the card below. */
   .env[data-open="true"] .env__photo {
     translate: 33% -290%;
     rotate: 6deg;
+    transition: translate 2800ms var(--ease-silk) 2300ms,
+                rotate 2800ms var(--ease-silk) 2300ms;
   }
 
   .env__card {
@@ -2006,18 +2014,23 @@ body[data-locked="true"] {
     translate: -50% 24%;
     rotate: 0.6deg;
     display: grid;
-    /* Held until the flap is past edge-on and behind it at 754ms, so the card
-       never rises into a flap that is still in front of it. */
-    transition: translate 1900ms var(--ease-silk) 900ms,
-                rotate 1900ms var(--ease-silk) 900ms;
   }
 
   /* Head 45% of the envelope's height clear of its top edge; foot at 85% of
      it, still well below the mouth's point at 60%, so the card reads as being
-     drawn out rather than lifted off. */
+     drawn out rather than lifted off.
+
+     The transition lives ONLY on the open state. On the resting rule, iOS
+     Safari (and in-app browsers built on it) animated the card into its
+     tucked-away position on page load, and a guest caught it half-way — the
+     card's head standing out above the sealed envelope. Held until the flap
+     is past edge-on and behind it at 754ms, so the card never rises into a
+     flap that is still in front of it. */
   .env[data-open="true"] .env__card {
     translate: -50% -12%;
     rotate: 0deg;
+    transition: translate 1900ms var(--ease-silk) 900ms,
+                rotate 1900ms var(--ease-silk) 900ms;
   }
 
   .env__card-face {
