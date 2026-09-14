@@ -359,27 +359,55 @@ Script, the date — with the guest addressed last.
 - The salutation spaces itself with margins rather than a `gap`, because DEAR
   belongs tight to the name under it and one row gap cannot say that.
 
-## RSVP
+## Guests and RSVP
 
-`src/components/Rsvp.tsx`. Name, phone or email, and *will you attend?* — then,
-**only for a guest who is coming**, number of guests, dietary needs and the
-hotel / transport asks. A guest who declines is asked for nothing but a note;
-the other questions are not rendered for them, so they arrive empty rather than
-as stale defaults, and they are thanked with their own line (`thanksBodyDecline`)
+The guest list and the replies live on ONE tab of a Google Sheet, behind the
+Apps Script web app in `apps-script/Code.gs` (set-up steps are in its header).
+The couple only type a guest's **Name**; the script fills in **No**, **Slug**
+and the guest's personal **Link**, `<SITE_ORIGIN>/<slug>`. Columns are found by
+their header text, so they can be reordered and extra columns added between
+them.
+
+- **A slug never changes once written.** A link already sent has to keep
+  working, even if the name is corrected later. Two guests with the same name
+  get `name` and `name-2`.
+- **`/<slug>`** (`src/app/[slug]/page.tsx`) looks the guest up and renders the
+  same `<Invitation>` as the plain address, but addressed: the hero names them,
+  the tab title and link preview carry their name, and the RSVP form skips the
+  name field and fills in their last reply. Sending again overwrites their row.
+- **The plain address, or an unknown slug**, opens the invitation unaddressed
+  (`hero.everyone` — *Our dear guest* / *Quý khách thân mến*) with a name field;
+  that reply is added to the sheet as a new row, with a slug of its own. An
+  unknown slug is never a 404.
+
+`src/components/Rsvp.tsx`. Contact and *will you attend?* — then, **only for a
+guest who is coming**, number of guests, dietary needs and the hotel /
+transport asks. A guest who declines is asked for nothing but a note; the other
+questions are not rendered for them, so they arrive empty rather than as stale
+defaults, and they are thanked with their own line (`thanksBodyDecline`)
 instead of *see you on the day*.
 
-Replies are sent to a **Google Apps Script web app** that appends a row to the
-RSVP sheet — the script is `apps-script/Code.gs`, deployment steps are in its
-header, and its `/exec` URL goes in `NEXT_PUBLIC_RSVP_ENDPOINT` (see
-`.env.example`; set it in Vercel too). The script writes to an `RSVP` tab, with
-Vietnamese column headers, and prefixes any guest text that starts like a
-formula so it cannot run in the sheet.
+**Only the site's server talks to the sheet.** The web app has to be open to
+*Anyone*, so a shared secret guards it — the script's `SECRET` property, and
+`RSVP_SHARED_SECRET` on the site. Neither that nor `RSVP_ENDPOINT` has a
+`NEXT_PUBLIC_` prefix, so they never reach a browser:
 
-Apps Script cannot answer a CORS preflight, so the body goes as `text/plain` in
-`no-cors` mode and the response is opaque. The form can therefore only show its
-error line when the request cannot be sent at all — or when the endpoint is not
-set — not when the script fails after receiving it. Send one test reply after
-every redeploy of the script and check the row lands.
+- guest lookups run in the page (`getGuest` in `src/lib/guests.ts`, wrapped in
+  React `cache` so the page and its metadata share one request, never cached
+  between visits);
+- the form posts to `/api/rsvp` (`src/app/api/rsvp/route.ts`), which trims and
+  caps every field and forwards it with the secret. Unlike a browser calling
+  Apps Script directly, this sees the script's answer, so the form's error line
+  now shows when a reply really was not saved.
+
+If the sheet cannot be reached, a personal link still opens — unaddressed — and
+the error is logged on the server. The script writes guest text as plain text:
+anything starting like a formula is prefixed so it cannot run in the sheet.
+
+**The script only changes for the site when it is redeployed as a new
+version** — saving it in the editor is not enough. The *Wedding* menu's
+*Kiểm tra dữ liệu gửi cho website* shows what the SAVED code would send; if that
+looks right and the site does not, the deployment is behind.
 
 ## Language
 
@@ -414,10 +442,10 @@ copy (see *Type*).
 
 ## Still to be filled in
 
-- `guest.name` in [`src/data/wedding.ts`](src/data/wedding.ts) — hardcoded,
-  pending the personalisation backend
-- `NEXT_PUBLIC_RSVP_ENDPOINT` — the RSVP form is wired, but posts nowhere until
-  the Apps Script is deployed and its URL is set (see *RSVP*)
+- `RSVP_ENDPOINT` and `RSVP_SHARED_SECRET` — the guest list and the RSVP form
+  are wired, but personal links stay unaddressed and replies fail until the
+  Apps Script is deployed and both are set, locally in `.env.local` and in
+  Vercel (see *Guests and RSVP*)
 
 The couple's photographs are exported from `design-source/couple/` (git-ignored,
 full resolution) to `public/img/couple/`, WebP. The intro photo and the six
