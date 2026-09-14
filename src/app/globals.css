@@ -654,18 +654,18 @@ body[data-locked="true"] {
   }
 
   /* ========================================================================
-     GALLERY — a film strip, one frame at a time
+     GALLERY — an album of polaroids and stamps, a page at a time
 
-     Each slide is a length of film: dark stock with the frame numbers and a
-     title printed along its edges in white, and three photographs exposed on
-     it. The stock is the site's darkest wine rather than black, so the strip
-     belongs to the page.
+     Each page is a wine board with three photographs scattered on it: mostly
+     polaroids, each with its number written on the lip, and on some pages a
+     postage stamp. The prints lean a few degrees and lap one another at a
+     corner, the way photographs are laid down by hand, but none covers
+     another's face. Where each print lies is LAYOUTS in Gallery.tsx.
 
-     EVERY frame is the same size, whatever its shape — a reel that grows and
-     shrinks as it turns moves the page under the guest's thumb. So the film
-     has a fixed proportion and the photographs fill it: a landscape frame
-     stacks three wide stills with an edge printed between each, like cine
-     film; a portrait frame hangs one tall print beside two stacked ones.
+     EVERY page is the same size, whatever lies on it — an album that grows
+     and shrinks as it turns moves the page under the guest's thumb. So the
+     board has a fixed 4:5 proportion and the prints are placed on it in
+     percentages.
      ======================================================================== */
 
   .reel {
@@ -692,100 +692,165 @@ body[data-locked="true"] {
     user-select: none;
   }
 
-  .film {
-    display: flex;
-    flex-direction: column;
-    aspect-ratio: 5 / 8;
-    background-color: #1a0509;
-    background-image: linear-gradient(180deg, #230810, #140306);
-    box-shadow: 0 22px 36px -22px rgba(20, 3, 8, 0.85);
-  }
-
-  /* The printing along the edge: ▸ 01   WEDDING PHOTOS   ▸ 02 … */
-  .film__edge {
-    flex: none;
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
-    gap: var(--space-2xs);
-    padding: 0.55rem 0.8rem;
-    font-family: var(--font-name);
-    font-size: clamp(0.5rem, 2.1vw, 0.625rem);
-    letter-spacing: 0.14em;
-    text-transform: uppercase;
-    line-height: 1;
-    color: #fff;
-    white-space: nowrap;
-  }
-
-  .film__num {
-    display: inline-flex;
-    align-items: center;
-    gap: 0.4em;
-  }
-
-  .film__num::before {
-    content: "";
-    width: 1.1em;
-    height: 0.62em;
-    background: currentColor;
-    clip-path: polygon(0 0, 100% 50%, 0 100%, 0 70%, 30% 50%, 0 30%);
-  }
-
-  /* minmax(0, …) throughout: a bare 1fr track is at least its content's
-     min-content size, and a photograph's is its full pixel size. */
-  .film__frames {
-    flex: 1;
-    min-height: 0;
-    display: grid;
-    padding-inline: 0.45rem;
-  }
-
-  .film[data-shape="landscape"] .film__frames {
-    grid-template-columns: minmax(0, 1fr);
-    grid-template-rows: minmax(0, 1fr) auto minmax(0, 1fr) auto minmax(0, 1fr);
-  }
-
-  /* The edges between stills run the full width of the film, out over the
-     frames' own side padding. */
-  .film__frames > .film__edge { margin-inline: -0.45rem; }
-
-  .film[data-shape="portrait"] .film__frames {
-    grid-template-columns: minmax(0, 1.12fr) minmax(0, 1fr);
-    grid-template-rows: minmax(0, 1fr) minmax(0, 1fr);
-    gap: 0.45rem;
-  }
-
-  .film[data-shape="portrait"] .film__shot:first-child { grid-row: 1 / span 2; }
-
-  .film__shot {
+  /* Flat wine, square-cornered — the same board the photographs of the day
+     were once laid on in the agenda. */
+  .album {
     position: relative;
-    margin: 0;
-    overflow: hidden;
-    background: #0d0204;
+    aspect-ratio: 4 / 5;
+    background: var(--color-wine);
   }
 
-  .film__shot img {
+  /* A print. Positioned against the board, so its padding percentages are
+     too: `--w` is the print's own width in % of the board, and the border is
+     5% of that. */
+  .print {
+    position: absolute;
+    display: block;
+    padding: 0;
+    border: 0;
+    background: none;
+    cursor: pointer;
+    -webkit-tap-highlight-color: transparent;
+    transition: scale var(--dur-base) var(--ease-silk);
+  }
+
+  .print:focus-visible {
+    outline: 2px solid var(--color-gold-light);
+    outline-offset: 3px;
+  }
+
+  .print:active { scale: 0.98; }
+
+  .print__photo {
+    position: relative;
+    display: block;
+    overflow: hidden;
+    background: #2a1a1a;
+  }
+
+  .print__photo img {
+    display: block;
     width: 100%;
     height: 100%;
     object-fit: cover;
     pointer-events: none;
   }
 
-  /* A subtitle, where a still has one. */
-  .film__caption {
-    position: absolute;
-    inset-inline: 0;
-    bottom: 0.6rem;
-    padding-inline: var(--space-sm);
-    text-align: center;
-    font-family: var(--font-body);
-    font-size: var(--text-body);
-    color: #fff;
-    text-shadow: 0 1px 6px rgba(0, 0, 0, 0.8);
+  /* --- polaroid: an ivory border with a deeper lip ------------------------ */
+
+  /* No drop shadow — the board is flat — only a hairline, so where two ivory
+     borders lap each other the upper one still has an edge. */
+  .print[data-kind="polaroid"] {
+    padding: calc(var(--w) * 0.05%) calc(var(--w) * 0.05%) 0;
+    background-color: #fbf8f1;
+    border-radius: 2px;
+    box-shadow: 0 0 0 1px rgba(40, 8, 16, 0.18);
   }
 
-  /* Under the strip: ‹  2 / 5  › */
+  .print[data-kind="polaroid"][data-shape="portrait"] .print__photo { aspect-ratio: 2 / 3; }
+  .print[data-kind="polaroid"][data-shape="landscape"] .print__photo { aspect-ratio: 3 / 2; }
+
+  .print__lip {
+    display: block;
+    padding-block: 5% 6%;
+    font-family: var(--font-name);
+    font-size: clamp(0.625rem, 2.6vw, 0.8125rem);
+    line-height: 1;
+    letter-spacing: var(--tracking-wide);
+    text-align: end;
+    color: var(--color-ink-muted);
+  }
+
+  /* --- stamp: the photograph behind a perforated paper frame ------------- */
+
+  /* stamp.webp is cut to its own bounds; its window, measured off the alpha,
+     is 7.9% in from the left, 7.2% from the right, 6.2% from the top and
+     5.3% from the foot. The photo fills the window, and the frame lies over
+     it so the perforations bite the photo's edges. */
+  .print[data-kind="stamp"] {
+    aspect-ratio: 700 / 884;
+  }
+
+  .print[data-kind="stamp"] .print__photo {
+    position: absolute;
+    inset: 6.2% 7.2% 5.3% 7.9%;
+  }
+
+  .print[data-kind="stamp"]::after {
+    content: "";
+    position: absolute;
+    inset: 0;
+    background: url("/img/stamp.webp") center / 100% 100% no-repeat;
+    pointer-events: none;
+  }
+
+  /* --- the heart ---------------------------------------------------------- */
+
+  .print__heart {
+    position: absolute;
+    display: grid;
+    place-items: center;
+    width: 1.75rem;
+    height: 1.75rem;
+    border-radius: 50%;
+    /* Solid, not a backdrop blur: there are three to a page and nine pages,
+       and blurring what lies under each made the album slow to paint. */
+    background: rgba(40, 8, 16, 0.62);
+  }
+
+  .print__heart[data-corner^="t"] { top: 0.4rem; }
+  .print__heart[data-corner^="b"] { bottom: 0.4rem; }
+  .print__heart[data-corner$="l"] { left: 0.4rem; }
+  .print__heart[data-corner$="r"] { right: 0.4rem; }
+
+  /* The postmark, franked on the board in gold, under every print. */
+  .postmark {
+    position: absolute;
+    height: auto;
+    overflow: visible;
+    stroke: var(--color-gold-light);
+    pointer-events: none;
+  }
+
+  .postmark__ring {
+    font-family: var(--font-name);
+    font-size: 10.5px;
+    letter-spacing: 0.08em;
+    fill: var(--color-gold-light);
+    stroke: none;
+  }
+
+  .postmark__date {
+    font-family: var(--font-name);
+    font-size: 17px;
+    letter-spacing: 0.04em;
+    fill: var(--color-gold-light);
+    stroke: none;
+  }
+
+  .print__heart svg {
+    fill: none;
+    stroke: var(--color-ivory);
+    stroke-width: 2;
+    transition: fill var(--dur-fast) var(--ease-silk), stroke var(--dur-fast) var(--ease-silk);
+  }
+
+  .print[data-hearted="true"] .print__heart svg {
+    fill: #e2425c;
+    stroke: #e2425c;
+    animation: heart-pop 480ms var(--ease-silk);
+  }
+
+  .album__hint {
+    margin-block-start: var(--space-sm);
+    font-family: var(--font-heading);
+    font-size: clamp(1.125rem, 4.8vw, 1.375rem);
+    color: var(--color-ink-muted);
+  }
+
+  .album__hint span { color: #e2425c; }
+
+  /* Under the board: ‹  2 / 9  › */
   .reel__nav {
     display: flex;
     align-items: center;
@@ -916,32 +981,25 @@ body[data-locked="true"] {
   }
 
   /* ========================================================================
-     TIME & VENUE — both facts written on one lace-edged letter
+     TIME & VENUE — both facts written on one sheet of note paper, sealed
 
-     The letter is centred in the column, with a spray of calla lilies laid
-     across its top-right corner and breaking its edge. The two are separate
-     pictures, each cut to its own bounds — venue-lace.webp (the sheet, with
-     the stems under it) and venue-calla.webp — so the lilies can be sized
-     and placed on their own: smaller than in the source artwork, where they
-     reached so far past the lace that the letter had to sit off-centre to
-     keep them on screen. The writing sits between the two — over the paper,
-     under the flowers.
+     note-paper.webp is a sheet of deckle-edged cotton paper, cut to its own
+     bounds (its torn edges run about 3% in). A wax seal (the intro's
+     seal.webp) is pressed over its head, breaking the top edge, and the
+     writing sits in the paper below it.
 
-     Both sources carried a faint paper texture across the whole canvas at 30%
-     alpha, meant for a light page; it was lifted out on export and the lace's
-     own alpha raised, so the lace reads on the red.
-
-     The paper's writing area, measured off the sheet's alpha, is 12.2%–87.1%
-     across and 8.2%–80.9% down the lace picture. Re-cut it and these have to
-     be measured again.
+     The letter leans a degree, like a sheet laid on a table, and casts one
+     soft shadow onto the damask.
      ======================================================================== */
 
   .letter {
     position: relative;
-    width: 84%;
-    aspect-ratio: 770 / 1216;
+    width: 88%;
+    aspect-ratio: 900 / 1356;
     margin-inline: auto;
-    filter: drop-shadow(0 22px 30px rgba(20, 3, 8, 0.5));
+    margin-block-start: var(--space-lg);
+    rotate: -1deg;
+    filter: drop-shadow(0 18px 26px rgba(20, 3, 8, 0.5));
   }
 
   .letter__sheet {
@@ -952,34 +1010,30 @@ body[data-locked="true"] {
     pointer-events: none;
   }
 
-  /* Its flowers lap only the paper's right-hand margin; the rest of the
-     spray hangs out past the lace, which the 84% width leaves room for. */
-  .letter__lily {
+  /* Centred on the top edge, a little over half of it above the paper. */
+  .letter__seal {
     position: absolute;
     z-index: 2;
-    left: 71%;
-    top: 9%;
-    width: 46%;
+    left: 50%;
+    top: 0;
+    width: 22%;
     height: auto;
-    rotate: 4deg;
+    translate: -50% -42%;
+    rotate: 8deg;
+    filter: drop-shadow(0 4px 6px rgba(20, 3, 8, 0.45));
     pointer-events: none;
   }
 
+  /* Clear of the seal at the top and of the torn edges all round. */
   .letter__writing {
     position: absolute;
     z-index: 1;
-    left: 12.2%;
-    right: 12.9%;
-    top: 8.2%;
-    bottom: 19.1%;
+    inset: 14% 9% 7%;
     display: flex;
     flex-direction: column;
     align-items: center;
     justify-content: center;
     gap: var(--space-3xs);
-    /* Even on both sides, so the writing is centred on the letter itself;
-       the lilies lie over the lace margin rather than the lines of type. */
-    padding: 8%;
     text-align: center;
     color: var(--color-ink);
   }
@@ -988,15 +1042,15 @@ body[data-locked="true"] {
   .letter__writing .rule { color: var(--color-gold); margin-block: var(--space-2xs); }
 
   .letter__writing .stat {
-    font-size: clamp(1rem, 4.6vw, 1.25rem);
+    font-size: clamp(1.125rem, 5vw, 1.375rem);
     line-height: 1.2;
     color: var(--color-wine);
   }
 
   .letter__writing .body-text {
-    font-size: clamp(0.75rem, 3.3vw, 0.9rem);
-    line-height: 1.3;
-    color: color-mix(in srgb, var(--color-ink) 78%, transparent);
+    font-size: clamp(0.8125rem, 3.5vw, 0.95rem);
+    line-height: 1.35;
+    color: color-mix(in srgb, var(--color-ink) 80%, transparent);
   }
 
   /* Smaller than the page's 48px button: it is written on the letter, and the
@@ -1156,137 +1210,57 @@ body[data-locked="true"] {
     color: var(--color-ivory);
   }
 
-  /* The programme: the day laid out as polaroids on a wine panel, two to a
-     row. Each print carries its time as a pill and a heart the guest can
-     leave by tapping the photo; the event's name is written on the lip. */
-  .programme {
+  /* The red silk, laid down the page, with the day's stops set in the hollows
+     of its turns — each on the side the ribbon has just swung away from. The
+     silk is a picture, so the stops are placed against ITS box in percentages
+     (STOPS in Agenda.tsx), measured off the asset's alpha. Re-cut the silk and
+     they have to be measured again. */
+  .thread {
+    position: relative;
     width: 100%;
     margin-block-start: var(--space-md);
-    padding: var(--space-md) var(--space-sm) var(--space-sm);
-    /* Flat and square: a plain field of wine, no sheen, no shadow. */
-    background: var(--color-wine);
   }
 
-  .programme__span {
-    font-family: var(--font-name);
-    font-size: clamp(1.25rem, 5.4vw, 1.5rem);
-    letter-spacing: var(--tracking-wide);
-    color: var(--color-ivory);
-    margin-block-end: var(--space-md);
+  /* Shown whole: the final cut keeps both tapered ends of the cloth, so
+     nothing needs fading. */
+  .thread__silk {
+    display: block;
+    width: 100%;
+    height: auto;
+    filter: drop-shadow(0 14px 18px rgba(64, 10, 21, 0.28));
+    pointer-events: none;
   }
 
-  .programme__grid {
-    display: grid;
-    grid-template-columns: repeat(2, minmax(0, 1fr));
-    gap: var(--space-md) var(--space-sm);
+  .thread__stops {
+    position: absolute;
+    inset: 0;
     list-style: none;
     margin: 0;
     padding: 0;
   }
 
-  /* A print, a little askew — alternate ones lean the other way, so the grid
-     reads as photos laid down by hand rather than as tiles. */
-  .polaroid {
-    padding: 6% 6% 0;
-    background-color: #fbf8f1;
-    border-radius: 2px;
-    rotate: -1.6deg;
-    transition: rotate var(--dur-base) var(--ease-silk), scale var(--dur-base) var(--ease-silk);
-  }
-
-  .polaroid:nth-child(even) { rotate: 1.4deg; }
-  .polaroid:nth-child(4n + 3) { rotate: 1deg; }
-  .polaroid:nth-child(4n + 4) { rotate: -1.2deg; }
-
-  .polaroid__print {
-    position: relative;
-    display: block;
-    width: 100%;
-    padding: 0;
-    border: 0;
-    background: #2a1a1a;
-    cursor: pointer;
-    overflow: hidden;
-    -webkit-tap-highlight-color: transparent;
-  }
-
-  .polaroid__print:focus-visible {
-    outline: 2px solid var(--color-gold);
-    outline-offset: 3px;
-  }
-
-  .polaroid__photo {
-    display: block;
-    width: 100%;
-    height: auto;
-    aspect-ratio: 4 / 5;
-    object-fit: cover;
-    transition: scale 900ms var(--ease-silk);
-  }
-
-  .polaroid__print:hover .polaroid__photo { scale: 1.04; }
-
-  .polaroid__time {
+  /* The drawing beside its time and title, not above them: a stop has to fit
+     the hollow of one turn, and the hollows are wider than they are tall. */
+  .thread__stop {
     position: absolute;
-    top: 0.5rem;
-    left: 0.5rem;
-    padding: 0.2rem 0.55rem;
-    border-radius: var(--radius-pill);
-    font-family: var(--font-name);
-    font-size: clamp(0.8125rem, 3.4vw, 0.9375rem);
-    line-height: 1.2;
-    letter-spacing: 0.02em;
-    color: var(--color-ivory);
-    background: rgba(40, 8, 16, 0.6);
-    backdrop-filter: blur(4px);
-  }
-
-  .polaroid__heart {
-    position: absolute;
-    right: 0.5rem;
-    bottom: 0.5rem;
-    display: grid;
-    place-items: center;
-    width: 2rem;
-    height: 2rem;
-    border-radius: 50%;
-    background: rgba(40, 8, 16, 0.55);
-    backdrop-filter: blur(4px);
-  }
-
-  .polaroid__heart svg {
-    fill: none;
-    stroke: var(--color-ivory);
-    stroke-width: 2;
-    transition: fill var(--dur-fast) var(--ease-silk), stroke var(--dur-fast) var(--ease-silk);
-  }
-
-  .polaroid[data-hearted="true"] .polaroid__heart svg {
-    fill: #e2425c;
-    stroke: #e2425c;
-    animation: heart-pop 480ms var(--ease-silk);
-  }
-
-  /* The lip: the wide white strip a polaroid is written on. */
-  .polaroid__title {
     display: flex;
     align-items: center;
     justify-content: center;
-    gap: 0.35rem;
-    min-height: 3.4rem;
-    padding: 0.4rem 0.1rem;
-    font-family: var(--font-name);
-    font-size: clamp(0.8125rem, 3.5vw, 1rem);
-    letter-spacing: var(--tracking-wide);
-    text-transform: uppercase;
-    line-height: 1.15;
-    text-wrap: balance;
-    color: var(--color-ink);
+    gap: var(--space-2xs);
+    width: 54%;
+    translate: -50% -50%;
   }
 
-  .polaroid__icon {
+  .thread__label {
+    display: grid;
+    justify-items: start;
+    gap: var(--space-3xs);
+    text-align: start;
+  }
+
+  .thread__icon {
     flex: none;
-    width: 1.6rem;
+    width: clamp(3rem, 13vw, 4rem);
     aspect-ratio: 1;
     background: var(--color-wine);
     mask-size: contain;
@@ -1297,14 +1271,27 @@ body[data-locked="true"] {
     -webkit-mask-repeat: no-repeat;
   }
 
-  .programme__hint {
-    margin-block-start: var(--space-md);
-    font-family: var(--font-heading);
-    font-size: clamp(1.125rem, 4.8vw, 1.375rem);
-    color: var(--color-on-dark-muted);
+  /* The silk is loud, so the stops carry real weight: a large time, a title in
+     full ink, and a soft ivory halo that lifts both off any cloth they touch. */
+  .thread__time {
+    font-family: var(--font-body);
+    font-style: italic;
+    font-weight: 600;
+    font-size: clamp(1.5rem, 6.4vw, 1.875rem);
+    line-height: 1;
+    color: var(--color-wine);
+    text-shadow: 0 0 6px var(--color-ivory), 0 0 12px var(--color-ivory);
   }
 
-  .programme__hint span { color: #e2425c; }
+  .thread__title {
+    font-family: var(--font-name);
+    font-size: clamp(1rem, 4.2vw, 1.1875rem);
+    letter-spacing: var(--tracking-wide);
+    text-transform: uppercase;
+    line-height: 1.15;
+    color: var(--color-ink);
+    text-shadow: 0 0 6px var(--color-ivory), 0 0 12px var(--color-ivory);
+  }
 
   /* ========================================================================
      HONEYMOON FUND — the QR, mounted on ivory
@@ -1338,6 +1325,25 @@ body[data-locked="true"] {
   }
 
   .fund__account { user-select: all; }
+
+  /* The details a transfer from abroad needs, under a hairline so they read
+     as a second, separate set. */
+  .fund__intl {
+    display: grid;
+    gap: var(--space-sm);
+    margin: var(--space-sm) 0 0;
+    padding-block-start: var(--space-md);
+    border-block-start: var(--hairline);
+  }
+
+  .fund__intl dd { margin: 0; }
+
+  .fund__intl .eyebrow { margin-block-end: var(--space-3xs); }
+
+  .fund__swift {
+    letter-spacing: 0.12em;
+    user-select: all;
+  }
 
 
   /* ========================================================================

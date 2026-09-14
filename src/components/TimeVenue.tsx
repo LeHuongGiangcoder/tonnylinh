@@ -7,9 +7,8 @@ import { Rule } from "./Divider";
 import { Reveal } from "./Reveal";
 
 /**
- * When and where, written on one lace-edged letter with calla lilies laid
- * across its corner. The writing sits between the two pictures — over the
- * paper, under the flowers — see the TIME & VENUE block in globals.css.
+ * When and where, written on one sheet of deckle-edged note paper and sealed
+ * with wax at its head — see the TIME & VENUE block in globals.css.
  */
 export function TimeVenue() {
   const t = useCopy();
@@ -26,13 +25,23 @@ export function TimeVenue() {
         <Reveal delay={120}>
           <div className="letter">
             <Image
-              src="/img/venue-lace.webp"
+              src="/img/note-paper.webp"
               alt=""
-              width={770}
-              height={1216}
+              width={900}
+              height={1356}
               sizes="(max-width: 34rem) 80vw, 25rem"
               aria-hidden="true"
               className="letter__sheet"
+            />
+
+            <Image
+              src="/img/seal.webp"
+              alt=""
+              width={760}
+              height={776}
+              sizes="(max-width: 34rem) 20vw, 6rem"
+              aria-hidden="true"
+              className="letter__seal"
             />
 
             <div className="letter__writing">
@@ -59,15 +68,6 @@ export function TimeVenue() {
               </a>
             </div>
 
-            <Image
-              src="/img/venue-calla.webp"
-              alt=""
-              width={542}
-              height={758}
-              sizes="(max-width: 34rem) 36vw, 12rem"
-              aria-hidden="true"
-              className="letter__lily"
-            />
           </div>
         </Reveal>
       </div>

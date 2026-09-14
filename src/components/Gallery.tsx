@@ -1,51 +1,138 @@
 "use client";
 
 import Image from "next/image";
-import { useRef, useState, type PointerEvent } from "react";
-import { gallery, type GalleryFrame } from "@/data/wedding";
+import { useId, useRef, useState, type CSSProperties, type PointerEvent } from "react";
+import { gallery, type GalleryLayout } from "@/data/wedding";
 import { useCopy } from "@/lib/lang";
 import { Rule } from "./Divider";
 import { Lace } from "./Lace";
 import { Emblem } from "./Ornament";
 import { Reveal } from "./Reveal";
 
-/** How far a drag has to travel, as a share of the strip's width, to turn. */
+/** How far a drag has to travel, as a share of the album's width, to turn. */
 const SWIPE = 0.18;
+/** Movement under this many pixels is a tap on a print, not a drag. */
+const TAP = 8;
 
-const pad = (n: number) => String(n).padStart(2, "0");
+type Corner = "tl" | "tr" | "bl" | "br";
+
+type Slot = {
+  kind: "polaroid" | "stamp";
+  /** x and w in % of the board's width, y in % of its HEIGHT, r in degrees. */
+  x: number;
+  y: number;
+  w: number;
+  r: number;
+  /** The corner of the photo the heart sits in — one no later print covers. */
+  heart: Corner;
+};
+
+type Layout = {
+  prints: [Slot, Slot, Slot];
+  /** The postmark, franked across the board's emptiest corner. */
+  postmark: { x: number; y: number; w: number; r: number };
+};
 
 /**
- * The gallery as a reel of film: one frame of three photographs at a time,
- * turned by swiping or with the arrows, and counted underneath. Every frame is
- * the same size whatever its shape, so turning never moves the page under the
- * guest's thumb — see the GALLERY block in globals.css.
+ * Where the three prints of each kind of page lie on the board (4:5).
+ *
+ * A print's height follows from its width, so the numbers were laid out in
+ * board-width units — the board is 125 of them tall:
+ *   polaroid, portrait photo   1.57 × w
+ *   polaroid, landscape photo  0.82 × w
+ *   stamp (portrait only)      1.26 × w
+ * Each page zig-zags so the prints overlap at a corner — no photo is more than
+ * about a fifth covered, and never across the middle, where the faces are.
+ * Later slots lie on top.
+ */
+const LAYOUTS: Record<GalleryLayout, Layout> = {
+  ppp: {
+    prints: [
+      { kind: "polaroid", x: 3, y: 2.5, w: 50, r: -4, heart: "bl" },
+      { kind: "stamp", x: 60, y: 3, w: 35, r: 6, heart: "tr" },
+      { kind: "polaroid", x: 45, y: 36, w: 50, r: 3, heart: "br" },
+    ],
+    postmark: { x: 6, y: 72, w: 30, r: -12 },
+  },
+  lll: {
+    prints: [
+      { kind: "polaroid", x: 3, y: 2, w: 64, r: -3, heart: "tl" },
+      { kind: "polaroid", x: 33, y: 30, w: 64, r: 3, heart: "tr" },
+      { kind: "polaroid", x: 5, y: 57, w: 64, r: -2, heart: "br" },
+    ],
+    postmark: { x: 73, y: 77, w: 23, r: 10 },
+  },
+  pll: {
+    prints: [
+      { kind: "polaroid", x: 2, y: 18, w: 46, r: -4, heart: "bl" },
+      { kind: "polaroid", x: 43, y: 2, w: 55, r: 4, heart: "tr" },
+      { kind: "polaroid", x: 41, y: 54, w: 56, r: -3, heart: "br" },
+    ],
+    postmark: { x: 6, y: 79, w: 27, r: -10 },
+  },
+  ppl: {
+    prints: [
+      { kind: "polaroid", x: 3, y: 2.5, w: 48, r: -5, heart: "bl" },
+      { kind: "stamp", x: 58, y: 4, w: 37, r: 5, heart: "tr" },
+      { kind: "polaroid", x: 27, y: 52, w: 64, r: 2, heart: "br" },
+    ],
+    postmark: { x: 2, y: 71, w: 23, r: -14 },
+  },
+};
+
+/**
+ * The gallery as an album: a wine board with three photographs scattered on
+ * it — polaroids and the odd postage stamp — turned a page at a time by
+ * swiping or with the arrows. Every page is the same size whatever lies on
+ * it, so turning never moves the page under the guest's thumb. Tapping a
+ * print leaves a heart on it. See the GALLERY block in globals.css.
  */
 export function Gallery() {
   const t = useCopy();
   const [index, setIndex] = useState(0);
   const [drag, setDrag] = useState<number | null>(null);
+  const [hearts, setHearts] = useState<Set<string>>(() => new Set());
   const windowRef = useRef<HTMLDivElement>(null);
-  const start = useRef(0);
+  const start = useRef<number | null>(null);
+  const dragged = useRef(false);
 
   const count = gallery.length;
   const go = (to: number) => setIndex(Math.min(Math.max(to, 0), count - 1));
 
+  function toggle(src: string) {
+    // A drag that ended over a print is not a tap on it.
+    if (dragged.current) return;
+    setHearts((prev) => {
+      const next = new Set(prev);
+      if (next.has(src)) next.delete(src);
+      else next.add(src);
+      return next;
+    });
+  }
+
   function onPointerDown(e: PointerEvent<HTMLDivElement>) {
     if (e.pointerType === "mouse" && e.button !== 0) return;
     start.current = e.clientX;
-    setDrag(0);
-    e.currentTarget.setPointerCapture(e.pointerId);
+    dragged.current = false;
   }
 
   function onPointerMove(e: PointerEvent<HTMLDivElement>) {
-    if (drag === null) return;
+    if (start.current === null) return;
     let dx = e.clientX - start.current;
-    // Resist at either end of the reel.
+    // The pointer is only captured once it is clearly a drag, so a tap still
+    // lands on the print under it.
+    if (!dragged.current) {
+      if (Math.abs(dx) < TAP) return;
+      dragged.current = true;
+      e.currentTarget.setPointerCapture(e.pointerId);
+    }
+    // Resist at either end of the album.
     if ((index === 0 && dx > 0) || (index === count - 1 && dx < 0)) dx /= 3;
     setDrag(dx);
   }
 
   function onPointerUp() {
+    start.current = null;
     if (drag === null) return;
     const width = windowRef.current?.offsetWidth ?? 1;
     if (drag < -width * SWIPE) go(index + 1);
@@ -89,22 +176,37 @@ export function Gallery() {
                 data-dragging={drag !== null}
                 style={{ transform: `translateX(calc(${-index * 100}% + ${drag ?? 0}px))` }}
               >
-                {gallery.map((frame, f) => (
+                {gallery.map((page, p) => (
                   <div
-                    key={f}
+                    key={p}
                     className="reel__slide"
                     role="group"
                     aria-roledescription="slide"
-                    aria-label={`${f + 1} / ${count}`}
-                    aria-hidden={f !== index}
+                    aria-label={`${p + 1} / ${count}`}
+                    aria-hidden={p !== index}
+                    inert={p !== index}
                   >
-                    <Film
-                      frame={frame}
-                      first={f * 3 + 1}
-                      title={t.gallery.strip}
-                      // The frames either side are fetched ahead of the swipe.
-                      eager={Math.abs(f - index) <= 1}
-                    />
+                    <div className="album">
+                      <Postmark {...LAYOUTS[page.layout].postmark} />
+                      {page.shots.map((src, s) => {
+                        const slot = LAYOUTS[page.layout].prints[s];
+                        const number = p * 3 + s + 1;
+                        return (
+                          <Print
+                            key={src}
+                            src={src}
+                            slot={slot}
+                            portrait={page.layout[s] === "p"}
+                            number={number}
+                            label={`${t.gallery.heart} ${number}`}
+                            hearted={hearts.has(src)}
+                            onToggle={() => toggle(src)}
+                            // The pages either side are fetched ahead of the swipe.
+                            eager={Math.abs(p - index) <= 1}
+                          />
+                        );
+                      })}
+                    </div>
                   </div>
                 ))}
               </div>
@@ -133,6 +235,10 @@ export function Gallery() {
                 <Chevron />
               </button>
             </div>
+
+            <p className="album__hint">
+              <span aria-hidden="true">♥</span> {t.gallery.tapHint}
+            </p>
           </div>
         </Reveal>
       </div>
@@ -140,69 +246,109 @@ export function Gallery() {
   );
 }
 
-/** One length of film: the edge printing, and the three exposures on it. A
- *  landscape frame stacks its stills with an edge printed between each, as a
- *  strip of cine film does; a portrait frame hangs one tall print beside two
- *  stacked ones, which is what lets it fill the same length of film. */
-function Film({
-  frame,
-  first,
-  title,
+/** One print on the board: a polaroid with its number on the lip, or a
+ *  postage stamp. Tapping it leaves a heart. */
+function Print({
+  src,
+  slot,
+  portrait,
+  number,
+  label,
+  hearted,
+  onToggle,
   eager,
 }: {
-  frame: GalleryFrame;
-  first: number;
-  title: string;
+  src: string;
+  slot: Slot;
+  portrait: boolean;
+  number: number;
+  label: string;
+  hearted: boolean;
+  onToggle: () => void;
   eager: boolean;
 }) {
-  const numbers = frame.shots.map((_, i) => first + i);
-  const edge = (key: string) => <Edge key={key} numbers={numbers} title={title} />;
+  const style = {
+    left: `${slot.x}%`,
+    top: `${slot.y}%`,
+    width: `${slot.w}%`,
+    rotate: `${slot.r}deg`,
+    "--w": slot.w,
+  } as CSSProperties;
 
-  const shot = (i: number) => {
-    const { src, caption } = frame.shots[i];
-    const portrait = frame.shape === "portrait";
-    return (
-      <figure key={src} className="film__shot">
+  return (
+    <button
+      type="button"
+      className="print"
+      data-kind={slot.kind}
+      data-shape={portrait ? "portrait" : "landscape"}
+      data-hearted={hearted}
+      style={style}
+      onClick={onToggle}
+      aria-pressed={hearted}
+      aria-label={label}
+    >
+      <span className="print__photo">
         <Image
           src={src}
           alt=""
           width={portrait ? 933 : 1400}
           height={portrait ? 1400 : 933}
-          sizes={portrait ? "(max-width: 34rem) 54vw, 16rem" : "(max-width: 34rem) 96vw, 30rem"}
+          sizes={`(max-width: 34rem) ${Math.round(slot.w)}vw, ${Math.round(slot.w * 0.3)}rem`}
           loading={eager ? "eager" : "lazy"}
           draggable={false}
         />
-        {caption ? <figcaption className="film__caption">{caption}</figcaption> : null}
-      </figure>
-    );
-  };
+        <span className="print__heart" data-corner={slot.heart} aria-hidden="true">
+          <svg viewBox="0 0 24 24" width="16" height="16">
+            <path d="M12 20.3 4.6 13.2a4.6 4.6 0 0 1 0-6.6 4.7 4.7 0 0 1 6.6 0l.8.8.8-.8a4.7 4.7 0 0 1 6.6 0 4.6 4.6 0 0 1 0 6.6Z" />
+          </svg>
+        </span>
+      </span>
 
-  return (
-    <div className="film" data-shape={frame.shape}>
-      {edge("top")}
-      <div className="film__frames">
-        {frame.shape === "portrait"
-          ? frame.shots.map((_, i) => shot(i))
-          : frame.shots.flatMap((_, i) =>
-              i === 0 ? [shot(i)] : [edge(`between-${i}`), shot(i)],
-            )}
-      </div>
-      {edge("foot")}
-    </div>
+      {slot.kind === "polaroid" ? (
+        <span className="print__lip" aria-hidden="true">
+          No. {String(number).padStart(2, "0")}
+        </span>
+      ) : null}
+    </button>
   );
 }
 
-/** ▸ 01   WEDDING PHOTOS   ▸ 02   WEDDING PHOTOS   ▸ 03 */
-function Edge({ numbers, title }: { numbers: number[]; title: string }) {
+/** A round postmark — the couple's names on the ring, the date across a
+ *  cancel of wavy lines — franked onto the board, not onto a photo. */
+function Postmark({ x, y, w, r }: Layout["postmark"]) {
+  const ring = useId();
   return (
-    <div className="film__edge" aria-hidden="true">
-      {numbers.map((n, i) => (
-        <span key={n} style={{ display: "contents" }}>
-          {i > 0 ? <span>{title}</span> : null}
-          <span className="film__num">{pad(n)}</span>
-        </span>
+    <svg
+      className="postmark"
+      viewBox="0 0 200 120"
+      aria-hidden="true"
+      style={{ left: `${x}%`, top: `${y}%`, width: `${w}%`, rotate: `${r}deg` }}
+    >
+      <defs>
+        <path id={ring} d="M 60 60 m -46 0 a 46 46 0 1 1 92 0 a 46 46 0 1 1 -92 0" />
+      </defs>
+      <circle cx="60" cy="60" r="56" fill="none" strokeWidth="2.5" />
+      <circle cx="60" cy="60" r="36" fill="none" strokeWidth="1.5" />
+      <text className="postmark__ring">
+        <textPath href={`#${ring}`} startOffset="2%">
+          TONY &amp; LINH · WEDDING · TONY &amp; LINH ·
+        </textPath>
+      </text>
+      <text x="60" y="56" textAnchor="middle" className="postmark__date">
+        06·12
+      </text>
+      <text x="60" y="74" textAnchor="middle" className="postmark__date">
+        2026
+      </text>
+      {[40, 52, 64, 76].map((cy) => (
+        <path
+          key={cy}
+          d={`M 120 ${cy} q 10 -6 20 0 t 20 0 t 20 0 t 18 0`}
+          fill="none"
+          strokeWidth="2.5"
+        />
       ))}
-    </div>
+    </svg>
   );
 }
 

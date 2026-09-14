@@ -91,7 +91,9 @@ is dressed, and there are two dressings:
 | Seam | Dressing | Classes |
 |---|---|---|
 | hero → gallery | `<Lace />` | `section--laced` on the gallery |
-| time & venue → agenda | `<Lace />` | `section--laced` on the agenda |
+
+Time & venue → agenda is the one red-to-cream seam left undressed, by the
+couple's choice: the lace there was taken off.
 | dress code → RSVP | `<Drape />` | `section--spill` on the dress code, `section--under-spill` on the RSVP |
 
 The two hang differently, and it matters:
@@ -137,58 +139,93 @@ Base `.btn` plus exactly one modifier. All are 48px tall for touch.
 `.card` (gold hairline frame) · `.panel` (a bordered block on a dark ground,
 tied with `.panel__ribbon`) · `.field` `.fieldset` `.label` `.input` `.select`
 `.textarea` · `.choice-group` (`--stack` for one per row) `.choice` (radio and
-checkbox pills) · `.reel` `.film` (the gallery's film strip and its carousel) ·
-`.weekstrip` · `.programme` `.polaroid` (the agenda) · `.gilt` (the hero's
+checkbox pills) · `.reel` (the gallery's carousel) `.album` `.print`
+`.postmark` (its pages) · `.weekstrip` · `.thread` `.thread__silk`
+`.thread__stop` (the agenda) · `.letter` `.letter__seal` · `.fund__intl` ·
+`.gilt` (the hero's
 framed portrait) · `.langswitch` (via `<LanguageToggle>`) · `.emblem` (via
 `<Emblem>`, a gold motif centred above a section label) · `.lace` (via
 `<Lace>`) · `.reveal` (via `<Reveal>`)
 
-The gallery is a reel of film, one frame of three photographs per slide, with
-white edge printing on the darkest wine stock. Every frame is the SAME size
-(`.film` is a fixed 5:8) — a reel that grew and shrank as it turned moved the
-page under the guest's thumb. So the photographs fill the film rather than
-keeping their own proportions: a `landscape` frame stacks three wide stills with
-the printing between each, like cine film, and a `portrait` frame hangs one tall
-print beside two stacked ones.
+Time & Venue is written on one sheet of deckle-edged note paper
+(`note-paper.webp`), leaning a degree, with the intro's wax seal (`seal.webp`)
+pressed over the middle of its top edge. The writing sits in the paper below the
+seal, clear of the torn edges. The lace-edged letter and its calla lilies it
+replaced are in `assets/retired/`.
 
-Time & Venue is written on one lace-edged letter (`venue-lace.webp`), centred,
-with calla lilies laid across its top-right corner (`venue-calla.webp`); the
-writing sits between the two pictures. See the TIME & VENUE block in `globals.css` for the measured
-writing area and why the letter runs wider than the column.
+The honeymoon fund gives the local account first, then — under a hairline, as
+a second set — what a transfer from abroad needs: the bank's English name and
+its SWIFT / BIC code (`bankNameEn`, `swift` in `honeymoon` in `wedding.ts`).
 
 The intro envelope carries two bouquets (`bouquet-top.webp`,
 `bouquet-foot.webp`). The top one is tucked BEHIND the envelope, because the
-card rises straight into that corner and a bouquet on top covered its type. Frames are listed in `gallery` in `wedding.ts`,
-and a landscape still can carry an optional `caption`, set like a subtitle.
+card rises straight into that corner and a bouquet on top covered its type.
 
 **Nothing on the page is dimmed.** Ornaments and dividers are always full
 opacity; the only resting `opacity` below 1 is the disabled button state.
 
 ## The agenda
 
-`src/components/Agenda.tsx`. Under the week strip, the day is a spread of
-polaroids on a `.programme` panel: the day's span (first time – last time) over
-a grid of **two prints to a row, three rows**, one print per event, then a line
-of script telling the guest they can leave a heart.
+`src/components/Agenda.tsx`. Under the week strip, the day runs down a picture
+of red satin (`agenda-silk-full.webp`), with each stop — its line drawing, time
+and title — set in the hollow of one turn, on the side the ribbon has just
+swung away from. The stops are placed against the picture's box in percentages
+(`STOPS` in `Agenda.tsx`), measured off the asset's alpha; re-cut the silk and
+they have to be measured again.
 
-- **The panel is flat.** Plain `--color-wine`, square corners, no sheen, no
-  shadow — and the prints on it carry no shadow either. It is a field the
-  photographs are laid on, not a card floating over the cream.
-- **Each `.polaroid` is a print laid down by hand**: an ivory border with a
-  deeper lip, tilted a degree or two, alternate prints leaning the other way.
-  The time is a pill pinned to the photo's top-left; the event's name and its
-  line drawing (the `icon` masks in `public/img/icon/`, painted wine) are
-  written on the lip.
-- **Tapping a photo leaves a heart** — the button in its bottom-right corner
-  fills pink with a small pop, and a second tap takes it back. Hearts are local
-  state: nothing is saved or sent, and they are gone on reload.
-- **Every photograph is the same 4:5 crop, 720×900**, cut by hand to frame the
-  couple, in `public/img/couple/agenda/` named by event id (`welcome.webp` …
-  `party.webp`) and listed as `photo` on each entry of `agenda` in `wedding.ts`.
-  A grid whose prints changed shape would not line up across its rows.
+The silk is loud, so the stops carry weight: a large, semibold italic time, a
+title in full ink, and a soft ivory halo behind both that lifts them off any
+cloth they touch.
 
-The earlier agenda — stops set in the hollows of a picture of red satin
-(`agenda-silk.webp`) — is retired; the asset is no longer referenced.
+A polaroid grid replaced it for a while (Sept 2026) and was taken back out; its
+polaroid, heart and board ideas now live in the gallery.
+
+## The gallery
+
+`src/components/Gallery.tsx`. An album turned a page at a time — by swiping or
+with the arrows, counted underneath. Each page is a flat, square-cornered wine
+**board** (`.album`, a fixed 4:5) with three photographs scattered on it, retro
+style:
+
+- **Polaroids** — an ivory border with a deeper lip, the print's number
+  (`No. 07`) written on the lip. No drop shadow, matching the flat board; a
+  hairline gives each border an edge where two lap.
+- **Stamps** — on pages with two portraits, one sits behind a perforated paper
+  frame (`stamp.webp`, cut from `frame.png`). Its window, measured off the
+  alpha, is 7.9% / 7.2% / 6.2% / 5.3% in from the left / right / top / foot.
+- **A postmark** in gold — the couple's names round a ring, the date inside, a
+  cancel of wavy lines — franked on the board's emptiest corner, under the
+  prints.
+
+**Every page is the same size**, whatever lies on it — an album that grows and
+shrinks as it turns moves the page under the guest's thumb. So prints are
+placed on the board in percentages, by page type:
+
+- `gallery` in `wedding.ts` lists the pages, each a `layout` and three photos.
+  The layout names its slots in order — `ppp`, `lll`, `pll`, `ppl`, `p` a
+  portrait slot and `l` a landscape one — so a photo must go in a slot of its
+  own shape. Pages are grouped by scene (the city, the café, the motorbike, the
+  street, the opera house, the veil), not by the set the photos came in.
+- `LAYOUTS` in `Gallery.tsx` places each slot: kind, position, width, tilt, and
+  which corner of the photo its heart sits in. The heights follow from the
+  widths (polaroid portrait 1.57 × w, landscape 0.82 × w, stamp 1.26 × w, on a
+  board 125 units tall), and each page zig-zags so prints lap only at a corner:
+  no photo is more than about a fifth covered, never across the middle where the
+  faces are, and no heart is under another print.
+
+**Tapping a print leaves a heart**; a second tap takes it back. Hearts are local
+state — nothing is saved, and they are gone on reload. Because the prints are
+buttons inside a swipeable strip, the pointer is only captured once it has
+moved 8px: a tap still reaches the print, and a drag that ends over one does
+not heart it.
+
+The hearts' dark disc is a solid translucent fill, not a `backdrop-filter`
+blur: with 27 of them across the album, blurring what lay under each made the
+pages slow to paint.
+
+Photos are web cuts, 1400px on the long edge, named `gallery-<set>-<shot>.webp`
+after the set they were delivered in. The film-strip gallery before it is gone;
+its styles were removed.
 
 ## Paper
 

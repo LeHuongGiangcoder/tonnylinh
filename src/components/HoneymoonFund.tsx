@@ -46,6 +46,19 @@ export function HoneymoonFund() {
           <p className="body-text body-text--muted">
             {honeymoon.accountName} · {honeymoon.bank}
           </p>
+
+          {/* What a transfer from abroad needs, set apart from the local
+              details above. */}
+          <dl className="fund__intl">
+            <div>
+              <dt className="eyebrow">{t.honeymoon.bankNameEn}</dt>
+              <dd className="body-text">{honeymoon.bankNameEn}</dd>
+            </div>
+            <div>
+              <dt className="eyebrow">{t.honeymoon.swift}</dt>
+              <dd className="stat stat--gold fund__swift">{honeymoon.swift}</dd>
+            </div>
+          </dl>
         </Reveal>
       </div>
     </section>

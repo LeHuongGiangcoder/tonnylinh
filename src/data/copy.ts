@@ -39,10 +39,12 @@ export type Copy = {
   gallery: {
     eyebrow: string;
     heading: string;
-    /** Printed along the film strip's edge, between the frame numbers. */
-    strip: string;
     prev: string;
     next: string;
+    /** Under the album: how to leave a heart on a photo. */
+    tapHint: string;
+    /** Screen-reader label for a print's heart, followed by its number. */
+    heart: string;
   };
 
   details: {
@@ -62,10 +64,6 @@ export type Copy = {
     /** Seven, in the same order as `weddingWeek.dates`. */
     days: readonly string[];
     events: Record<EventId, string>;
-    /** Under the programme: how to leave a heart on a photo. */
-    tapHint: string;
-    /** Screen-reader label for the heart, followed by the event's name. */
-    heart: string;
   };
 
   dresscode: {
@@ -108,6 +106,9 @@ export type Copy = {
     heading: string;
     body: string;
     account: string;
+    /** Labels for the details a transfer from abroad needs. */
+    bankNameEn: string;
+    swift: string;
   };
 
   /** `and` joins the two names in the signature. */
@@ -134,9 +135,10 @@ const en: Copy = {
   gallery: {
     eyebrow: "Our Moments",
     heading: "Us, in pictures",
-    strip: "Wedding Photos",
-    prev: "Previous photos",
-    next: "Next photos",
+    prev: "Previous page",
+    next: "Next page",
+    tapHint: "tap a photo to leave a heart",
+    heart: "Leave a heart on photo",
   },
 
   details: {
@@ -162,8 +164,6 @@ const en: Copy = {
       show: "Mini Show",
       party: "After Party",
     },
-    tapHint: "tap a photo to leave a heart",
-    heart: "Leave a heart on",
   },
 
   dresscode: {
@@ -213,6 +213,8 @@ const en: Copy = {
     body:
       "We're fortunate enough to have a home full of everything we need. If you would like to give us a wedding gift, we'd be very grateful to receive contributions towards our honeymoon, by scanning the QR code above.",
     account: "Or transfer to",
+    bankNameEn: "Bank name (English)",
+    swift: "SWIFT / BIC code",
   },
 
   thanks: {
@@ -244,9 +246,10 @@ const vi: Copy = {
   gallery: {
     eyebrow: "Khoảnh khắc",
     heading: "Chúng mình, qua ảnh",
-    strip: "Ảnh cưới",
-    prev: "Ảnh trước",
-    next: "Ảnh tiếp theo",
+    prev: "Trang trước",
+    next: "Trang tiếp theo",
+    tapHint: "chạm vào ảnh để thả tim",
+    heart: "Thả tim cho ảnh",
   },
 
   details: {
@@ -272,8 +275,6 @@ const vi: Copy = {
       show: "Tiết mục đặc biệt",
       party: "Tiệc sau",
     },
-    tapHint: "chạm vào ảnh để thả tim",
-    heart: "Thả tim cho",
   },
 
   dresscode: {
@@ -325,6 +326,8 @@ const vi: Copy = {
     body:
       "Tổ ấm của chúng mình đã có đủ mọi thứ cần thiết. Nếu bạn muốn gửi quà cưới, chúng mình rất biết ơn nếu được bạn góp một phần cho chuyến trăng mật, bằng cách quét mã QR phía trên.",
     account: "Hoặc chuyển khoản tới",
+    bankNameEn: "Tên ngân hàng (tiếng Anh)",
+    swift: "Mã SWIFT / BIC",
   },
 
   thanks: {
