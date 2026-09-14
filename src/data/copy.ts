@@ -240,7 +240,8 @@ const vi: Copy = {
     weddingOf: "Lễ thành hôn của",
     dear: "Kính gửi",
     everyone: "Quý khách thân mến",
-    invitation: "Cùng gia đình hai bên, chúng mình thân mời bạn đến chung vui ngày cưới",
+    // Broken before "đến" (see .heading--lines).
+    invitation: "Cùng gia đình hai bên, chúng mình thân mời bạn\nđến chung vui ngày cưới",
   },
 
   gallery: {

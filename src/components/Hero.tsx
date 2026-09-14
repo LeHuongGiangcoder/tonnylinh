@@ -66,7 +66,7 @@ export function Hero({ guestName }: { guestName: string | null }) {
         <Reveal delay={320} className="hero__address">
           <p className="eyebrow">{t.hero.dear}</p>
           <p className="stat">{guestName ?? t.hero.everyone}</p>
-          <p className="note body-text--muted">{t.hero.invitation}</p>
+          <p className="note body-text--muted heading--lines">{t.hero.invitation}</p>
         </Reveal>
       </div>
     </section>
