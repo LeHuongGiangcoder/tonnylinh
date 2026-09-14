@@ -1,7 +1,7 @@
 "use client";
 
 import Image from "next/image";
-import { useState, type FormEvent } from "react";
+import { useEffect, useRef, useState, type FormEvent } from "react";
 import { wedding } from "@/data/wedding";
 import type { Guest } from "@/lib/guests";
 import { useCopy, useLang } from "@/lib/lang";
@@ -24,6 +24,16 @@ export function Rsvp({ guest }: { guest: Guest | null }) {
     guest?.attending === false ? "no" : "yes",
   );
   const [status, setStatus] = useState<Status>("idle");
+  const thanks = useRef<HTMLDivElement>(null);
+
+  // The thank-you card is much shorter than the form it replaces, so on a
+  // phone it can land above the screen with the guest left looking at the
+  // section below. Bring it into view.
+  useEffect(() => {
+    if (status === "sent") {
+      thanks.current?.scrollIntoView({ behavior: "smooth", block: "center" });
+    }
+  }, [status]);
 
   const helpAsked = guest?.help.split(",").map((h) => h.trim()) ?? [];
 
@@ -72,7 +82,7 @@ export function Rsvp({ guest }: { guest: Guest | null }) {
 
         <Reveal delay={120}>
           {status === "sent" ? (
-            <div className="card stack-sm">
+            <div ref={thanks} className="card stack-sm" role="status">
               <p className="heading heading--sm">{t.rsvp.thanksTitle}</p>
               <p className="body-text body-text--muted">
                 {attending === "yes"

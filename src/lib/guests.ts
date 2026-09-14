@@ -81,3 +81,28 @@ export const getGuest = cache(async (slug: string): Promise<Guest | null> => {
 export async function saveReply(reply: RsvpReply) {
   await callSheet({ action: "rsvp", ...reply });
 }
+
+/**
+ * Whether a reply is on the guest's row even though saving it reported a
+ * failure. Apps Script can write the row and still fail to hand back its
+ * answer, and a guest told "didn't go through" for a reply the couple have
+ * already received is worse than no message at all. Only a personal link can
+ * be checked: a guest on the plain address has no row to look up.
+ */
+export async function replyLanded(reply: RsvpReply) {
+  if (!reply.slug) return false;
+  try {
+    const { guest } = await callSheet<{ guest: Guest | null }>({
+      action: "guest",
+      slug: reply.slug,
+    });
+    return (
+      guest !== null &&
+      guest.attending === reply.attending &&
+      guest.contact === reply.contact &&
+      guest.message === reply.message
+    );
+  } catch {
+    return false;
+  }
+}
