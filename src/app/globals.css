@@ -1057,16 +1057,6 @@ body[data-locked="true"] {
     pointer-events: none;
   }
 
-  /* Under the map button, centred, a little askew. */
-  .setting__bow {
-    display: block;
-    width: min(36%, 10rem);
-    height: auto;
-    margin: var(--space-md) auto 0;
-    rotate: -4deg;
-    pointer-events: none;
-  }
-
   .setting__calla {
     position: absolute;
     z-index: 3;
@@ -1341,6 +1331,16 @@ body[data-locked="true"] {
   }
 
   .fund__account { user-select: all; }
+
+  /* RSVP: a red satin bow under the reply card, centred, a little askew. */
+  .rsvp__bow {
+    display: block;
+    width: min(36%, 10rem);
+    height: auto;
+    margin: var(--space-md) auto 0;
+    rotate: -4deg;
+    pointer-events: none;
+  }
 
   /* The details a transfer from abroad needs, under a hairline so they read
      as a second, separate set. */

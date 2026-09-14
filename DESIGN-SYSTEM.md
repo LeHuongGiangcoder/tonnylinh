@@ -139,8 +139,7 @@ stems hanging below the picture. The writing fills the card's embossed inner
 border — measured at 21.4%–78.9% across and 28.3%–72.4% down the picture — and
 is sized in container units (`cqw`) of `.setting`, so it keeps its place on the
 card at any width. The card only has room for the facts, so *View on map* is a
-button under the table, with a red satin bow (`ribbon.webp`, `.setting__bow`)
-tied under it. The note-paper letter and the lace letter before it are
+button under the table. The note-paper letter and the lace letter before it are
 in `assets/retired/`.
 
 The honeymoon fund gives the local account first, then — under a hairline, as
@@ -413,7 +412,8 @@ guest who is coming**, number of guests, dietary needs and the hotel /
 transport asks. A guest who declines is asked for nothing but a note; the other
 questions are not rendered for them, so they arrive empty rather than as stale
 defaults, and they are thanked with their own line (`thanksBodyDecline`)
-instead of *see you on the day*.
+instead of *see you on the day*. A red satin bow (`ribbon.webp`, `.rsvp__bow`)
+sits centred under the reply card.
 
 **Only the site's server talks to the sheet.** The web app has to be open to
 *Anyone*, so a shared secret guards it — the script's `SECRET` property, and

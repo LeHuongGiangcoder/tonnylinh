@@ -1,5 +1,6 @@
 "use client";
 
+import Image from "next/image";
 import { useState, type FormEvent } from "react";
 import { wedding } from "@/data/wedding";
 import type { Guest } from "@/lib/guests";
@@ -236,6 +237,17 @@ export function Rsvp({ guest }: { guest: Guest | null }) {
               </button>
             </form>
           )}
+
+          {/* A red satin bow tied on under the reply. */}
+          <Image
+            src="/img/ribbon.webp"
+            alt=""
+            width={1000}
+            height={921}
+            sizes="(max-width: 34rem) 36vw, 10rem"
+            aria-hidden="true"
+            className="rsvp__bow"
+          />
         </Reveal>
       </div>
     </section>
