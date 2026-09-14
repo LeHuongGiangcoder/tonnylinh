@@ -145,7 +145,7 @@ export function Gallery() {
         <Reveal className="stack-sm">
           <Emblem name="flower" />
           <p className="eyebrow">{t.gallery.eyebrow}</p>
-          <h2 className="heading">{t.gallery.heading}</h2>
+          <h2 className="heading heading--lines">{t.gallery.heading}</h2>
           <Rule />
         </Reveal>
 

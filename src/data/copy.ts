@@ -245,7 +245,8 @@ const vi: Copy = {
 
   gallery: {
     eyebrow: "Khoảnh khắc",
-    heading: "Album ảnh của chúng mình",
+    // Broken after "của" (see .heading--lines).
+    heading: "Album ảnh của\nchúng mình",
     prev: "Trang trước",
     next: "Trang tiếp theo",
     tapHint: "chạm vào ảnh để thả tim",
