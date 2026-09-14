@@ -7,8 +7,11 @@ import { Rule } from "./Divider";
 import { Reveal } from "./Reveal";
 
 /**
- * When and where, written on one sheet of deckle-edged note paper and sealed
- * with wax at its head — see the TIME & VENUE block in globals.css.
+ * When and where, written on the place card of a laid table: a silver charger
+ * between fork and knife, the card on it sealed with wax, and a bouquet of
+ * burgundy callas laid across the setting. The way to the venue follows under
+ * the table — the card only has room for the facts. See the TIME & VENUE block
+ * in globals.css.
  */
 export function TimeVenue() {
   const t = useCopy();
@@ -23,52 +26,62 @@ export function TimeVenue() {
         </Reveal>
 
         <Reveal delay={120}>
-          <div className="letter">
+          <div className="setting">
             <Image
-              src="/img/note-paper.webp"
+              src="/img/venue-setting.webp"
               alt=""
-              width={900}
-              height={1356}
-              sizes="(max-width: 34rem) 80vw, 25rem"
+              width={1400}
+              height={1136}
+              sizes="(max-width: 34rem) 100vw, 30rem"
               aria-hidden="true"
-              className="letter__sheet"
+              className="setting__table"
             />
+
+            <div className="setting__card">
+              <p className="eyebrow">{t.details.day}</p>
+              <p className="stat">{wedding.dateShort}</p>
+              <p className="body-text">{t.details.date}</p>
+
+              <span className="setting__rule" aria-hidden="true" />
+
+              <p className="eyebrow">{t.details.place}</p>
+              <p className="stat">{wedding.venue.name}</p>
+              <p className="body-text">
+                {wedding.venue.hall} · {t.details.address}
+              </p>
+            </div>
 
             <Image
               src="/img/seal.webp"
               alt=""
               width={760}
               height={776}
-              sizes="(max-width: 34rem) 20vw, 6rem"
+              sizes="(max-width: 34rem) 16vw, 5rem"
               aria-hidden="true"
-              className="letter__seal"
+              className="setting__seal"
             />
 
-            <div className="letter__writing">
-              <p className="eyebrow">{t.details.day}</p>
-              <p className="stat">{wedding.dateShort}</p>
-              <p className="body-text">{t.details.date}</p>
-
-              <Rule />
-
-              <p className="eyebrow">{t.details.place}</p>
-              <p className="stat">{wedding.venue.name}</p>
-              <p className="body-text">
-                {wedding.venue.hall}
-                <br />
-                {t.details.address}
-              </p>
-              <a
-                className="btn btn--wine"
-                href={wedding.venue.mapUrl}
-                target="_blank"
-                rel="noreferrer noopener"
-              >
-                {t.details.map}
-              </a>
-            </div>
-
+            <Image
+              src="/img/venue-calla-bouquet.webp"
+              alt=""
+              width={800}
+              height={819}
+              sizes="(max-width: 34rem) 44vw, 14rem"
+              aria-hidden="true"
+              className="setting__calla"
+            />
           </div>
+        </Reveal>
+
+        <Reveal delay={200}>
+          <a
+            className="btn btn--outline"
+            href={wedding.venue.mapUrl}
+            target="_blank"
+            rel="noreferrer noopener"
+          >
+            {t.details.map}
+          </a>
         </Reveal>
       </div>
     </section>
