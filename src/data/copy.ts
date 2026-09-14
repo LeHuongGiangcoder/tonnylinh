@@ -283,8 +283,7 @@ const vi: Copy = {
     eyebrow: "Trang phục",
     heading: "Dress Code",
     // Broken before "&" (see .heading--lines).
-    note: "Lịch sự
-& Trang nhã",
+    note: "Lịch sự\n& Trang nhã",
     description:
       "Chúng mình rất mong các bạn sẽ xuất hiện thật đẹp trong những bộ trang phục với bảng màu bên dưới nhé:",
     colours: {
@@ -298,8 +297,7 @@ const vi: Copy = {
   rsvp: {
     eyebrow: "Bạn sẽ đến chứ?",
     // Broken after "nhận" (see .heading--lines).
-    heading: "Xác nhận
-tham dự",
+    heading: "Xác nhận\ntham dự",
     deadline: "Vui lòng phản hồi trước ngày 6 tháng 11 năm 2026",
     name: "Tên của bạn",
     namePlaceholder: "Họ và tên",
