@@ -1,7 +1,9 @@
 "use client";
 
 import Image from "next/image";
+import { Suspense, use } from "react";
 import { couple, heroPhoto, wedding } from "@/data/wedding";
+import type { Guest } from "@/lib/guests";
 import { LanguageToggle, useCopy } from "@/lib/lang";
 import { Reveal } from "./Reveal";
 
@@ -11,10 +13,11 @@ import { Reveal } from "./Reveal";
  * date — the way a painting in a hall carries its plate. The guest's own name
  * follows, so the invitation is addressed before the page moves on.
  *
- * `guestName` comes from the guest's personal link; on the plain address there
- * is none, and the invitation is addressed to every guest instead.
+ * `guest` comes from the guest's personal link, as a promise the sheet answers
+ * after the page has arrived; on the plain address there is none, and the
+ * invitation is addressed to every guest instead.
  */
-export function Hero({ guestName }: { guestName: string | null }) {
+export function Hero({ guest }: { guest: Promise<Guest | null> | null }) {
   const t = useCopy();
 
   return (
@@ -65,10 +68,22 @@ export function Hero({ guestName }: { guestName: string | null }) {
 
         <Reveal delay={320} className="hero__address">
           <p className="eyebrow">{t.hero.dear}</p>
-          <p className="stat">{guestName ?? t.hero.everyone}</p>
+          {guest ? (
+            // Held blank, at the name's height, until the sheet answers —
+            // never "Our dear guest" first and the name after.
+            <Suspense fallback={<p className="stat">&nbsp;</p>}>
+              <GuestName guest={guest} everyone={t.hero.everyone} />
+            </Suspense>
+          ) : (
+            <p className="stat">{t.hero.everyone}</p>
+          )}
           <p className="note body-text--muted heading--lines">{t.hero.invitation}</p>
         </Reveal>
       </div>
     </section>
   );
+}
+
+function GuestName({ guest, everyone }: { guest: Promise<Guest | null>; everyone: string }) {
+  return <p className="stat">{use(guest)?.name ?? everyone}</p>;
 }
