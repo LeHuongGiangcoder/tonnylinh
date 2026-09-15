@@ -53,9 +53,6 @@ export const tanAegean = localFont({
   weight: "400",
   variable: "--ff-display",
   display: "swap",
-  // Reserved, not set anywhere yet: don't make every guest download it
-  // up front. It still loads on demand if a rule starts using it.
-  preload: false,
 });
 
 export const tanPearl = localFont({
@@ -63,7 +60,6 @@ export const tanPearl = localFont({
   weight: "400",
   variable: "--ff-pearl",
   display: "swap",
-  preload: false, // as tanAegean
 });
 
 export const fontVariables = [
