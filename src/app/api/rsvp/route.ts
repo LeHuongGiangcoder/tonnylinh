@@ -1,4 +1,5 @@
-import { isSlug, replyLanded, saveReply, type RsvpReply } from "@/lib/guests";
+import { revalidateTag } from "next/cache";
+import { guestTag, isSlug, replyLanded, saveReply, type RsvpReply } from "@/lib/guests";
 
 const text = (value: unknown, max = 2000) =>
   typeof value === "string" ? value.trim().slice(0, max) : "";
@@ -34,14 +35,23 @@ export async function POST(request: Request) {
     return Response.json({ ok: false, error: "name required" }, { status: 400 });
   }
 
+  // The guest's saved details now hold their old answers: mark them stale so
+  // the next visit fetches the new ones. "max" keeps serving the old copy
+  // while that fetch runs, so a slow sheet never costs the guest their name.
+  const refreshGuest = () => {
+    if (reply.slug) revalidateTag(guestTag(reply.slug), "max");
+  };
+
   try {
     await saveReply(reply);
+    refreshGuest();
     return Response.json({ ok: true });
   } catch (error) {
     // The sheet may have written the row and only failed to answer: look
     // before telling the guest it didn't go through.
     if (await replyLanded(reply)) {
       console.warn("RSVP saved, but the sheet's answer failed", error);
+      refreshGuest();
       return Response.json({ ok: true });
     }
     console.error("RSVP not saved", error);
