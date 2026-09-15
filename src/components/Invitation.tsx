@@ -16,17 +16,20 @@ import { LanguageProvider } from "@/lib/lang";
  * in on their personal link is addressed by name in the hero and finds their
  * earlier reply already filled in.
  *
+ * `guest` is a PROMISE on a personal link, so the page never waits for the
+ * sheet; null on the plain address.
+ *
  * Sections butt straight against each other, and the change of ground is the
  * break. The one seam still dressed is below the dress code, where the red
  * silk swag (<Drape />) hangs off its foot across into the RSVP.
  */
-export function Invitation({ guest }: { guest: Guest | null }) {
+export function Invitation({ guest }: { guest: Promise<Guest | null> | null }) {
   return (
     <LanguageProvider>
       <PaperDefs />
       <Intro />
       <main className="site">
-        <Hero guestName={guest?.name ?? null} />
+        <Hero guest={guest} />
         <Gallery />
         <TimeVenue />
         <Agenda />

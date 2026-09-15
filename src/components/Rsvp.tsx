@@ -1,7 +1,7 @@
 "use client";
 
 import Image from "next/image";
-import { useEffect, useRef, useState, type FormEvent } from "react";
+import { Suspense, use, useEffect, useRef, useState, type FormEvent } from "react";
 import { wedding } from "@/data/wedding";
 import type { Guest } from "@/lib/guests";
 import { useCopy, useLang } from "@/lib/lang";
@@ -16,8 +16,55 @@ type Status = "idle" | "sending" | "sent" | "error";
  * has their name — so they are not asked for it, and whatever they answered
  * last time is filled in: sending again updates their row rather than adding
  * one. On the plain address they type their name and get a row of their own.
+ *
+ * On a personal link `guest` is a promise the sheet answers after the page has
+ * arrived. Until it does, the form is shown without the name field and cannot
+ * be sent, so a reply never goes out unattached to the guest's row.
  */
-export function Rsvp({ guest }: { guest: Guest | null }) {
+export function Rsvp({ guest }: { guest: Promise<Guest | null> | null }) {
+  const t = useCopy();
+
+  return (
+    <section id="rsvp" className="section ground--cream section--under-spill">
+      <div className="container container--narrow center stack">
+        <Reveal className="stack-sm">
+          <Emblem name="crest" />
+          <p className="eyebrow">{t.rsvp.eyebrow}</p>
+          <h2 className="heading heading--lines">{t.rsvp.heading}</h2>
+          <Rule />
+          <p className="body-text body-text--muted">{t.rsvp.deadline}</p>
+        </Reveal>
+
+        <Reveal delay={120}>
+          {guest ? (
+            <Suspense fallback={<RsvpCard guest={null} pending />}>
+              <GuestRsvp guest={guest} />
+            </Suspense>
+          ) : (
+            <RsvpCard guest={null} />
+          )}
+
+          {/* A red satin bow tied on under the reply. */}
+          <Image
+            src="/img/ribbon.webp"
+            alt=""
+            width={1000}
+            height={921}
+            sizes="(max-width: 34rem) 36vw, 10rem"
+            aria-hidden="true"
+            className="rsvp__bow"
+          />
+        </Reveal>
+      </div>
+    </section>
+  );
+}
+
+function GuestRsvp({ guest }: { guest: Promise<Guest | null> }) {
+  return <RsvpCard guest={use(guest)} />;
+}
+
+function RsvpCard({ guest, pending = false }: { guest: Guest | null; pending?: boolean }) {
   const t = useCopy();
   const { lang } = useLang();
   const [attending, setAttending] = useState<"yes" | "no">(
@@ -69,19 +116,7 @@ export function Rsvp({ guest }: { guest: Guest | null }) {
     }
   }
 
-  return (
-    <section id="rsvp" className="section ground--cream section--under-spill">
-      <div className="container container--narrow center stack">
-        <Reveal className="stack-sm">
-          <Emblem name="crest" />
-          <p className="eyebrow">{t.rsvp.eyebrow}</p>
-          <h2 className="heading heading--lines">{t.rsvp.heading}</h2>
-          <Rule />
-          <p className="body-text body-text--muted">{t.rsvp.deadline}</p>
-        </Reveal>
-
-        <Reveal delay={120}>
-          {status === "sent" ? (
+  return status === "sent" ? (
             <div ref={thanks} className="card stack-sm" role="status">
               <p className="heading heading--sm">{t.rsvp.thanksTitle}</p>
               <p className="body-text body-text--muted">
@@ -93,7 +128,7 @@ export function Rsvp({ guest }: { guest: Guest | null }) {
           ) : (
             <form className="card stack" onSubmit={handleSubmit}>
               {/* On a personal link the hero has already named them. */}
-              {!guest && (
+              {!guest && !pending && (
                 <div className="field">
                   <label className="label" htmlFor="rsvp-name">
                     {t.rsvp.name}
@@ -241,25 +276,10 @@ export function Rsvp({ guest }: { guest: Guest | null }) {
               <button
                 type="submit"
                 className="btn btn--wine btn--block"
-                disabled={status === "sending"}
+                disabled={pending || status === "sending"}
               >
                 {status === "sending" ? t.rsvp.sending : t.rsvp.submit}
               </button>
             </form>
-          )}
-
-          {/* A red satin bow tied on under the reply. */}
-          <Image
-            src="/img/ribbon.webp"
-            alt=""
-            width={1000}
-            height={921}
-            sizes="(max-width: 34rem) 36vw, 10rem"
-            aria-hidden="true"
-            className="rsvp__bow"
-          />
-        </Reveal>
-      </div>
-    </section>
-  );
+          );
 }
