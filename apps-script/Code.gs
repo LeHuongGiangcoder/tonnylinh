@@ -137,9 +137,6 @@ function checkData() {
  *                                       → the reply, on that guest's row
  */
 function doPost(e) {
-  const lock = LockService.getScriptLock();
-  lock.waitLock(20000); // queue replies that arrive together
-
   try {
     const body = JSON.parse(e.postData.contents);
 
@@ -150,23 +147,52 @@ function doPost(e) {
 
     const sheet = sheet_();
     const col = columns_(sheet);
-    // A guest typed into the sheet since the last run has no slug yet — fill
-    // it in before reading or writing, so nobody has to remember the menu.
-    syncGuests_(sheet, col);
 
     if (body.action === 'guest') {
+      // Reading a guest takes NO lock and writes nothing. It used to take the
+      // script lock and re-sync the whole list on every page view; with a few
+      // guests opening their links at once the queue passed the lock's
+      // timeout, the lookup failed, and the invitation fell back to "Our dear
+      // guest" on a personal link.
       const slug = String(body.slug || '').trim();
-      const guest = readGuests_(sheet, col).filter(function (g) { return g.slug === slug; })[0];
-      return json_({ ok: true, guest: guest || null });
+      let guest = findGuest_(sheet, col, slug);
+      if (!guest) {
+        // Perhaps a name typed in since the last sync — give it its slug and
+        // look again. Only unknown links pay for this.
+        withLock_(function () { syncGuests_(sheet, col); });
+        guest = findGuest_(sheet, col, slug);
+      }
+      return json_({ ok: true, guest: guest });
     }
 
     if (body.action === 'rsvp') {
-      return json_(writeRsvp_(sheet, col, body));
+      // Writes queue behind one another, so two replies never land on the
+      // same new row. A guest typed into the sheet since the last run has no
+      // slug yet — fill it in first, so nobody has to remember the menu.
+      return json_(withLock_(function () {
+        syncGuests_(sheet, col);
+        return writeRsvp_(sheet, col, body);
+      }));
     }
 
     return json_({ ok: false, error: 'unknown action' });
   } catch (err) {
+    // Includes a lock that could not be had in time: answered as JSON, never
+    // as Google's HTML error page, which the website cannot read.
     return json_({ ok: false, error: String(err) });
+  }
+}
+
+function findGuest_(sheet, col, slug) {
+  if (!slug) return null;
+  return readGuests_(sheet, col).filter(function (g) { return g.slug === slug; })[0] || null;
+}
+
+function withLock_(fn) {
+  const lock = LockService.getScriptLock();
+  lock.waitLock(25000);
+  try {
+    return fn();
   } finally {
     lock.releaseLock();
   }

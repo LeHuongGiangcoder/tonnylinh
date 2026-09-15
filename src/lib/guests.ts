@@ -69,13 +69,18 @@ async function callSheet<T>(body: Record<string, unknown>): Promise<T> {
  */
 export const getGuest = cache(async (slug: string): Promise<Guest | null> => {
   if (!isSlug(slug)) return null;
-  try {
-    const { guest } = await callSheet<{ guest: Guest | null }>({ action: "guest", slug });
-    return guest;
-  } catch (error) {
-    console.error("Could not load guest", slug, error);
-    return null;
+  // Twice: Apps Script fails now and then for reasons of its own, and a
+  // personal link that greets its guest as "Our dear guest" is the one thing
+  // the link exists to prevent.
+  for (let attempt = 1; attempt <= 2; attempt++) {
+    try {
+      const { guest } = await callSheet<{ guest: Guest | null }>({ action: "guest", slug });
+      return guest;
+    } catch (error) {
+      console.error(`Could not load guest (attempt ${attempt})`, slug, error);
+    }
   }
+  return null;
 });
 
 export async function saveReply(reply: RsvpReply) {
