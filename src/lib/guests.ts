@@ -1,14 +1,4 @@
-import { unstable_cache } from "next/cache";
 import { cache } from "react";
-
-/** How long a guest's saved details count as fresh — a name corrected in the
- *  sheet shows within about this long. */
-const GUEST_FRESH_S = 300;
-
-/** The cache tag for one guest, so their reply can refresh it. */
-export function guestTag(slug: string) {
-  return `guest:${slug}`;
-}
 
 /**
  * The guest list lives in the RSVP Google Sheet, behind the Apps Script web app
@@ -57,8 +47,8 @@ async function callSheet<T>(body: Record<string, unknown>): Promise<T> {
   }
 
   // Apps Script answers a POST with a redirect to the response; fetch follows
-  // it. The request itself is never cached — getGuest keeps the ANSWER, with
-  // its own freshness rules.
+  // it. Never cached: a name the couple just corrected, or a reply just sent,
+  // has to show on the next visit.
   const res = await fetch(endpoint, {
     method: "POST",
     headers: { "Content-Type": "text/plain;charset=utf-8" },
@@ -79,26 +69,13 @@ async function callSheet<T>(body: Record<string, unknown>): Promise<T> {
  */
 export const getGuest = cache(async (slug: string): Promise<Guest | null> => {
   if (!isSlug(slug)) return null;
-
-  // Kept in Next's data cache rather than asked of the sheet on every view:
-  // Apps Script can take half a minute to answer, or not answer at all, and a
+  // Twice: Apps Script fails now and then for reasons of its own, and a
   // personal link that greets its guest as "Our dear guest" is the one thing
-  // the link exists to prevent. Past GUEST_FRESH_S the saved copy is still
-  // served at once while a fresh one is fetched behind it — and if that fetch
-  // fails, the saved copy stays. A failure is thrown, never cached.
-  const load = unstable_cache(
-    async () => {
-      const { guest } = await callSheet<{ guest: Guest | null }>({ action: "guest", slug });
-      return guest;
-    },
-    ["guest", slug],
-    { revalidate: GUEST_FRESH_S, tags: [guestTag(slug)] },
-  );
-
-  // Twice, for a guest with nothing saved yet.
+  // the link exists to prevent.
   for (let attempt = 1; attempt <= 2; attempt++) {
     try {
-      return await load();
+      const { guest } = await callSheet<{ guest: Guest | null }>({ action: "guest", slug });
+      return guest;
     } catch (error) {
       console.error(`Could not load guest (attempt ${attempt})`, slug, error);
     }
