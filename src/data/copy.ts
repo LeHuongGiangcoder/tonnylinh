@@ -276,7 +276,7 @@ const vi: Copy = {
       cocktail: "Tiệc nhẹ",
       dinner: "Tiệc tối",
       show: "Tiết mục đặc biệt",
-      party: "Tiệc sau",
+      party: "After Party",
     },
   },
 
