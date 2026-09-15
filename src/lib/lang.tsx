@@ -13,8 +13,7 @@ function isLang(v: string | null): v is Lang {
  * The chosen language, held outside React.
  *
  * It has to be an external store rather than state in a provider: the value
- * lives in localStorage and in the browser's own language setting, neither of
- * which exists while the page is being rendered on the server. Reading it in
+ * lives in localStorage, which does not exist while the page is being rendered on the server. Reading it in
  * an effect and calling setState would work, but it costs a second render pass
  * on every load and React now flags it. `useSyncExternalStore` is built for
  * exactly this shape — it renders the server's answer, then swaps in the
@@ -30,10 +29,11 @@ const store = {
     try {
       const saved = localStorage.getItem(STORAGE_KEY);
       if (isLang(saved)) return (store.value = saved);
-      if (navigator.language?.toLowerCase().startsWith("vi")) return (store.value = "vi");
     } catch {
-      // Private browsing can throw on localStorage. English is the fallback.
+      // Private browsing can throw on localStorage.
     }
+    // English unless the guest has picked Vietnamese on the switch — not
+    // guessed from the browser's language.
     return (store.value = "en");
   },
 
